@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		458DFFC319A501E50043EF9C /* SparkParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 458DFFC119A501E50043EF9C /* SparkParticles.sks */; };
+		458DFFCD19A512180043EF9C /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 458DFFCC19A512180043EF9C /* spark.png */; };
 		45F1F4B619A3E98400EEB990 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B519A3E98400EEB990 /* Foundation.framework */; };
 		45F1F4B819A3E98400EEB990 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B719A3E98400EEB990 /* CoreGraphics.framework */; };
 		45F1F4BA19A3E98400EEB990 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B919A3E98400EEB990 /* UIKit.framework */; };
@@ -48,6 +50,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		458DFFC119A501E50043EF9C /* SparkParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SparkParticles.sks; sourceTree = "<group>"; };
+		458DFFCC19A512180043EF9C /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		45F1F4B219A3E98400EEB990 /* Fire Command.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fire Command.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45F1F4B519A3E98400EEB990 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		45F1F4B719A3E98400EEB990 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -110,6 +114,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		458DFFC519A501F70043EF9C /* Particles */ = {
+			isa = PBXGroup;
+			children = (
+				458DFFC119A501E50043EF9C /* SparkParticles.sks */,
+				458DFFCC19A512180043EF9C /* spark.png */,
+			);
+			name = Particles;
+			sourceTree = "<group>";
+		};
 		45F1F4A919A3E98400EEB990 = {
 			isa = PBXGroup;
 			children = (
@@ -194,6 +207,7 @@
 		45F1F4F419A3F05300EEB990 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				458DFFC519A501F70043EF9C /* Particles */,
 				45F1F4F519A3F06000EEB990 /* Game Elements */,
 			);
 			name = Resources;
@@ -304,6 +318,8 @@
 				45F1F50019A3F07100EEB990 /* explosion.png in Resources */,
 				45F1F4FF19A3F07100EEB990 /* enemyMissile.png in Resources */,
 				45F1F50219A3F07100EEB990 /* flowerBullet.png in Resources */,
+				458DFFCD19A512180043EF9C /* spark.png in Resources */,
+				458DFFC319A501E50043EF9C /* SparkParticles.sks in Resources */,
 				45F1F50519A3F07100EEB990 /* protectCreature4.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

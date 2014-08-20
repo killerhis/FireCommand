@@ -9,72 +9,100 @@
 #import "GameScene.h"
 #import "MenuScene.h"
 
-@implementation GameScene
+#define ARC4RANDOM_MAX 0x100000000
+
+typedef enum : NSUInteger {
+    ExplosionCategory = (1 << 0),
+    MissileCategory = (1 << 1),
+    MonsterCategory = (1 << 2),
+    BaseCategory = (1 << 3)
+} NodeCategory;
+
+@implementation GameScene {
+    CGSize sizeGlobal;
+    
+    SKLabelNode *labelflowerBullets1;
+    SKLabelNode *labelflowerBullets2;
+    SKLabelNode *labelflowerBullets3;
+    SKLabelNode *labelMisslesExploded;
+    SKLabelNode *labelScore;
+    
+    int position;
+    int monstersDead;
+    int missileExploded;
+    int score;
+    int explosionZPosition;
+    
+    int flowerBullets1;
+    int flowerBullets2;
+    int flowerBullets3;
+    
+    double nextAsteroidTime;
+    float levelMultiplier;
+    
+    float deviceScale;
+    
+    CFTimeInterval currentTimeStamp;
+    CFTimeInterval lastRocketTimeStamp;
+}
 
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
         
-        self.backgroundColor = [SKColor colorWithRed:198.0/255.0 green:220.0/255.0 blue:54.0/255.0 alpha:1.0];
+        self.backgroundColor = [SKColor blackColor];
         
+        // init first values
         position = size.width/3;
         sizeGlobal = size;
+        score = 0;
+        explosionZPosition = 0;
+        nextAsteroidTime = 0;
+        levelMultiplier = 5;
+        lastRocketTimeStamp = 0;
+        deviceScale = [self setDeviceScale];
+        
+        // add Screen Elements
+        [self addHud];
+  
         [self addFlowerCommand];
-        
-        // Label informing mussles exploded
-        labelMisslesExploded = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
-        labelMisslesExploded.text = [NSString stringWithFormat:@"Missles Exploded %d", missileExploded];
-        labelMisslesExploded.fontSize = 30;
-        labelMisslesExploded.position = CGPointMake(size.width/2, size.height-labelMisslesExploded.frame.size.height);
-        labelMisslesExploded.zPosition = 3;
-        [self addChild:labelMisslesExploded];
-        
-        flowerBullets1 = 1000;
-        flowerBullets2 = 1000;
-        flowerBullets3 = 1000;
-        
-        labelflowerBullets1 = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
-        labelflowerBullets1.text = [NSString stringWithFormat:@"%d",flowerBullets1];
-        labelflowerBullets1.fontSize = 30;
-        labelflowerBullets1.position = CGPointMake(position-position/2,labelflowerBullets1.frame.size.height/2);
-        labelflowerBullets1.zPosition = 3;
-        [self addChild:labelflowerBullets1];
-        
-        labelflowerBullets2 = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
-        labelflowerBullets2.text = [NSString stringWithFormat:@"%d",flowerBullets2];
-        labelflowerBullets2.fontSize = 30;
-        labelflowerBullets2.position = CGPointMake(position*2-position/2,labelflowerBullets2.frame.size.height/2);
-        labelflowerBullets2.zPosition = 3;
-        [self addChild:labelflowerBullets2];
-        
-        labelflowerBullets3 = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
-        labelflowerBullets3.text = [NSString stringWithFormat:@"%d",flowerBullets3];
-        labelflowerBullets3.fontSize = 30;
-        labelflowerBullets3.position = CGPointMake(position*3-position/2,labelflowerBullets3.frame.size.height/2);
-        labelflowerBullets3.zPosition = 3;
-        [self addChild:labelflowerBullets3];
         
         [self addMonstersBetweenSpace:1];
         [self addMonstersBetweenSpace:2];
         
-        // Create missles
-        
-        SKAction *wait = [SKAction waitForDuration:2];
-        SKAction *createMissiles = [SKAction runBlock:^{
-            [self addMissilesFromSky:size];
-        }];
-        
-        SKAction *updateMissiles = [SKAction sequence:@[wait, createMissiles]];
-        [self runAction:[SKAction repeatActionForever:updateMissiles]];
-        
-        // Configure Physics
-        
+         // setup physics
         self.physicsWorld.gravity = CGVectorMake(0, 0);
         self.physicsWorld.contactDelegate = self;
     }
     
     return self;
-
 }
+
+-(void)update:(CFTimeInterval)currentTime {
+    /* Called before each frame is rendered */
+    
+    if (currentTime > nextAsteroidTime || nextAsteroidTime - currentTime > 5) {
+        nextAsteroidTime = ([self getRandomDouble] * levelMultiplier) + currentTime;
+        NSLog(@"%f", nextAsteroidTime);
+        [self addAstroid];
+    }
+    
+    currentTimeStamp = currentTime;
+    
+}
+
+#pragma mark - UI Elements
+
+- (void)addHud
+{
+    labelScore = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
+    labelScore.text = [NSString stringWithFormat:@"%d", score];
+    labelScore.fontSize = 30;
+    labelScore.position = CGPointMake(self.size.width/2, self.size.height-self.size.height/8);
+    labelScore.zPosition = 3;
+    [self addChild:labelScore];
+}
+
+#pragma mark - Touch Methods
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
@@ -82,140 +110,13 @@
         
         // Return if User Taps Below a Flower
         if (location.y < 120) return;
-        
-        int bulletBeginning = 0;
-        
-        /*if (location.x >= 0 && location.x < position) {
-            bulletBeginning = position-position/2;
-            
-            if (flowerBullets1 > 0)
-                flowerBullets1--;
-            else{
-                if(flowerBullets1 == 0 && flowerBullets2 > 0){
-                    flowerBullets2--;
-                    [labelflowerBullets2 setText:[NSString stringWithFormat:@"%d",flowerBullets2]];
-                    bulletBeginning = [self positionOfWhichFlowerShouldBegin:2];
-                }
-                else if(flowerBullets3 > 0){
-                    flowerBullets3--;
-                    [labelflowerBullets3 setText:[NSString stringWithFormat:@"%d",flowerBullets3]];
-                    bulletBeginning =[self positionOfWhichFlowerShouldBegin:3];
-                }
-                else{
-                    return;
-                }
-            }
-            [labelflowerBullets1 setText:[NSString stringWithFormat:@"%d",flowerBullets1]];
+
+        if (fabsf(currentTimeStamp - lastRocketTimeStamp) > 0.3) {
+            [self addRocket:location];
+            [self addParticleExplosion:location];
+            lastRocketTimeStamp = currentTimeStamp;
         }
-        else if((location.x >= position && location.x < position*2)){
-            bulletBeginning = position*2-position/2;
-            if(flowerBullets2 > 0)
-                flowerBullets2--;
-            else{
-                if(location.x < sizeGlobal.width/2){
-                    if(flowerBullets1 > 0){
-                        flowerBullets1--;
-                        [labelflowerBullets1 setText:[NSString stringWithFormat:@"%d",flowerBullets1]];
-                        bulletBeginning =[self positionOfWhichFlowerShouldBegin:1];
-                    }
-                    else if (flowerBullets3 > 0){
-                        flowerBullets3--;
-                        [labelflowerBullets3 setText:[NSString stringWithFormat:@"%d",flowerBullets3]];
-                        bulletBeginning =[self positionOfWhichFlowerShouldBegin:3];
-                    }
-                    else{
-                        return;
-                    }
-                }
-                else{
-                    if(flowerBullets3 > 0){
-                        flowerBullets3--;
-                        [labelflowerBullets3 setText:[NSString stringWithFormat:@"%d",flowerBullets3]];
-                        bulletBeginning =[self positionOfWhichFlowerShouldBegin:3];
-                    }
-                    else if (flowerBullets1 > 0){
-                        flowerBullets1--;
-                        [labelflowerBullets1 setText:[NSString stringWithFormat:@"%d",flowerBullets1]];
-                        bulletBeginning =[self positionOfWhichFlowerShouldBegin:1];
-                    }
-                    else{
-                        return;
-                    }
-                }
-                
-            }
-            [labelflowerBullets2 setText:[NSString stringWithFormat:@"%d",flowerBullets2]];
-        }
-        else{
-            bulletBeginning = position*3-position/2;
-            if(flowerBullets3 > 0)
-                flowerBullets3--;
-            else{
-                if(flowerBullets3 == 0 && flowerBullets2 > 0){
-                    flowerBullets2--;
-                    [labelflowerBullets2 setText:[NSString stringWithFormat:@"%d",flowerBullets2]];
-                    bulletBeginning =[self positionOfWhichFlowerShouldBegin:2];
-                }
-                else if(flowerBullets1 > 0){
-                    flowerBullets1--;
-                    [labelflowerBullets1 setText:[NSString stringWithFormat:@"%d",flowerBullets1]];
-                    bulletBeginning =[self positionOfWhichFlowerShouldBegin:1];
-                }
-                else{
-                    return;
-                }
-            }
-            [labelflowerBullets3 setText:[NSString stringWithFormat:@"%d",flowerBullets3]];
-        }*/
-        
-        bulletBeginning = self.size.width/2;
-        
-        SKSpriteNode *bullet = [SKSpriteNode spriteNodeWithImageNamed:@"flowerBullet"];
-        bullet.zPosition = 1;
-        bullet.scale = 0.6;
-        bullet.position = CGPointMake(bulletBeginning,110);
-        bullet.color = [SKColor redColor];
-        bullet.colorBlendFactor = 0.5;
-        
-        float duration = (2 * location.y)/sizeGlobal.width;
-        SKAction *move =[SKAction moveTo:CGPointMake(location.x,location.y) duration:duration];
-        SKAction *remove = [SKAction removeFromParent];
-        
-        // Explosion
-        SKAction *callExplosion = [SKAction runBlock:^{
-            SKSpriteNode *explosion = [SKSpriteNode spriteNodeWithImageNamed:@"explosion"];
-            explosion.zPosition = 3;
-            explosion.scale = 0.1;
-            explosion.position = CGPointMake(location.x,location.y);
-            explosion.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:explosion.size.height/2];
-            explosion.physicsBody.dynamic = YES;
-            explosion.physicsBody.categoryBitMask = ExplosionCategory;
-            explosion.physicsBody.contactTestBitMask = MissileCategory;
-            explosion.physicsBody.collisionBitMask = 1;
-            SKAction *explosionAction = [SKAction scaleTo:0.8 duration:1.5];
-            [explosion runAction:[SKAction sequence:@[explosionAction,remove]]];
-            [self addChild:explosion];
-        }];
-        
-        [bullet runAction:[SKAction sequence:@[move,callExplosion,remove]]];
-        
-        [self addChild:bullet];
     }
-}
-
--(void)update:(CFTimeInterval)currentTime {
-    /* Called before each frame is rendered */
-}
-
-- (void)addFlowerCommand
-{
-    //for (int i = 1; i <= 3; i++) {
-        SKSpriteNode *flower = [SKSpriteNode spriteNodeWithImageNamed:@"flower.png"];
-        flower.zPosition = 2;
-        //flower.position = CGPointMake(position * i - position / 2, flower.size.height / 2);
-    flower.position = CGPointMake(self.size.width/2, flower.size.height/2);
-        [self addChild:flower];
-    //}
 }
 
 - (void)didBeginContact:(SKPhysicsContact *)contact
@@ -227,10 +128,10 @@
         
         //the explosion continues, because can kill more than one missile
         NSLog(@"Missile destroyed");
+    
         
-        // Update Missile Exploded
-        missileExploded++;
-        [labelMisslesExploded setText:[NSString stringWithFormat:@"Missiles Exploded: %d",missileExploded]];
+        score = score + 10;
+        [labelScore setText:[NSString stringWithFormat:@"%d", score]];
         
         if(missileExploded == 20){
             SKLabelNode *ganhou = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
@@ -261,63 +162,137 @@
     }
 }
 
+#pragma mark - Game Elements
+
+- (void)addFlowerCommand
+{
+    SKSpriteNode *flower = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(50, 100)];
+    flower.zPosition = 2;
+    flower.scale = deviceScale;
+    
+    flower.position = CGPointMake(self.size.width/2, flower.size.height/2);
+    [self addChild:flower];
+}
+
+- (void)addRocket:(CGPoint)location
+{
+    SKSpriteNode *rocket = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(10, 10)];
+    rocket.zPosition = 1;
+    rocket.scale = deviceScale;
+    rocket.position = CGPointMake(self.size.width/2,110);
+    
+    float duration = location.y *0.001;
+    SKAction *move =[SKAction moveTo:CGPointMake(location.x,location.y) duration:duration];
+    SKAction *remove = [SKAction removeFromParent];
+    
+    // Explosion
+    SKAction *callExplosion = [SKAction runBlock:^{
+        SKSpriteNode *explosion = [SKSpriteNode spriteNodeWithImageNamed:@"explosion"];
+        explosion.zPosition = 0;
+        explosion.scale = 0.2 * deviceScale;
+        explosion.position = CGPointMake(location.x,location.y);
+        explosion.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:explosion.size.height/2];
+        explosion.physicsBody.dynamic = YES;
+        explosion.physicsBody.categoryBitMask = ExplosionCategory;
+        explosion.physicsBody.contactTestBitMask = MissileCategory;
+        explosion.physicsBody.collisionBitMask = 0;
+        SKAction *explosionAction = [SKAction scaleTo:0.5 * deviceScale duration:.6];
+        [explosion runAction:[SKAction sequence:@[explosionAction,remove]]];
+        [self addChild:explosion];
+    }];
+    
+    [rocket runAction:[SKAction sequence:@[move,callExplosion,remove]]];
+    
+    [self addChild:rocket];
+}
+
 - (void)addMonstersBetweenSpace:(int)spaceOrder
 {
-    for (int i = 0; i< 3; i++) {
-        int giveDistanceToMonsters = 60 * i -60;
-        int randomMonster = [self getRandomNumberBetween:0 to:1];
+    for (int i = 0; i< 4; i++) {
         
         SKSpriteNode *monster;
-        CGMutablePathRef path = CGPathCreateMutable();
-        
-        if (randomMonster == 0) {
-            monster = [SKSpriteNode spriteNodeWithImageNamed:@"protectCreature4"];
-            
-            CGFloat offsetX = monster.frame.size.width * monster.anchorPoint.x;
-            CGFloat offsetY = monster.frame.size.height * monster.anchorPoint.y;
-            CGPathMoveToPoint(path, NULL, 10 - offsetX, 1 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 42 - offsetX, 0 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 49 - offsetX, 13 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 51 - offsetX, 29 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 50 - offsetX, 42 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 42 - offsetX, 59 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 29 - offsetX, 67 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 19 - offsetX, 67 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 5 - offsetX, 53 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 0 - offsetX, 34 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 1 - offsetX, 15 - offsetY);
-            CGPathCloseSubpath(path);
-        } else {
-            monster = [SKSpriteNode spriteNodeWithImageNamed:@"protectCreature2"];
-            
-            CGFloat offsetX = monster.frame.size.width * monster.anchorPoint.x;
-            CGFloat offsetY = monster.frame.size.height * monster.anchorPoint.y;
-            CGPathMoveToPoint(path, NULL, 0 - offsetX, 1 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 47 - offsetX, 1 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 47 - offsetX, 24 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 40 - offsetX, 43 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 28 - offsetX, 53 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 19 - offsetX, 53 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 8 - offsetX, 44 - offsetY);
-            CGPathAddLineToPoint(path, NULL, 1 - offsetX, 26 - offsetY);
-            CGPathCloseSubpath(path);
-        }
-        
+        monster = [SKSpriteNode spriteNodeWithColor:[SKColor grayColor] size:CGSizeMake(50, 50)];
+        monster.scale = deviceScale;
         monster.zPosition = 2;
-        monster.position = CGPointMake(position * spaceOrder - giveDistanceToMonsters, monster.size.height / 2);
-        
+    
+        if (i < 2) {
+            monster.position = CGPointMake((self.size.width/4) * i, monster.size.height/2);
+        } else {
+            monster.position = CGPointMake((self.size.width/4) * (i+1), monster.size.height/2);
+        }
+    
         // Add Physics
-        monster.physicsBody = [SKPhysicsBody bodyWithPolygonFromPath:path];
+        monster.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:monster.size];
         monster.physicsBody.dynamic = YES;
         monster.physicsBody.categoryBitMask = MonsterCategory;
         monster.physicsBody.contactTestBitMask = MissileCategory;
         monster.physicsBody.collisionBitMask = 1;
-        monster.zPosition = 2;
-        monster.position = CGPointMake(position * spaceOrder - giveDistanceToMonsters, monster.size.height / 2);
         
         [self addChild:monster];
     }
 }
+
+- (void)addAstroid
+{
+    SKSpriteNode *missile = [SKSpriteNode spriteNodeWithColor:[SKColor greenColor] size:CGSizeMake(20, 20)];
+        missile.scale = deviceScale;
+        missile.zPosition = 1;
+        
+        int startPoint = [self getRandomNumberBetween:0 to:self.size.width];
+        missile.position = CGPointMake(startPoint, self.size.height);
+        
+        missile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:missile.size.height/2];
+        missile.physicsBody.dynamic = NO;
+        missile.physicsBody.categoryBitMask = MissileCategory;
+        missile.physicsBody.contactTestBitMask = ExplosionCategory | MonsterCategory;
+        missile.physicsBody.collisionBitMask = 1;
+        
+        int endPoint = [self getRandomNumberBetween:0 to:self.size.width];
+        
+        SKAction *move =[SKAction moveTo:CGPointMake(endPoint, 0) duration:15];
+        SKAction *remove = [SKAction removeFromParent];
+        [missile runAction:[SKAction sequence:@[move,remove]]];
+        
+        [self addChild:missile];
+}
+
+- (void)addParticleExplosion:(CGPoint)location
+{
+    
+    SKEmitterNode *explosion = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SparkParticles" ofType:@"sks"]];
+    
+    explosion.particlePosition = location;
+    
+    [explosion setParticleColor:[UIColor whiteColor]];
+    [explosion setNumParticlesToEmit:5*deviceScale];
+    [explosion setParticleBirthRate:450];
+    [explosion setParticleLifetime:2];
+    [explosion setEmissionAngleRange:360];
+    [explosion setParticleSpeed:200*deviceScale];
+    [explosion setParticleSpeedRange:1000*deviceScale];
+    [explosion setXAcceleration:0];
+    [explosion setYAcceleration:0];
+    [explosion setParticleAlpha:0.8];
+    [explosion setParticleAlphaRange:0.2];
+    [explosion setParticleAlphaSpeed:-0.5];
+    
+    [explosion setParticleScale:1*deviceScale];
+    [explosion setParticleScaleRange:0];
+    [explosion setParticleScaleSpeed:-0.5];
+    
+    [explosion setParticleRotation:0];
+    [explosion setParticleRotationRange:0];
+    [explosion setParticleRotationSpeed:0];
+    
+    [explosion setParticleColorBlendFactor:1];
+    [explosion setParticleColorBlendFactorRange:0];
+    [explosion setParticleColorBlendFactorSpeed:0];
+    [explosion setParticleBlendMode:SKBlendModeAdd];
+    
+    [self addChild:explosion];
+}
+
+#pragma mark - Transition Methods
 
 - (void)moveToMenu
 {
@@ -326,43 +301,35 @@
     [self.scene.view presentScene:myscene transition:transition];
 }
 
+#pragma mark - Helper Methods
+
+- (double)getRandomDouble
+{
+    return ((double)arc4random() / ARC4RANDOM_MAX);
+}
+
+
 - (int)getRandomNumberBetween:(int)from to:(int)to
 {
     return (int)from + arc4random() % (to - from + 1);
 }
 
-- (void)addMissilesFromSky:(CGSize)size
-{
-    int numberMissiles = [self getRandomNumberBetween:0 to:3];
-    
-    for (int i = 0; i < numberMissiles; i++) {
-        SKSpriteNode *missile;
-        missile = [SKSpriteNode spriteNodeWithImageNamed:@"enemyMissile"];
-        missile.scale = 0.6;
-        missile.zPosition = 1;
-        
-        int startPoint = [self getRandomNumberBetween:0 to:size.width];
-        missile.position = CGPointMake(startPoint, size.height);
-        
-        missile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:missile.size.height/2];
-        missile.physicsBody.dynamic = NO;
-        missile.physicsBody.categoryBitMask = MissileCategory;
-        missile.physicsBody.contactTestBitMask = ExplosionCategory | MonsterCategory;
-        missile.physicsBody.collisionBitMask = 1;
-        
-        int endPoint = [self getRandomNumberBetween:0 to:size.width];
-        
-        SKAction *move =[SKAction moveTo:CGPointMake(endPoint, 0) duration:15];
-        SKAction *remove = [SKAction removeFromParent];
-        [missile runAction:[SKAction sequence:@[move,remove]]];
-        
-        [self addChild:missile];
-    }
-}
-
 - (int)positionOfWhichFlowerShouldBegin:(int)number
 {
     return position * number - position / 2;
+}
+
+- (float)setDeviceScale
+{
+    float scaleTextures;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        scaleTextures = 2.0;
+    } else {
+        scaleTextures = 1.0;
+    }
+    
+    return scaleTextures;
 }
 
 @end

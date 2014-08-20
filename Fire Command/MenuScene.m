@@ -28,6 +28,7 @@
     SKLabelNode *title = [SKLabelNode labelNodeWithFontNamed:@"HelveticaNeue-Bold"];
     title.fontColor = [SKColor whiteColor];
     title.fontSize = 30;
+    title.scale = [self DeviceScale];
     title.text = @"Fire Command";
     title.zPosition = 2;
     //title.scale = 0.4;
@@ -38,6 +39,7 @@
     singlePlayerButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     singlePlayerButton.frame = CGRectMake(self.size.height/8, self.size.width/2+250, buttonImageNormal.size.width, buttonImageNormal.size.height);
     singlePlayerButton.backgroundColor = [UIColor clearColor];
+    //[singlePlayerButton setScale:[self setDeviceScale]];
     [singlePlayerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     UIImage *strechableButtonImageNormal = [buttonImageNormal stretchableImageWithLeftCapWidth:12 topCapHeight:0];
@@ -57,6 +59,21 @@
     
     [singlePlayerButton removeFromSuperview];
     [multiPlayerButton removeFromSuperview];
+}
+
+#pragma mark - Helper Methods
+
+- (float)DeviceScale
+{
+    float scaleTextures;
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        scaleTextures = 2.0;
+    } else {
+        scaleTextures = 1.0;
+    }
+    
+    return scaleTextures;
 }
 
 @end
