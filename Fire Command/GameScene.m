@@ -8,6 +8,7 @@
 
 #import "GameScene.h"
 #import "MenuScene.h"
+#import "GameCenter.h"
 
 #define ARC4RANDOM_MAX 0x100000000
 
@@ -19,7 +20,7 @@ typedef enum : NSUInteger {
 } NodeCategory;
 
 @implementation GameScene {
-    CGSize sizeGlobal;
+    
     
     SKLabelNode *labelflowerBullets1;
     SKLabelNode *labelflowerBullets2;
@@ -44,6 +45,8 @@ typedef enum : NSUInteger {
     
     CFTimeInterval currentTimeStamp;
     CFTimeInterval lastRocketTimeStamp;
+    
+    GameCenter *gameCenter;
 }
 
 -(id)initWithSize:(CGSize)size {    
@@ -51,9 +54,12 @@ typedef enum : NSUInteger {
         
         self.backgroundColor = [SKColor blackColor];
         
+        // enable GameCenter
+        gameCenter = [[GameCenter alloc] init];
+        [gameCenter authenticateLocalPlayer];
+        
         // init first values
         position = size.width/3;
-        sizeGlobal = size;
         score = 0;
         explosionZPosition = 0;
         nextAsteroidTime = 0;
@@ -137,7 +143,7 @@ typedef enum : NSUInteger {
             SKLabelNode *ganhou = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
             ganhou.text = @"You win!";
             ganhou.fontSize = 60;
-            ganhou.position = CGPointMake(sizeGlobal.width/2,sizeGlobal.height/2);
+            ganhou.position = CGPointMake(self.size.width/2,self.size.height/2);
             ganhou.zPosition = 3;
             [self addChild:ganhou];
         }
@@ -154,7 +160,7 @@ typedef enum : NSUInteger {
             SKLabelNode *perdeu = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
             perdeu.text = @"You Lose!";
             perdeu.fontSize = 60;
-            perdeu.position = CGPointMake(sizeGlobal.width/2,sizeGlobal.height/2);
+            perdeu.position = CGPointMake(self.size.width/2,self.size.height/2);
             perdeu.zPosition = 3;
             [self addChild:perdeu];
             [self moveToMenu];
@@ -256,6 +262,8 @@ typedef enum : NSUInteger {
         [self addChild:missile];
 }
 
+#pragma mark - Particles
+
 - (void)addParticleExplosion:(CGPoint)location
 {
     
@@ -296,6 +304,8 @@ typedef enum : NSUInteger {
 
 - (void)moveToMenu
 {
+    [gameCenter reportScore:score];
+    
     SKTransition *transition = [SKTransition fadeWithDuration:2];
     MenuScene *myscene = [[MenuScene alloc] initWithSize:CGSizeMake(CGRectGetMaxX(self.frame), CGRectGetMaxY(self.frame))];
     [self.scene.view presentScene:myscene transition:transition];

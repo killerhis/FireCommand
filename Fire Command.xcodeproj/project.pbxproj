@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4500E72619A79AF4007B3440 /* nuclear_explosion.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 4500E72519A79AF4007B3440 /* nuclear_explosion.atlas */; };
+		4500E72819A79C7C007B3440 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4500E72719A79C7C007B3440 /* spark.png */; };
+		4500E72A19A7A45F007B3440 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500E72919A7A45F007B3440 /* GameKit.framework */; };
+		4500E72D19A7DE80007B3440 /* GameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4500E72C19A7DE80007B3440 /* GameCenter.m */; };
 		458DFFC319A501E50043EF9C /* SparkParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 458DFFC119A501E50043EF9C /* SparkParticles.sks */; };
-		458DFFCD19A512180043EF9C /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 458DFFCC19A512180043EF9C /* spark.png */; };
 		45F1F4B619A3E98400EEB990 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B519A3E98400EEB990 /* Foundation.framework */; };
 		45F1F4B819A3E98400EEB990 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B719A3E98400EEB990 /* CoreGraphics.framework */; };
 		45F1F4BA19A3E98400EEB990 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B919A3E98400EEB990 /* UIKit.framework */; };
@@ -20,22 +23,14 @@
 		45F1F4CE19A3E98400EEB990 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4CC19A3E98400EEB990 /* Main_iPad.storyboard */; };
 		45F1F4D119A3E98400EEB990 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F1F4D019A3E98400EEB990 /* ViewController.m */; };
 		45F1F4D419A3E98400EEB990 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F1F4D319A3E98400EEB990 /* GameScene.m */; };
-		45F1F4D619A3E98400EEB990 /* Spaceship.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4D519A3E98400EEB990 /* Spaceship.png */; };
 		45F1F4D819A3E98400EEB990 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4D719A3E98400EEB990 /* Images.xcassets */; };
 		45F1F4DF19A3E98400EEB990 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4DE19A3E98400EEB990 /* XCTest.framework */; };
 		45F1F4E019A3E98400EEB990 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B519A3E98400EEB990 /* Foundation.framework */; };
 		45F1F4E119A3E98400EEB990 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B919A3E98400EEB990 /* UIKit.framework */; };
 		45F1F4E919A3E98400EEB990 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4E719A3E98400EEB990 /* InfoPlist.strings */; };
 		45F1F4EB19A3E98400EEB990 /* Fire_CommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F1F4EA19A3E98400EEB990 /* Fire_CommandTests.m */; };
-		45F1F4FF19A3F07100EEB990 /* enemyMissile.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4F619A3F07100EEB990 /* enemyMissile.png */; };
 		45F1F50019A3F07100EEB990 /* explosion.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4F719A3F07100EEB990 /* explosion.png */; };
-		45F1F50119A3F07100EEB990 /* flower.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4F819A3F07100EEB990 /* flower.png */; };
-		45F1F50219A3F07100EEB990 /* flowerBullet.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4F919A3F07100EEB990 /* flowerBullet.png */; };
-		45F1F50319A3F07100EEB990 /* multiBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4FA19A3F07100EEB990 /* multiBtn.png */; };
-		45F1F50419A3F07100EEB990 /* protectCreature2.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4FB19A3F07100EEB990 /* protectCreature2.png */; };
-		45F1F50519A3F07100EEB990 /* protectCreature4.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4FC19A3F07100EEB990 /* protectCreature4.png */; };
 		45F1F50619A3F07100EEB990 /* singleBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4FD19A3F07100EEB990 /* singleBtn.png */; };
-		45F1F50719A3F07100EEB990 /* title.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F1F4FE19A3F07100EEB990 /* title.png */; };
 		45F1F50A19A3F44A00EEB990 /* MenuScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F1F50919A3F44A00EEB990 /* MenuScene.m */; };
 /* End PBXBuildFile section */
 
@@ -50,8 +45,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4500E72519A79AF4007B3440 /* nuclear_explosion.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = nuclear_explosion.atlas; sourceTree = "<group>"; };
+		4500E72719A79C7C007B3440 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
+		4500E72919A7A45F007B3440 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		4500E72B19A7DE80007B3440 /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenter.h; sourceTree = "<group>"; };
+		4500E72C19A7DE80007B3440 /* GameCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenter.m; sourceTree = "<group>"; };
 		458DFFC119A501E50043EF9C /* SparkParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SparkParticles.sks; sourceTree = "<group>"; };
-		458DFFCC19A512180043EF9C /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		45F1F4B219A3E98400EEB990 /* Fire Command.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fire Command.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45F1F4B519A3E98400EEB990 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		45F1F4B719A3E98400EEB990 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -69,22 +68,14 @@
 		45F1F4D019A3E98400EEB990 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		45F1F4D219A3E98400EEB990 /* GameScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
 		45F1F4D319A3E98400EEB990 /* GameScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameScene.m; sourceTree = "<group>"; };
-		45F1F4D519A3E98400EEB990 /* Spaceship.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Spaceship.png; sourceTree = "<group>"; };
 		45F1F4D719A3E98400EEB990 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		45F1F4DD19A3E98400EEB990 /* Fire CommandTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fire CommandTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45F1F4DE19A3E98400EEB990 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		45F1F4E619A3E98400EEB990 /* Fire CommandTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Fire CommandTests-Info.plist"; sourceTree = "<group>"; };
 		45F1F4E819A3E98400EEB990 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		45F1F4EA19A3E98400EEB990 /* Fire_CommandTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Fire_CommandTests.m; sourceTree = "<group>"; };
-		45F1F4F619A3F07100EEB990 /* enemyMissile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = enemyMissile.png; sourceTree = "<group>"; };
 		45F1F4F719A3F07100EEB990 /* explosion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = explosion.png; sourceTree = "<group>"; };
-		45F1F4F819A3F07100EEB990 /* flower.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flower.png; sourceTree = "<group>"; };
-		45F1F4F919A3F07100EEB990 /* flowerBullet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flowerBullet.png; sourceTree = "<group>"; };
-		45F1F4FA19A3F07100EEB990 /* multiBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = multiBtn.png; sourceTree = "<group>"; };
-		45F1F4FB19A3F07100EEB990 /* protectCreature2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = protectCreature2.png; sourceTree = "<group>"; };
-		45F1F4FC19A3F07100EEB990 /* protectCreature4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = protectCreature4.png; sourceTree = "<group>"; };
 		45F1F4FD19A3F07100EEB990 /* singleBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = singleBtn.png; sourceTree = "<group>"; };
-		45F1F4FE19A3F07100EEB990 /* title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = title.png; sourceTree = "<group>"; };
 		45F1F50819A3F44A00EEB990 /* MenuScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuScene.h; sourceTree = "<group>"; };
 		45F1F50919A3F44A00EEB990 /* MenuScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuScene.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -98,6 +89,7 @@
 				45F1F4BA19A3E98400EEB990 /* UIKit.framework in Frameworks */,
 				45F1F4BC19A3E98400EEB990 /* SpriteKit.framework in Frameworks */,
 				45F1F4B619A3E98400EEB990 /* Foundation.framework in Frameworks */,
+				4500E72A19A7A45F007B3440 /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,7 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				458DFFC119A501E50043EF9C /* SparkParticles.sks */,
-				458DFFCC19A512180043EF9C /* spark.png */,
+				4500E72719A79C7C007B3440 /* spark.png */,
 			);
 			name = Particles;
 			sourceTree = "<group>";
@@ -145,6 +137,7 @@
 		45F1F4B419A3E98400EEB990 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4500E72919A7A45F007B3440 /* GameKit.framework */,
 				45F1F4B519A3E98400EEB990 /* Foundation.framework */,
 				45F1F4B719A3E98400EEB990 /* CoreGraphics.framework */,
 				45F1F4B919A3E98400EEB990 /* UIKit.framework */,
@@ -167,7 +160,8 @@
 				45F1F4D319A3E98400EEB990 /* GameScene.m */,
 				45F1F50819A3F44A00EEB990 /* MenuScene.h */,
 				45F1F50919A3F44A00EEB990 /* MenuScene.m */,
-				45F1F4D519A3E98400EEB990 /* Spaceship.png */,
+				4500E72B19A7DE80007B3440 /* GameCenter.h */,
+				4500E72C19A7DE80007B3440 /* GameCenter.m */,
 				45F1F4D719A3E98400EEB990 /* Images.xcassets */,
 				45F1F4F419A3F05300EEB990 /* Resources */,
 				45F1F4BE19A3E98400EEB990 /* Supporting Files */,
@@ -216,15 +210,9 @@
 		45F1F4F519A3F06000EEB990 /* Game Elements */ = {
 			isa = PBXGroup;
 			children = (
-				45F1F4F619A3F07100EEB990 /* enemyMissile.png */,
+				4500E72519A79AF4007B3440 /* nuclear_explosion.atlas */,
 				45F1F4F719A3F07100EEB990 /* explosion.png */,
-				45F1F4F819A3F07100EEB990 /* flower.png */,
-				45F1F4F919A3F07100EEB990 /* flowerBullet.png */,
-				45F1F4FA19A3F07100EEB990 /* multiBtn.png */,
-				45F1F4FB19A3F07100EEB990 /* protectCreature2.png */,
-				45F1F4FC19A3F07100EEB990 /* protectCreature4.png */,
 				45F1F4FD19A3F07100EEB990 /* singleBtn.png */,
-				45F1F4FE19A3F07100EEB990 /* title.png */,
 			);
 			name = "Game Elements";
 			sourceTree = "<group>";
@@ -276,6 +264,14 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Hicham Chourak";
 				TargetAttributes = {
+					45F1F4B119A3E98400EEB990 = {
+						DevelopmentTeam = TF9VESMTKV;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 1;
+							};
+						};
+					};
 					45F1F4DC19A3E98400EEB990 = {
 						TestTargetID = 45F1F4B119A3E98400EEB990;
 					};
@@ -305,22 +301,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45F1F4D619A3E98400EEB990 /* Spaceship.png in Resources */,
 				45F1F4D819A3E98400EEB990 /* Images.xcassets in Resources */,
-				45F1F50719A3F07100EEB990 /* title.png in Resources */,
-				45F1F50319A3F07100EEB990 /* multiBtn.png in Resources */,
-				45F1F50419A3F07100EEB990 /* protectCreature2.png in Resources */,
 				45F1F4CE19A3E98400EEB990 /* Main_iPad.storyboard in Resources */,
 				45F1F4CB19A3E98400EEB990 /* Main_iPhone.storyboard in Resources */,
-				45F1F50119A3F07100EEB990 /* flower.png in Resources */,
 				45F1F4C219A3E98400EEB990 /* InfoPlist.strings in Resources */,
+				4500E72819A79C7C007B3440 /* spark.png in Resources */,
 				45F1F50619A3F07100EEB990 /* singleBtn.png in Resources */,
 				45F1F50019A3F07100EEB990 /* explosion.png in Resources */,
-				45F1F4FF19A3F07100EEB990 /* enemyMissile.png in Resources */,
-				45F1F50219A3F07100EEB990 /* flowerBullet.png in Resources */,
-				458DFFCD19A512180043EF9C /* spark.png in Resources */,
+				4500E72619A79AF4007B3440 /* nuclear_explosion.atlas in Resources */,
 				458DFFC319A501E50043EF9C /* SparkParticles.sks in Resources */,
-				45F1F50519A3F07100EEB990 /* protectCreature4.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,6 +330,7 @@
 			files = (
 				45F1F4D419A3E98400EEB990 /* GameScene.m in Sources */,
 				45F1F50A19A3F44A00EEB990 /* MenuScene.m in Sources */,
+				4500E72D19A7DE80007B3440 /* GameCenter.m in Sources */,
 				45F1F4D119A3E98400EEB990 /* ViewController.m in Sources */,
 				45F1F4C819A3E98400EEB990 /* AppDelegate.m in Sources */,
 				45F1F4C419A3E98400EEB990 /* main.m in Sources */,
@@ -478,10 +468,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Fire Command/Fire Command-Prefix.pch";
 				INFOPLIST_FILE = "Fire Command/Fire Command-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -492,10 +485,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Fire Command/Fire Command-Prefix.pch";
 				INFOPLIST_FILE = "Fire Command/Fire Command-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
 				WRAPPER_EXTENSION = app;
 			};

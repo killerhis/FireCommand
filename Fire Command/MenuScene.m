@@ -8,10 +8,12 @@
 
 #import "MenuScene.h"
 #import "GameScene.h"
+#import "GameCenter.h"
 
 @implementation MenuScene {
     UIButton *singlePlayerButton;
     UIButton *multiPlayerButton;
+    GameCenter *gameCenter;
 }
 
 - (id)initWithSize:(CGSize)size
@@ -25,6 +27,10 @@
 
 - (void)didMoveToView:(SKView *)view
 {
+    // Enable GameCenter
+    gameCenter = [[GameCenter alloc] init];
+    [gameCenter authenticateLocalPlayer];
+    
     SKLabelNode *title = [SKLabelNode labelNodeWithFontNamed:@"HelveticaNeue-Bold"];
     title.fontColor = [SKColor whiteColor];
     title.fontSize = 30;
