@@ -54,6 +54,10 @@ typedef enum : NSUInteger {
         
         self.backgroundColor = [SKColor blackColor];
         
+        [self addGroundExplosion:1];
+        [self addGroundExplosion:3];
+        [self addGroundExplosion:5];
+        [self addGroundExplosion:7];
         // enable GameCenter
         gameCenter = [[GameCenter alloc] init];
         [gameCenter authenticateLocalPlayer];
@@ -260,6 +264,34 @@ typedef enum : NSUInteger {
         [missile runAction:[SKAction sequence:@[move,remove]]];
         
         [self addChild:missile];
+}
+
+- (void)addGroundExplosion:(int)ExplosionPosition
+{
+    NSMutableArray *frames = [NSMutableArray array];
+    SKTextureAtlas *nuclearExplosionAtlas = [SKTextureAtlas atlasNamed:@"nuclear_explosion"];
+    
+    int framesCount = nuclearExplosionAtlas.textureNames.count;
+    for (int i=0; i < framesCount; i++) {
+        NSString *textureName = [NSString stringWithFormat:@"nuclear_explosion_%d", i];
+        SKTexture *texture = [nuclearExplosionAtlas textureNamed:textureName];
+        [frames addObject:texture];
+    }
+    
+    NSArray *textureFrames = frames;
+
+    SKSpriteNode *nuclearExplosion = [SKSpriteNode spriteNodeWithTexture:textureFrames[0]];
+    
+    nuclearExplosion.position = CGPointMake((self.size.width/8)*ExplosionPosition, nuclearExplosion.size.height/2);
+    nuclearExplosion.zPosition = 20;
+    
+    [nuclearExplosion runAction:[SKAction repeatActionForever:
+                      [SKAction animateWithTextures:textureFrames
+                                       timePerFrame:0.07f
+                                             resize:NO
+                                            restore:YES]]];
+    
+    [self addChild:nuclearExplosion];
 }
 
 #pragma mark - Particles
