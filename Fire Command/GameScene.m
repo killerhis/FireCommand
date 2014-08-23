@@ -9,6 +9,7 @@
 #import "GameScene.h"
 #import "MenuScene.h"
 #import "GameCenter.h"
+#import "GAIDictionaryBuilder.h"
 
 #define ARC4RANDOM_MAX 0x100000000
 
@@ -51,6 +52,11 @@ typedef enum : NSUInteger {
 
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
+        
+        // GA
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"GameScene"];
+        [tracker send:[[GAIDictionaryBuilder createAppView] build]];
         
         self.backgroundColor = [SKColor blackColor];
         
@@ -281,7 +287,7 @@ typedef enum : NSUInteger {
     NSArray *textureFrames = frames;
 
     SKSpriteNode *nuclearExplosion = [SKSpriteNode spriteNodeWithTexture:textureFrames[0]];
-    
+    nuclearExplosion.scale = 2.0;
     nuclearExplosion.position = CGPointMake((self.size.width/8)*ExplosionPosition, nuclearExplosion.size.height/2);
     nuclearExplosion.zPosition = 20;
     

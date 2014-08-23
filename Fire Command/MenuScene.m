@@ -9,6 +9,7 @@
 #import "MenuScene.h"
 #import "GameScene.h"
 #import "GameCenter.h"
+#import "GAIDictionaryBuilder.h"
 
 @implementation MenuScene {
     UIButton *singlePlayerButton;
@@ -27,6 +28,11 @@
 
 - (void)didMoveToView:(SKView *)view
 {
+    // GA
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"StartMenu"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+    
     // Enable GameCenter
     gameCenter = [[GameCenter alloc] init];
     [gameCenter authenticateLocalPlayer];

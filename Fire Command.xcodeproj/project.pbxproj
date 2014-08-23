@@ -11,6 +11,10 @@
 		4500E72819A79C7C007B3440 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4500E72719A79C7C007B3440 /* spark.png */; };
 		4500E72A19A7A45F007B3440 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500E72919A7A45F007B3440 /* GameKit.framework */; };
 		4500E72D19A7DE80007B3440 /* GameCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4500E72C19A7DE80007B3440 /* GameCenter.m */; };
+		4500E73A19A81C00007B3440 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500E73919A81C00007B3440 /* CoreData.framework */; };
+		4500E73C19A81C27007B3440 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500E73B19A81C27007B3440 /* SystemConfiguration.framework */; };
+		4500E73E19A81C36007B3440 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500E73D19A81C36007B3440 /* libz.dylib */; };
+		4500E74019A81C65007B3440 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4500E73F19A81C65007B3440 /* libGoogleAnalyticsServices.a */; };
 		458DFFC319A501E50043EF9C /* SparkParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 458DFFC119A501E50043EF9C /* SparkParticles.sks */; };
 		45F1F4B619A3E98400EEB990 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B519A3E98400EEB990 /* Foundation.framework */; };
 		45F1F4B819A3E98400EEB990 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B719A3E98400EEB990 /* CoreGraphics.framework */; };
@@ -50,6 +54,20 @@
 		4500E72919A7A45F007B3440 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		4500E72B19A7DE80007B3440 /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenter.h; sourceTree = "<group>"; };
 		4500E72C19A7DE80007B3440 /* GameCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenter.m; sourceTree = "<group>"; };
+		4500E72F19A81B9C007B3440 /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
+		4500E73019A81B9C007B3440 /* GAIDictionaryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIDictionaryBuilder.h; sourceTree = "<group>"; };
+		4500E73119A81B9C007B3440 /* GAIEcommerceFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIEcommerceFields.h; sourceTree = "<group>"; };
+		4500E73219A81B9C007B3440 /* GAIEcommerceProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIEcommerceProduct.h; sourceTree = "<group>"; };
+		4500E73319A81B9C007B3440 /* GAIEcommerceProductAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIEcommerceProductAction.h; sourceTree = "<group>"; };
+		4500E73419A81B9C007B3440 /* GAIEcommercePromotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIEcommercePromotion.h; sourceTree = "<group>"; };
+		4500E73519A81B9C007B3440 /* GAIFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIFields.h; sourceTree = "<group>"; };
+		4500E73619A81B9C007B3440 /* GAILogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAILogger.h; sourceTree = "<group>"; };
+		4500E73719A81B9C007B3440 /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
+		4500E73819A81B9C007B3440 /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
+		4500E73919A81C00007B3440 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		4500E73B19A81C27007B3440 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		4500E73D19A81C36007B3440 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		4500E73F19A81C65007B3440 /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
 		458DFFC119A501E50043EF9C /* SparkParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SparkParticles.sks; sourceTree = "<group>"; };
 		45F1F4B219A3E98400EEB990 /* Fire Command.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fire Command.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45F1F4B519A3E98400EEB990 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -85,6 +103,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4500E73E19A81C36007B3440 /* libz.dylib in Frameworks */,
+				4500E73C19A81C27007B3440 /* SystemConfiguration.framework in Frameworks */,
+				4500E74019A81C65007B3440 /* libGoogleAnalyticsServices.a in Frameworks */,
+				4500E73A19A81C00007B3440 /* CoreData.framework in Frameworks */,
 				45F1F4B819A3E98400EEB990 /* CoreGraphics.framework in Frameworks */,
 				45F1F4BA19A3E98400EEB990 /* UIKit.framework in Frameworks */,
 				45F1F4BC19A3E98400EEB990 /* SpriteKit.framework in Frameworks */,
@@ -106,6 +128,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4500E72E19A81B9C007B3440 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				4500E72F19A81B9C007B3440 /* GAI.h */,
+				4500E73019A81B9C007B3440 /* GAIDictionaryBuilder.h */,
+				4500E73119A81B9C007B3440 /* GAIEcommerceFields.h */,
+				4500E73219A81B9C007B3440 /* GAIEcommerceProduct.h */,
+				4500E73319A81B9C007B3440 /* GAIEcommerceProductAction.h */,
+				4500E73419A81B9C007B3440 /* GAIEcommercePromotion.h */,
+				4500E73519A81B9C007B3440 /* GAIFields.h */,
+				4500E73619A81B9C007B3440 /* GAILogger.h */,
+				4500E73719A81B9C007B3440 /* GAITrackedViewController.h */,
+				4500E73819A81B9C007B3440 /* GAITracker.h */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
 		458DFFC519A501F70043EF9C /* Particles */ = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +176,10 @@
 		45F1F4B419A3E98400EEB990 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4500E73F19A81C65007B3440 /* libGoogleAnalyticsServices.a */,
+				4500E73D19A81C36007B3440 /* libz.dylib */,
+				4500E73B19A81C27007B3440 /* SystemConfiguration.framework */,
+				4500E73919A81C00007B3440 /* CoreData.framework */,
 				4500E72919A7A45F007B3440 /* GameKit.framework */,
 				45F1F4B519A3E98400EEB990 /* Foundation.framework */,
 				45F1F4B719A3E98400EEB990 /* CoreGraphics.framework */,
@@ -163,6 +206,7 @@
 				4500E72B19A7DE80007B3440 /* GameCenter.h */,
 				4500E72C19A7DE80007B3440 /* GameCenter.m */,
 				45F1F4D719A3E98400EEB990 /* Images.xcassets */,
+				4500E72E19A81B9C007B3440 /* Library */,
 				45F1F4F419A3F05300EEB990 /* Resources */,
 				45F1F4BE19A3E98400EEB990 /* Supporting Files */,
 			);
@@ -473,6 +517,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Fire Command/Fire Command-Prefix.pch";
 				INFOPLIST_FILE = "Fire Command/Fire Command-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
@@ -490,6 +538,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Fire Command/Fire Command-Prefix.pch";
 				INFOPLIST_FILE = "Fire Command/Fire Command-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
