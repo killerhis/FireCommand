@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <SpriteKit/SpriteKit.h>
+#import "GameCenterManager.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <GameCenterManagerDelegate>
+
+@property (nonatomic, strong) SKView *skView;
 
 @end

@@ -8,24 +8,58 @@
 
 #import "ViewController.h"
 #import "MenuScene.h"
+#import <SpriteKit/SpriteKit.h>
 
-@implementation ViewController
+@implementation ViewController {
+    NSString *_leaderboardIdentifier;
+    BOOL _gameCenterEnabled;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    //Game Center
+    [[GameCenterManager sharedManager] setDelegate:self];
+    
+    
+
+    
+        /*GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
+        
+        localPlayer.authenticateHandler = ^(UIViewController * viewController, NSError *error) {
+            if (viewController != nil) {
+                [(ViewController *)self.view.window.rootViewController presentViewController: viewController animated:YES completion:nil];
+                NSLog(@"Load login viewcontroller");
+            } else {
+                if ([GKLocalPlayer localPlayer].authenticated) {
+                    _gameCenterEnabled = YES;
+                    
+                    [[GKLocalPlayer localPlayer] loadDefaultLeaderboardIdentifierWithCompletionHandler:^(NSString *leaderboardIdentifier, NSError *error) {
+                        
+                        if (error !=nil) {
+                            NSLog(@"%@", [error localizedDescription]);
+                        } else {
+                            _leaderboardIdentifier = leaderboardIdentifier;
+                            NSLog(@"leaderboardID:'%@'", leaderboardIdentifier);
+                        }
+                    }];
+                } else {
+                    _gameCenterEnabled = NO;
+                }
+            }
+            
+        };*/
+    
     // Configure the view.
-    SKView * skView = (SKView *)self.view;
-    skView.showsFPS = YES;
-    skView.showsNodeCount = YES;
+    self.skView = (SKView *)self.view;
     
     // Create and configure the scene.
-    SKScene * scene = [MenuScene sceneWithSize:skView.bounds.size];
+    SKScene * scene = [MenuScene sceneWithSize:self.skView.bounds.size];
     scene.scaleMode = SKSceneScaleModeAspectFill;
     
     // Present the scene.
-    [skView presentScene:scene];
+    [self.skView presentScene:scene];
     
     
 }
@@ -48,8 +82,21 @@
 {
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.
+    NSLog(@"MEMORY WARMING!");
 }
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+#pragma mark - GameCenterManagerDelegate
+
+- (void)gameCenterManager:(GameCenterManager *)manager authenticateUser:(UIViewController *)gameCenterLoginController {
+    [self presentViewController:gameCenterLoginController animated:YES completion:^{
+        NSLog(@"Done presenting gamecenter");
+    }];
+    NSLog(@"Busy Presenting");
+}
 
 
 @end

@@ -7,18 +7,40 @@
 //
 
 #import "GameScene.h"
-#import "MenuScene.h"
-#import "GameCenter.h"
-#import "GAIDictionaryBuilder.h"
+#import "ViewController.h"
+//#import "GAIDictionaryBuilder.h"
+#import <ObjectAL/ObjectAL.h>
+#import "GameCenterManager.h"
+
+#define MainTrackFileName @"game-music.caf"
+#define GameOverTrackFileName @"game-over-music.caf"
 
 #define ARC4RANDOM_MAX 0x100000000
 
+static float rocketReloadTime = 0.3;
+
 typedef enum : NSUInteger {
     ExplosionCategory = (1 << 0),
-    MissileCategory = (1 << 1),
-    MonsterCategory = (1 << 2),
-    BaseCategory = (1 << 3)
+    AsteroidCategory = (1 << 1),
+    BuildingCategory = (1 << 2)
 } NodeCategory;
+
+@interface GameScene ()
+
+@property (strong, nonatomic) SKSpriteNode *rocket;
+@property (strong, nonatomic) SKSpriteNode *scoreBar;
+
+@property(nonatomic, readwrite, retain) ALBuffer* gameOverBuffer;
+@property(nonatomic, readwrite, retain) ALBuffer* mainBuffer;
+@property(nonatomic, readwrite, retain) ALSource* source;
+
+@property(nonatomic, readwrite, retain) OALAudioTrack* mainTrack;
+@property(nonatomic, readwrite, retain) OALAudioTrack* gameOverTrack;
+@property(nonatomic, readwrite, retain) OALAudioTrack* asteroidExplosionSFX;
+@property(nonatomic, readwrite, retain) OALAudioTrack* rocketExplosionSFX;
+@property(nonatomic, readwrite, retain) OALAudioTrack* nuclearSFX;
+@property(nonatomic, readwrite, retain) OALAudioTrack* fireRocketSFX;
+@end
 
 @implementation GameScene {
     
@@ -30,7 +52,7 @@ typedef enum : NSUInteger {
     SKLabelNode *labelScore;
     
     int position;
-    int monstersDead;
+    int _buildingDestroyed;
     int missileExploded;
     int score;
     int explosionZPosition;
@@ -47,28 +69,48 @@ typedef enum : NSUInteger {
     CFTimeInterval currentTimeStamp;
     CFTimeInterval lastRocketTimeStamp;
     
-    GameCenter *gameCenter;
+    NSArray *_numbers;
+    
+    SKNode *_pauseScreen;
+    SKNode *_gameOverScreen;
+    
+    SKSpriteNode *_asteroid;
+    SKSpriteNode *_nuclearExplosion;
+    SKSpriteNode *_explosion;
+    
+    BOOL _gamePaused;
+    BOOL _gameMute;
+    BOOL _gameOver;
+    
+    NSUserDefaults *_defaults;
+    
+    ALDevice* device;
+    ALContext* context;
 }
 
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
         
         // GA
-        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-        [tracker set:kGAIScreenName value:@"GameScene"];
-        [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+        //id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        //[tracker set:kGAIScreenName value:@"GameScene"];
+        //[tracker send:[[GAIDictionaryBuilder createAppView] build]];        
+        
+        // Play Music
+        [self initAudio];
+        _defaults = [NSUserDefaults standardUserDefaults];
+        _gameMute = [_defaults boolForKey:@"gameMute"];
+
+        //_gameMute = NO;
+        [self playMainMusic:_gameMute];
+        
+        _gameOver = NO;
         
         self.backgroundColor = [SKColor blackColor];
-        
-        [self addGroundExplosion:1];
-        [self addGroundExplosion:3];
-        [self addGroundExplosion:5];
-        [self addGroundExplosion:7];
-        // enable GameCenter
-        gameCenter = [[GameCenter alloc] init];
-        [gameCenter authenticateLocalPlayer];
+        self.scoreBar = [[SKSpriteNode alloc] init];
         
         // init first values
+        _buildingDestroyed = 0;
         position = size.width/3;
         score = 0;
         explosionZPosition = 0;
@@ -76,15 +118,22 @@ typedef enum : NSUInteger {
         levelMultiplier = 5;
         lastRocketTimeStamp = 0;
         deviceScale = [self setDeviceScale];
+        _gamePaused = NO;
+        
+        // load elements
+        [self generateNumbersArray];
+        
         
         // add Screen Elements
         [self addHud];
-  
-        [self addFlowerCommand];
+        [self addPauseButton];
+        [self updateScore:0];
+        [self addLaunchPad];
         
-        [self addMonstersBetweenSpace:1];
-        [self addMonstersBetweenSpace:2];
+        [self addBuildings:1];
+        [self addBuildings:2];
         
+        [self addBottomEdge];
          // setup physics
         self.physicsWorld.gravity = CGVectorMake(0, 0);
         self.physicsWorld.contactDelegate = self;
@@ -110,26 +159,186 @@ typedef enum : NSUInteger {
 
 - (void)addHud
 {
-    labelScore = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
-    labelScore.text = [NSString stringWithFormat:@"%d", score];
-    labelScore.fontSize = 30;
-    labelScore.position = CGPointMake(self.size.width/2, self.size.height-self.size.height/8);
+    
+    labelScore = [SKLabelNode labelNodeWithFontNamed:@"Disorient Pixels"];
+    NSLog(@"1");
+    labelScore.text = [NSString stringWithFormat:@"0"];
+    NSLog(@"2");
+    labelScore.fontSize = 26;
+    labelScore.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
+    
+    labelScore.position = CGPointMake(self.size.width/2 + 20, self.size.height-labelScore.frame.size.height);
     labelScore.zPosition = 3;
+    
+    
     [self addChild:labelScore];
 }
+
+- (void)updateScore:(int)addScore
+{
+        score = score + addScore;
+        [labelScore setText:[NSString stringWithFormat:@"%d", score]];
+        //[self updateScoreHud:score];
+}
+
+- (void)updateScoreHud:(int)value
+{
+    [self.scoreBar runAction:[SKAction removeFromParent]];
+    
+for (int i = 0; i <= 6; i++) {
+        
+        int number = value / pow(10,(6-i));
+        value = value - (number*pow(10,(6-i)));
+        
+        SKSpriteNode *scoreTile = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(8, 13)];
+        
+        SKTexture *scoreTileText = _numbers[number];
+        scoreTileText.filteringMode = SKTextureFilteringNearest;
+        
+        SKSpriteNode *scoreTileTexture = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
+        scoreTileTexture.zPosition = 100;;
+        [scoreTile addChild:scoreTileTexture];
+        
+        scoreTile.position = CGPointMake(self.size.width/2 + (11*i), self.size.height - scoreTile.size.height/2);
+        
+        [self.scoreBar addChild:scoreTile];
+    }
+    [self addChild:self.scoreBar];
+}
+
+- (void)addPauseButton
+{
+    SKSpriteNode *pauseButton = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(26, 26)];
+    
+    SKTexture *pauseButtonText = [SKTexture textureWithImageNamed:@"pausebutton.png"];
+    pauseButtonText.filteringMode = SKTextureFilteringNearest;
+    
+    SKSpriteNode *pauseButtonTexture = [SKSpriteNode spriteNodeWithTexture:pauseButtonText];
+    pauseButtonTexture.zPosition = 100;;
+    pauseButtonTexture.name = @"pauseButton";
+    [pauseButton addChild:pauseButtonTexture];
+    
+    pauseButton.position = CGPointMake(self.size.width/2, self.size.height - pauseButton.size.height/2);
+    pauseButton.zPosition = 100;
+    [self addChild:pauseButton];
+}
+
+- (void)showPauseScreen:(BOOL)show
+{
+    if (show) {
+        _gamePaused = YES;
+        _pauseScreen = [[SKNode alloc] init];
+        _pauseScreen.zPosition = 100;
+        _pauseScreen.name = @"pauseScreen";
+        _pauseScreen.position = CGPointMake(self.size.width/2, self.size.height*1.5);
+        
+        SKSpriteNode *title = [SKSpriteNode spriteNodeWithColor:[SKColor grayColor] size:CGSizeMake(100, 50)];
+        title.position = CGPointMake(0, 50);
+        [_pauseScreen addChild:title];
+        
+        SKSpriteNode *resumeButton = [SKSpriteNode spriteNodeWithColor:[SKColor grayColor] size:CGSizeMake(100, 50)];
+        resumeButton.position = CGPointMake(0, -50);
+        resumeButton.name = @"resumeButton";
+        [_pauseScreen addChild:resumeButton];
+        
+        SKSpriteNode *muteButton = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100, 50)];
+        muteButton.position = CGPointMake(0, -150);
+        muteButton.name = @"muteButton";
+        [_pauseScreen addChild:muteButton];
+        
+        [_pauseScreen runAction:[SKAction moveToY:self.size.height/2 duration:0.2] completion:^{
+            self.view.paused = YES;
+        }];
+        
+        [self addChild:_pauseScreen];
+        
+    } else {
+        _gamePaused = NO;
+        self.view.paused = NO;
+        SKAction *move = [SKAction moveToY:self.size.height*1.5 duration:0.5];
+        SKAction *remove = [SKAction removeFromParent];
+        
+        [_pauseScreen runAction:[SKAction sequence:@[move,remove]]];
+    }
+}
+
+- (void)gameOverScreen
+{
+    [self stopBackgroundMusic];
+    [self playGameOverMusic:_gameMute];
+    int bestScore = [self saveScore];
+    NSLog(@"Score: %i", score);
+    NSLog(@"BestScore %i", bestScore);
+    
+    // mute SFX
+    [self muteSFX:0];
+    
+    _gameOverScreen = [[SKNode alloc] init];
+    _gameOverScreen.zPosition = 100;
+    _gameOverScreen.name = @"gameOverScreen";
+    _gameOverScreen.position = CGPointMake(self.size.width/2, self.size.height*1.5);
+    
+    SKSpriteNode *title = [SKSpriteNode spriteNodeWithColor:[SKColor grayColor] size:CGSizeMake(100, 50)];
+    title.position = CGPointMake(0, 50);
+    [_gameOverScreen addChild:title];
+    
+    SKSpriteNode *resumeButton = [SKSpriteNode spriteNodeWithColor:[SKColor grayColor] size:CGSizeMake(100, 50)];
+    resumeButton.position = CGPointMake(0, -50);
+    resumeButton.name = @"replayButton";
+    [_gameOverScreen addChild:resumeButton];
+    
+    SKSpriteNode *muteButton = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100, 50)];
+    muteButton.position = CGPointMake(0, -150);
+    muteButton.name = @"gameOverMuteButton";
+    [_gameOverScreen addChild:muteButton];
+    
+    [_gameOverScreen runAction:[SKAction moveToY:self.size.height/2 duration:0.2]];
+    
+    [self addChild:_gameOverScreen];
+    
+    SKSpriteNode *grayBackground = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:self.size];
+    grayBackground.zPosition = 90;
+    grayBackground.alpha = 0.0;
+    grayBackground.position = CGPointMake(self.size.width/2, self.size.height/2);
+    
+    SKAction *opacity = [SKAction fadeAlphaTo:0.7 duration:0.2];
+    [grayBackground runAction:opacity];
+    [self addChild:grayBackground];
+}
+
 
 #pragma mark - Touch Methods
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
         CGPoint location = [touch locationInNode:self];
+        SKNode *node = [self nodeAtPoint:location];
         
-        // Return if User Taps Below a Flower
-        if (location.y < 120) return;
-
-        if (fabsf(currentTimeStamp - lastRocketTimeStamp) > 0.3) {
-            [self addRocket:location];
-            [self addParticleExplosion:location];
+        NSLog(@"node: %@", node.name);
+        
+        if (location.y < 60) return;
+        
+        if ([node.name isEqualToString:@"pauseButton"] && !_gameOver) {
+            [self pauseGame];
+            
+        } else if ([node.name isEqualToString:@"resumeButton"] && !_gameOver) {
+            [self pauseGame];
+        } else if ([node.name isEqualToString:@"replayButton"]) {
+            [self replayGame];
+        } else if ([node.name isEqualToString:@"muteButton"]) {
+            if (!_gameMute) {
+                [self muteSound:YES forScreen:1];
+            } else {
+                [self muteSound:NO forScreen:1];
+            }
+        } else if ([node.name isEqualToString:@"gameOverMuteButton"]) {
+            if (!_gameMute) {
+                [self muteSound:YES forScreen:2];
+            } else {
+                [self muteSound:NO forScreen:2];
+            }
+        } else if (fabsf(currentTimeStamp - lastRocketTimeStamp) > rocketReloadTime && !_gameOver && !_gamePaused) {
+            [self fireRocket:location];
             lastRocketTimeStamp = currentTimeStamp;
         }
     }
@@ -138,64 +347,111 @@ typedef enum : NSUInteger {
 - (void)didBeginContact:(SKPhysicsContact *)contact
 {
     if ((contact.bodyA.categoryBitMask & ExplosionCategory) != 0 || (contact.bodyB.categoryBitMask & ExplosionCategory) != 0) {
-        // Collision Between Explosion and Missile
-        SKNode *missile = (contact.bodyA.categoryBitMask & ExplosionCategory) ? contact.bodyB.node : contact.bodyA.node;
-        [missile runAction:[SKAction removeFromParent]];
+        // Collision Between Explosion and Asteroid
+        SKNode *asteroid = (contact.bodyA.categoryBitMask & ExplosionCategory) ? contact.bodyB.node : contact.bodyA.node;
+        [asteroid runAction:[SKAction removeFromParent]];
         
-        //the explosion continues, because can kill more than one missile
-        NSLog(@"Missile destroyed");
+        [self addParticleExplosion:asteroid.position];
     
-        
-        score = score + 10;
+        // update score
+        [self updateScore:10];
         [labelScore setText:[NSString stringWithFormat:@"%d", score]];
-        
-        if(missileExploded == 20){
-            SKLabelNode *ganhou = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
-            ganhou.text = @"You win!";
-            ganhou.fontSize = 60;
-            ganhou.position = CGPointMake(self.size.width/2,self.size.height/2);
-            ganhou.zPosition = 3;
-            [self addChild:ganhou];
-        }
+
     } else {
-        // Collision Between Missile and Monster
-        SKNode *monster = (contact.bodyA.categoryBitMask & MonsterCategory) ? contact.bodyA.node : contact.bodyB.node;
-        SKNode *missile = (contact.bodyA.categoryBitMask & MonsterCategory) ? contact.bodyB.node : contact.bodyA.node;
-        [missile runAction:[SKAction removeFromParent]];
-        [monster runAction:[SKAction removeFromParent]];
+        // Collision Between Asteroid & Building/Ground
+        SKNode *building = (contact.bodyA.categoryBitMask & BuildingCategory) ? contact.bodyA.node : contact.bodyB.node;
+        SKNode *asteroid = (contact.bodyA.categoryBitMask & BuildingCategory) ? contact.bodyB.node : contact.bodyA.node;
         
-        NSLog(@"Monster killed");
-        monstersDead++;
-        if(monstersDead == 6){
-            SKLabelNode *perdeu = [SKLabelNode labelNodeWithFontNamed:@"Hiragino-Kaku-Gothic-ProN"];
-            perdeu.text = @"You Lose!";
-            perdeu.fontSize = 60;
-            perdeu.position = CGPointMake(self.size.width/2,self.size.height/2);
-            perdeu.zPosition = 3;
-            [self addChild:perdeu];
-            [self moveToMenu];
+        NSString *groundName = @"ground";
+        
+        NSLog(@"%@", building.name);
+        NSLog(@"%@", asteroid.name);
+        
+        if (building.name != groundName) {
+            [building runAction:[SKAction removeFromParent]];
+        }
+        
+        if (asteroid.name != groundName) {
+            [asteroid runAction:[SKAction removeFromParent]];
+        }
+        
+        NSString *launchPadName = @"launchPad";
+        NSString *asteroidName = @"asteroid";
+        _buildingDestroyed++;
+        
+        if (building.name == asteroidName) {
+            [self addGroundExplosion:building.position];
+        } else {
+            [self addGroundExplosion:asteroid.position];
+        }
+        
+        if (building.name == launchPadName || asteroid.name == launchPadName) {
+            [self.rocket removeFromParent];
+        }
+
+        if((_buildingDestroyed == 8 || asteroid.name == launchPadName || building.name == launchPadName) && !_gameOver){
+            [self gameOverScreen];
+            _gameOver = YES;
         }
     }
 }
 
 #pragma mark - Game Elements
 
-- (void)addFlowerCommand
+- (void)addLaunchPad
 {
-    SKSpriteNode *flower = [SKSpriteNode spriteNodeWithColor:[SKColor whiteColor] size:CGSizeMake(50, 100)];
-    flower.zPosition = 2;
-    flower.scale = deviceScale;
+    SKSpriteNode *launchPad = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(38, 2)];
     
-    flower.position = CGPointMake(self.size.width/2, flower.size.height/2);
-    [self addChild:flower];
+    SKSpriteNode *launchPadTexture = [SKSpriteNode spriteNodeWithImageNamed:@"launchpad.png"];
+    launchPadTexture.zPosition = 3;
+    launchPadTexture.position = CGPointMake(0, launchPadTexture.size.height/2-1);
+    [launchPad addChild:launchPadTexture];
+    
+    launchPad.zPosition = 1;
+    launchPad.name = @"launchPad";
+    
+    launchPad.position = CGPointMake(self.size.width/2, launchPad.size.height/2);
+    
+    // Add Physics
+    launchPad.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:launchPad.size];
+    launchPad.physicsBody.dynamic = YES;
+    launchPad.physicsBody.categoryBitMask = BuildingCategory;
+    launchPad.physicsBody.contactTestBitMask = AsteroidCategory;
+    launchPad.physicsBody.collisionBitMask = 1;
+    
+    [self addChild:launchPad];
+    [self addRocket];
 }
 
-- (void)addRocket:(CGPoint)location
+- (void)addRocket
 {
-    SKSpriteNode *rocket = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(10, 10)];
-    rocket.zPosition = 1;
-    rocket.scale = deviceScale;
-    rocket.position = CGPointMake(self.size.width/2,110);
+    self.rocket = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(20, 29)];
+    
+    SKSpriteNode *rocketTexture = [SKSpriteNode spriteNodeWithImageNamed:@"rocket.png"];
+    rocketTexture.zPosition = 2;
+    [self.rocket addChild:rocketTexture];
+    
+    self.rocket.zPosition = 1;
+    self.rocket.scale = deviceScale;
+    self.rocket.position = CGPointMake(self.size.width/2,-rocketTexture.size.height/2);
+    
+    SKAction *move =[SKAction moveTo:CGPointMake(self.size.width/2,self.rocket.size.height/2 + 18) duration:rocketReloadTime];
+
+    [self.rocket runAction:move];
+    [self addChild:self.rocket];
+}
+
+- (void)fireRocket:(CGPoint)location
+{
+    float angle = atanf((location.y-18)/(location.x - self.size.width/2));
+    
+    if (angle < 0) {
+        angle = angle + M_PI/2;
+    } else {
+        angle = angle - M_PI/2;
+    }
+    
+    self.rocket.zRotation = angle;
     
     float duration = location.y *0.001;
     SKAction *move =[SKAction moveTo:CGPointMake(location.x,location.y) duration:duration];
@@ -203,76 +459,262 @@ typedef enum : NSUInteger {
     
     // Explosion
     SKAction *callExplosion = [SKAction runBlock:^{
-        SKSpriteNode *explosion = [SKSpriteNode spriteNodeWithImageNamed:@"explosion"];
-        explosion.zPosition = 0;
-        explosion.scale = 0.2 * deviceScale;
-        explosion.position = CGPointMake(location.x,location.y);
-        explosion.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:explosion.size.height/2];
-        explosion.physicsBody.dynamic = YES;
-        explosion.physicsBody.categoryBitMask = ExplosionCategory;
-        explosion.physicsBody.contactTestBitMask = MissileCategory;
-        explosion.physicsBody.collisionBitMask = 0;
-        SKAction *explosionAction = [SKAction scaleTo:0.5 * deviceScale duration:.6];
-        [explosion runAction:[SKAction sequence:@[explosionAction,remove]]];
-        [self addChild:explosion];
+        _explosion = [SKSpriteNode spriteNodeWithImageNamed:@"explosion"];
+        _explosion.zPosition = 0;
+        _explosion.scale = 0.2;
+        _explosion.position = CGPointMake(location.x,location.y);
+        _explosion.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:_explosion.size.height/2];
+        _explosion.physicsBody.dynamic = YES;
+        _explosion.physicsBody.categoryBitMask = ExplosionCategory;
+        _explosion.physicsBody.contactTestBitMask = AsteroidCategory;
+        _explosion.physicsBody.collisionBitMask = 0;
+        SKAction *explosionAction = [SKAction scaleTo:0.7 duration:.4];
+        [_explosion runAction:[SKAction sequence:@[explosionAction,remove]]];
+        [self addChild:_explosion];
+        [self.rocketExplosionSFX play];
     }];
     
-    [rocket runAction:[SKAction sequence:@[move,callExplosion,remove]]];
+    [self.rocket runAction:[SKAction sequence:@[move,callExplosion,remove]]];
+    [self addRocket];
     
-    [self addChild:rocket];
+    [self.fireRocketSFX play];
+    
 }
 
-- (void)addMonstersBetweenSpace:(int)spaceOrder
+- (void)addBuildings:(int)spaceOrder
 {
-    for (int i = 0; i< 4; i++) {
+    for (int i = 1; i <= 4; i++) {
         
-        SKSpriteNode *monster;
-        monster = [SKSpriteNode spriteNodeWithColor:[SKColor grayColor] size:CGSizeMake(50, 50)];
-        monster.scale = deviceScale;
-        monster.zPosition = 2;
-    
-        if (i < 2) {
-            monster.position = CGPointMake((self.size.width/4) * i, monster.size.height/2);
-        } else {
-            monster.position = CGPointMake((self.size.width/4) * (i+1), monster.size.height/2);
+        float buildingWidth = (self.size.width-38)/4;
+        
+        SKSpriteNode *building = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(buildingWidth, 1)];
+        
+        NSString *textureName = [NSString stringWithFormat:@"buildings_%i.png", i];
+        SKTexture *buildingText = [SKTexture textureWithImageNamed:textureName];
+        buildingText.filteringMode = SKTextureFilteringNearest;
+        
+        SKSpriteNode *buildingTexture = [SKSpriteNode spriteNodeWithTexture:buildingText];
+        
+        if (i == 1) {
+            buildingTexture.position = CGPointMake(-18, buildingTexture.size.height/2);
+            buildingTexture.zPosition = 2;
+            building.position = CGPointMake((buildingWidth/2), 0);
+        } else if (i == 2) {
+            buildingTexture.position = CGPointMake(-7, buildingTexture.size.height/2);
+            buildingTexture.zPosition = 3;
+            building.position = CGPointMake((buildingWidth/2)*3, 0);
+        } else if (i == 3) {
+            buildingTexture.position = CGPointMake(7, buildingTexture.size.height/2);
+            buildingTexture.zPosition = 3;
+            building.position = CGPointMake((self.size.width + 38)/2 + (buildingWidth/2), 0);
+        } else if (i == 4) {
+            buildingTexture.position = CGPointMake(18, buildingTexture.size.height/2);
+            buildingTexture.zPosition = 2;
+            building.position = CGPointMake((self.size.width + 38)/2 + (buildingWidth/2)*3, 0);
         }
-    
-        // Add Physics
-        monster.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:monster.size];
-        monster.physicsBody.dynamic = YES;
-        monster.physicsBody.categoryBitMask = MonsterCategory;
-        monster.physicsBody.contactTestBitMask = MissileCategory;
-        monster.physicsBody.collisionBitMask = 1;
         
-        [self addChild:monster];
+        [building addChild:buildingTexture];
+        building.zPosition = 1;
+        
+        
+        // Add Physics
+        building.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:building.size];
+        building.physicsBody.dynamic = YES;
+        building.physicsBody.categoryBitMask = BuildingCategory;
+        building.physicsBody.contactTestBitMask = AsteroidCategory;
+        building.physicsBody.collisionBitMask = 0;
+        
+        [self addChild:building];
     }
 }
 
 - (void)addAstroid
 {
-    SKSpriteNode *missile = [SKSpriteNode spriteNodeWithColor:[SKColor greenColor] size:CGSizeMake(20, 20)];
-        missile.scale = deviceScale;
-        missile.zPosition = 1;
-        
-        int startPoint = [self getRandomNumberBetween:0 to:self.size.width];
-        missile.position = CGPointMake(startPoint, self.size.height);
-        
-        missile.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:missile.size.height/2];
-        missile.physicsBody.dynamic = NO;
-        missile.physicsBody.categoryBitMask = MissileCategory;
-        missile.physicsBody.contactTestBitMask = ExplosionCategory | MonsterCategory;
-        missile.physicsBody.collisionBitMask = 1;
-        
-        int endPoint = [self getRandomNumberBetween:0 to:self.size.width];
-        
-        SKAction *move =[SKAction moveTo:CGPointMake(endPoint, 0) duration:15];
-        SKAction *remove = [SKAction removeFromParent];
-        [missile runAction:[SKAction sequence:@[move,remove]]];
-        
-        [self addChild:missile];
+    //SKSpriteNode *asteroid = [SKSpriteNode spriteNodeWithColor:[SKColor greenColor] size:CGSizeMake(20, 20)];
+    //asteroid.scale = deviceScale;
+    
+    
+    int i = [self getRandomNumberBetween:1 to:4];
+    
+    if (i ==1) {
+        _asteroid = [self asteroid1];
+    } else if (i == 2) {
+        _asteroid = [self asteroid2];
+    } else if (i == 3) {
+        _asteroid = [self asteroid3];
+    } else {
+        _asteroid = [self asteroid4];
+    }
+    
+    _asteroid.zPosition = 10;
+    _asteroid.name = [NSString stringWithFormat:@"asteroid"];
+    
+    int startPoint = [self getRandomNumberBetween:0 to:self.size.width];
+    _asteroid.position = CGPointMake(startPoint, self.size.height+_asteroid.size.width);
+    
+    //asteroid.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:asteroid.size.height/2];
+    _asteroid.physicsBody.dynamic = NO;
+    _asteroid.physicsBody.categoryBitMask = AsteroidCategory;
+    _asteroid.physicsBody.contactTestBitMask = ExplosionCategory | BuildingCategory;
+    _asteroid.physicsBody.collisionBitMask = 1;
+    
+    int endPoint = [self getRandomNumberBetween:0 to:self.size.width];
+    
+    SKAction *move =[SKAction moveTo:CGPointMake(endPoint, 0) duration:[self getRandomNumberBetween:5 to:15]];
+    SKAction *remove = [SKAction removeFromParent];
+    [_asteroid runAction:[SKAction sequence:@[move,remove]]];
+    
+    // rotate asteroid
+    float rotateDuration = [self getRandomDouble]*9+1;
+    
+    int rotateDirection;
+    if ([self getRandomNumberBetween:-1 to:1] < 0) {
+        rotateDirection = -1;
+    } else {
+        rotateDirection = 1;
+    }
+
+    SKAction *rotate = [SKAction repeatActionForever:[SKAction rotateByAngle:rotateDirection*M_PI*2 duration:rotateDuration]];
+    [_asteroid runAction:rotate];
+    [self addChild:_asteroid];
 }
 
-- (void)addGroundExplosion:(int)ExplosionPosition
+- (SKSpriteNode *)asteroid1
+{
+    int i = [self getRandomNumberBetween:1 to:3];
+    SKSpriteNode *sprite;
+    
+    if (i ==1) {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_1a.png"];
+    } else if (i ==2) {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_1b.png"];
+    } else {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_1c.png"];
+    }
+    
+    
+    CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
+    CGFloat offsetY = sprite.frame.size.height * sprite.anchorPoint.y;
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    CGPathMoveToPoint(path, NULL, 18 - offsetX, 46 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 35 - offsetX, 46 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 48 - offsetX, 28 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 39 - offsetX, 10 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 29 - offsetX, 7 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 15 - offsetX, 10 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 19 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 12 - offsetX, 34 - offsetY);
+    
+    CGPathCloseSubpath(path);
+    
+    sprite.physicsBody = [SKPhysicsBody bodyWithPolygonFromPath:path];
+    
+    return sprite;
+}
+
+- (SKSpriteNode *)asteroid2
+{
+    int i = [self getRandomNumberBetween:1 to:3];
+    SKSpriteNode *sprite;
+    
+    if (i ==1) {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_2a.png"];
+    } else if (i ==2) {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_2b.png"];
+    } else {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_2c.png"];
+    }
+    
+    CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
+    CGFloat offsetY = sprite.frame.size.height * sprite.anchorPoint.y;
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    CGPathMoveToPoint(path, NULL, 24 - offsetX, 35 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 32 - offsetX, 35 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 38 - offsetX, 33 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 44 - offsetX, 24 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 38 - offsetX, 15 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 23 - offsetX, 15 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 12 - offsetX, 18 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 24 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 13 - offsetX, 29 - offsetY);
+    
+    CGPathCloseSubpath(path);
+    
+    sprite.physicsBody = [SKPhysicsBody bodyWithPolygonFromPath:path];
+    
+    return sprite;
+}
+
+- (SKSpriteNode *)asteroid3
+{
+    int i = [self getRandomNumberBetween:1 to:3];
+    SKSpriteNode *sprite;
+    
+    if (i ==1) {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_3a.png"];
+    } else if (i ==2) {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_3b.png"];
+    } else {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_3c.png"];
+    }
+    
+    CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
+    CGFloat offsetY = sprite.frame.size.height * sprite.anchorPoint.y;
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    CGPathMoveToPoint(path, NULL, 28 - offsetX, 36 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 37 - offsetX, 30 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 37 - offsetX, 22 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 26 - offsetX, 13 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 14 - offsetX, 19 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 14 - offsetX, 30 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 20 - offsetX, 36 - offsetY);
+    
+    CGPathCloseSubpath(path);
+    
+    sprite.physicsBody = [SKPhysicsBody bodyWithPolygonFromPath:path];
+    
+    return sprite;
+}
+
+- (SKSpriteNode *)asteroid4
+{
+    int i = [self getRandomNumberBetween:1 to:3];
+    SKSpriteNode *sprite;
+    
+    if (i ==1) {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_4a.png"];
+    } else if (i ==2) {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_4b.png"];
+    } else {
+        sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_4c.png"];
+    }
+    
+    CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
+    CGFloat offsetY = sprite.frame.size.height * sprite.anchorPoint.y;
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    CGPathMoveToPoint(path, NULL, 13 - offsetX, 21 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 20 - offsetX, 18 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 23 - offsetX, 14 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 16 - offsetX, 7 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 14 - offsetY);
+    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 18 - offsetY);
+    
+    CGPathCloseSubpath(path);
+    
+    sprite.physicsBody = [SKPhysicsBody bodyWithPolygonFromPath:path];
+    
+    return sprite;
+}
+
+- (void)addGroundExplosion:(CGPoint)location
 {
     NSMutableArray *frames = [NSMutableArray array];
     SKTextureAtlas *nuclearExplosionAtlas = [SKTextureAtlas atlasNamed:@"nuclear_explosion"];
@@ -285,19 +727,45 @@ typedef enum : NSUInteger {
     }
     
     NSArray *textureFrames = frames;
+    SKTexture *textureSize = textureFrames[0];
 
-    SKSpriteNode *nuclearExplosion = [SKSpriteNode spriteNodeWithTexture:textureFrames[0]];
-    nuclearExplosion.scale = 2.0;
-    nuclearExplosion.position = CGPointMake((self.size.width/8)*ExplosionPosition, nuclearExplosion.size.height/2);
-    nuclearExplosion.zPosition = 20;
+    _nuclearExplosion = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:textureSize.size];
+    _nuclearExplosion.position = CGPointMake(location.x, _nuclearExplosion.size.height/2);
+    _nuclearExplosion.zPosition = 10;
     
-    [nuclearExplosion runAction:[SKAction repeatActionForever:
-                      [SKAction animateWithTextures:textureFrames
-                                       timePerFrame:0.07f
+    [self.nuclearSFX play];
+    [_nuclearExplosion runAction:[SKAction animateWithTextures:textureFrames
+                                       timePerFrame:0.1f
                                              resize:NO
-                                            restore:YES]]];
+                                            restore:YES]];
     
-    [self addChild:nuclearExplosion];
+    [self addChild:_nuclearExplosion];
+    [self flashBackground];
+}
+
+- (void)flashBackground
+{
+    [self removeActionForKey:@"flash"];
+    [self runAction:[SKAction sequence:@[[SKAction repeatAction:[SKAction sequence:@[[SKAction runBlock:^{
+        self.backgroundColor = [SKColor colorWithRed:1.0 green:1.0 blue:220.0/255.0 alpha:1.0];
+    }], [SKAction waitForDuration:0.05], [SKAction runBlock:^{
+        self.backgroundColor = [SKColor blackColor];
+    }], [SKAction waitForDuration:0.05]]] count:1]]] withKey:@"flash"];
+}
+
+- (void)addBottomEdge
+{
+    SKSpriteNode *bottemEdge = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(self.size.width, 1)];
+    //SKNode *bottemEdge = [SKNode node];
+    bottemEdge.name = @"ground";
+    bottemEdge.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:bottemEdge.size];
+    //bottemEdge.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(0, 1) toPoint:CGPointMake(self.size.width, 1)];
+    bottemEdge.position = CGPointMake(self.size.width/2, 0);
+    bottemEdge.physicsBody.dynamic = YES;
+    bottemEdge.physicsBody.categoryBitMask = BuildingCategory;
+    bottemEdge.physicsBody.contactTestBitMask = AsteroidCategory;
+    bottemEdge.physicsBody.collisionBitMask = 1;
+    [self addChild:bottemEdge];
 }
 
 #pragma mark - Particles
@@ -306,7 +774,7 @@ typedef enum : NSUInteger {
 {
     
     SKEmitterNode *explosion = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SparkParticles" ofType:@"sks"]];
-    
+    explosion.particleColorSequence = nil;
     explosion.particlePosition = location;
     
     [explosion setParticleColor:[UIColor whiteColor]];
@@ -336,35 +804,114 @@ typedef enum : NSUInteger {
     [explosion setParticleBlendMode:SKBlendModeAdd];
     
     [self addChild:explosion];
+    [self.asteroidExplosionSFX play];
 }
 
-#pragma mark - Transition Methods
+#pragma mark - Action Methods
 
 - (void)moveToMenu
 {
-    [gameCenter reportScore:score];
+    [self stopBackgroundMusic];
+    [self playGameOverMusic:_gameMute];
+    //SKTransition *transition = [SKTransition fadeWithDuration:0.5];
+    //GameOverScene *gameOverScene = [[GameOverScene alloc] initWithSize:self.size];
+    //[self.scene.view presentScene:gameOverScene transition:transition];
+}
+
+- (void)replayGame
+{
+    [self stopBackgroundMusic];
+    self.view.paused = NO;
+    SKScene *scene = [GameScene sceneWithSize:self.view.bounds.size];
+    scene.scaleMode = SKSceneScaleModeAspectFill;
+    SKTransition *transition = [SKTransition fadeWithDuration:0.5];
+    SKView *skView = (SKView *)self.view;
     
-    SKTransition *transition = [SKTransition fadeWithDuration:2];
-    MenuScene *myscene = [[MenuScene alloc] initWithSize:CGSizeMake(CGRectGetMaxX(self.frame), CGRectGetMaxY(self.frame))];
-    [self.scene.view presentScene:myscene transition:transition];
+    [skView presentScene:scene transition:transition];
+}
+
+- (void)pauseGame
+{
+    if (!_gamePaused) {
+        //[self pauseView:YES];
+        [self showPauseScreen:YES];
+    } else {
+        //[self pauseView:NO];
+        [self showPauseScreen:NO];
+    }
+    
 }
 
 #pragma mark - Helper Methods
+
+- (int)saveScore
+{
+    // Get GameCenter Score
+    BOOL isAvailable = [[GameCenterManager sharedManager] checkGameCenterAvailability];
+    
+    int gameCenterScore = 0;
+    int highScore = 0;
+    
+    if (isAvailable) {
+        gameCenterScore = [[GameCenterManager sharedManager] highScoreForLeaderboard:@"leader_board_score"];
+    }
+    
+    NSInteger localScore = [_defaults integerForKey:@"highScore"];
+    
+    if (localScore > gameCenterScore) {
+        highScore = localScore;
+    } else {
+        highScore = gameCenterScore;
+    }
+    
+    if (score > highScore) {
+        highScore = score;
+    }
+    
+    // save highscore
+    [_defaults setInteger:highScore forKey:@"highScore"];
+    [_defaults synchronize];
+    
+    if (isAvailable) {
+        
+        [[GameCenterManager sharedManager] saveAndReportScore:highScore leaderboard:@"leader_board_score" sortOrder:GameCenterSortOrderHighToLow];
+    }
+    
+    return highScore;
+}
+
+- (void)saveMute
+{
+    //NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [_defaults setBool:_gameMute forKey:@"gameMute"];
+    [_defaults synchronize];
+}
+
+- (void)pauseView:(BOOL)state
+{
+    if (state) {
+        self.rocket.paused = YES;
+        _asteroid.paused = YES;
+        _nuclearExplosion.paused = YES;
+        _explosion.paused = YES;
+        _gamePaused = YES;
+    } else {
+        self.rocket.paused = NO;
+        _asteroid.paused = NO;
+        _nuclearExplosion.paused = NO;
+        _explosion.paused = NO;
+        _gamePaused = NO;
+    }
+}
 
 - (double)getRandomDouble
 {
     return ((double)arc4random() / ARC4RANDOM_MAX);
 }
 
-
 - (int)getRandomNumberBetween:(int)from to:(int)to
 {
     return (int)from + arc4random() % (to - from + 1);
-}
-
-- (int)positionOfWhichFlowerShouldBegin:(int)number
-{
-    return position * number - position / 2;
 }
 
 - (float)setDeviceScale
@@ -379,5 +926,149 @@ typedef enum : NSUInteger {
     
     return scaleTextures;
 }
+
+- (void)generateNumbersArray
+{
+    NSMutableArray *numbers = [NSMutableArray array];
+    
+    for (int i=0; i <= 9; i++) {
+        NSString *textureName = [NSString stringWithFormat:@"number%d", i];
+        SKTexture *texture = [SKTexture textureWithImageNamed:textureName];
+        [numbers addObject:texture];
+    }
+    
+    _numbers = numbers;
+    /*SKTexture *textureSize = textureFrames[0];
+     
+     SKSpriteNode *nuclearExplosion = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:textureSize.size];
+     nuclearExplosion.position = CGPointMake(location.x, nuclearExplosion.size.height/2);
+     nuclearExplosion.zPosition = 10;
+     
+     [nuclearExplosion runAction:[SKAction animateWithTextures:textureFrames
+     timePerFrame:0.1f
+     resize:NO
+     restore:YES]];
+     
+     [self addChild:nuclearExplosion];
+     [self flashBackground];*/
+}
+
+#pragma mark - Play Audio
+
+- (void)initAudio
+{
+    // We'll let OALSimpleAudio deal with the device and context.
+    // Since we're not going to use it for playing effects, don't give it any sources.
+    //device = [ALDevice deviceWithDeviceSpecifier:nil];
+    //context = [ALContext contextOnDevice:device attributes:nil];
+    //[OpenALManager sharedInstance].currentContext = context;
+    
+    // Deal with interruptions for me!
+    //[OALAudioSession sharedInstance].handleInterruptions = YES;
+    
+    // Mute all audio if the silent switch is turned on.
+    //[OALAudioSession sharedInstance].honorSilentSwitch = YES;
+    //[OALSimpleAudio sharedInstance].reservedSources = 1;
+    [OALSimpleAudio sharedInstance];
+    
+    //[[ALSource source] preloadEffect:@"Explosion_rocket.caf"];
+    //[[ALSource source] preloadEffect:@"clicl.caf"];
+    //[[ALSource source] preloadEffect:@"nuclear.caf"];
+    //[[ALSource source] preloadEffect:@"rocket1.caf"];
+
+}
+
+- (void)playMainMusic:(BOOL)mute
+{
+    self.source = [ALSource source];
+    self.mainTrack = [OALAudioTrack track];
+    [self.mainTrack preloadFile:MainTrackFileName];
+    
+    self.asteroidExplosionSFX = [OALAudioTrack track];
+    [self.asteroidExplosionSFX preloadFile:@"Explosion_asteroid.caf"];
+    
+    self.rocketExplosionSFX = [OALAudioTrack track];
+    [self.rocketExplosionSFX preloadFile:@"Explosion_rocket.caf"];
+                                 
+    self.nuclearSFX = [OALAudioTrack track];
+    [self.nuclearSFX preloadFile:@"nuclear.caf"];
+    
+    self.fireRocketSFX = [OALAudioTrack track];
+    [self.fireRocketSFX preloadFile:@"rocket1.caf"];
+    
+    self.mainTrack.numberOfLoops = -1;
+    
+    if (!mute) {
+        [self.mainTrack play];
+        self.mainTrack.volume = 1;
+    }
+}
+
+- (void)playGameOverMusic:(BOOL)mute
+{
+    // We'll let OALSimpleAudio deal with the device and context.
+    // Since we're not going to use it for playing effects, don't give it any sources.
+    // Create the device and context.
+    // Note that it's easier to just let OALSimpleAudio handle
+    // these rather than make and manage them yourself.
+    
+    
+    self.source = [ALSource source];
+    self.gameOverTrack = [OALAudioTrack track];
+    [self.gameOverTrack preloadFile:GameOverTrackFileName];
+    // Main music track will loop on itself
+    self.gameOverTrack.numberOfLoops = -1;
+    
+    if (!mute) {
+        [self.gameOverTrack play];
+        self.gameOverTrack.volume = 1;
+    }
+    
+}
+
+- (void)muteSound:(BOOL)state forScreen:(int)screen
+{
+    if (state) {
+        [self.source unregisterAllNotifications];
+        [self.source stop];
+        [self.gameOverTrack stop];
+        [self.mainTrack stop];
+        self.gameOverTrack.currentTime = 0;
+        self.mainTrack.currentTime = 0;
+        [self muteSFX:0];
+        _gameMute = YES;
+    } else {
+        if (screen == 1) {
+            [self playMainMusic:NO];
+            [self muteSFX:1];
+            _gameMute = NO;
+        } else {
+            [self playGameOverMusic:NO];
+            _gameMute = NO;
+        }
+    }
+    
+    [self saveMute];
+}
+
+- (void)stopBackgroundMusic
+{
+    [self.source unregisterAllNotifications];
+    [self.source stop];
+    [self.gameOverTrack stop];
+    [self.mainTrack stop];
+    self.gameOverTrack.currentTime = 0;
+    self.mainTrack.currentTime = 0;
+}
+
+- (void)muteSFX:(int)value
+{
+    self.asteroidExplosionSFX.volume = value;
+    self.rocketExplosionSFX.volume = value;
+    self.nuclearSFX.volume = value;
+    self.fireRocketSFX.volume = value;
+}
+
+
 
 @end

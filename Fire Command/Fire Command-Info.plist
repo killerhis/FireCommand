@@ -34,7 +34,9 @@
 		<string>gamekit</string>
 	</array>
 	<key>UIStatusBarHidden</key>
-	<true/>
+	<false/>
+	<key>UIStatusBarHidden~ipad</key>
+	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -43,8 +45,10 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Disorient Pixels.ttf</string>
 	</array>
 </dict>
 </plist>
