@@ -69,6 +69,7 @@
 		45EE26E519B4FF9600EBE571 /* title@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45EE26E019B4FF9600EBE571 /* title@2x.png */; };
 		45EE26E719B5089D00EBE571 /* background_menu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45EE26E619B5089D00EBE571 /* background_menu@2x.png */; };
 		45EE26E919B51F1A00EBE571 /* title_clean@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45EE26E819B51F1A00EBE571 /* title_clean@2x.png */; };
+		45EE26EB19B52FB200EBE571 /* pausedtitle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45EE26EA19B52FB200EBE571 /* pausedtitle@2x.png */; };
 		45F1F4B619A3E98400EEB990 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B519A3E98400EEB990 /* Foundation.framework */; };
 		45F1F4B819A3E98400EEB990 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B719A3E98400EEB990 /* CoreGraphics.framework */; };
 		45F1F4BA19A3E98400EEB990 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45F1F4B919A3E98400EEB990 /* UIKit.framework */; };
@@ -166,6 +167,7 @@
 		45EE26E019B4FF9600EBE571 /* title@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "title@2x.png"; sourceTree = "<group>"; };
 		45EE26E619B5089D00EBE571 /* background_menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background_menu@2x.png"; sourceTree = "<group>"; };
 		45EE26E819B51F1A00EBE571 /* title_clean@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "title_clean@2x.png"; sourceTree = "<group>"; };
+		45EE26EA19B52FB200EBE571 /* pausedtitle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pausedtitle@2x.png"; sourceTree = "<group>"; };
 		45F1F4B219A3E98400EEB990 /* Fire Command.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fire Command.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		45F1F4B519A3E98400EEB990 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		45F1F4B719A3E98400EEB990 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -243,6 +245,7 @@
 		4564EB1619AA1761001CCC58 /* retina */ = {
 			isa = PBXGroup;
 			children = (
+				45EE26EA19B52FB200EBE571 /* pausedtitle@2x.png */,
 				45EE26E819B51F1A00EBE571 /* title_clean@2x.png */,
 				45EE26E619B5089D00EBE571 /* background_menu@2x.png */,
 				45EE26DC19B4FF9600EBE571 /* gamecenterbutton@2x.png */,
@@ -515,6 +518,7 @@
 				4564EB3B19AA4455001CCC58 /* asteroid_4b@2x.png in Resources */,
 				45BC1F9F19AE82E900053257 /* Explosion_rocket.caf in Resources */,
 				4564EB2919AA3911001CCC58 /* asteroid_1b@2x.png in Resources */,
+				45EE26EB19B52FB200EBE571 /* pausedtitle@2x.png in Resources */,
 				4564EB4C19AA7111001CCC58 /* number5@2x.png in Resources */,
 				45F1F4CB19A3E98400EEB990 /* Main_iPhone.storyboard in Resources */,
 				4564EB5219AA763B001CCC58 /* number9@2x.png in Resources */,

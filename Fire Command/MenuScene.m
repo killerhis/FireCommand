@@ -523,6 +523,8 @@
     }
     
     [soundButton runAction:[SKAction setTexture:changeTexture]];
+    [_defaults setBool:_gameMute forKey:@"gameMute"];
+    [_defaults synchronize];
 }
 
 - (void)showLeaderBoard
@@ -642,12 +644,7 @@
     [self.mainTrack stop];
     //self.introTrack.currentTime = 0;
     self.mainTrack.currentTime = 0;
+    self.source.muted = _gameMute;
 }
-
-
-
-
-
-
 
 @end

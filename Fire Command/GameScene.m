@@ -48,6 +48,8 @@ typedef enum : NSUInteger {
 @property(nonatomic, readwrite, retain) ALBuffer* asteroidExplosionSFX;
 @property(nonatomic, readwrite, retain) ALBuffer* rocketExplosionSFX;
 @property(nonatomic, readwrite, retain) ALBuffer* fireRocketSFX;
+@property(nonatomic, readwrite, retain) ALBuffer* clickSFX;
+
 @end
 
 @implementation GameScene {
@@ -86,7 +88,7 @@ typedef enum : NSUInteger {
     SKSpriteNode *_nuclearExplosion;
     SKSpriteNode *_explosion;
     SKSpriteNode *_flashBackground;
-    
+    SKSpriteNode *_pauseBackground;
     SKSpriteNode *_n0;
     SKSpriteNode *_n1;
     SKSpriteNode *_n2;
@@ -94,6 +96,7 @@ typedef enum : NSUInteger {
     SKSpriteNode *_n4;
     SKSpriteNode *_n5;
     SKSpriteNode *_n6;
+    SKSpriteNode *_muteButton;
     
     BOOL _gamePaused;
     BOOL _gameMute;
@@ -244,7 +247,7 @@ typedef enum : NSUInteger {
     pauseButtonTexture.name = @"pauseButton";
     [self.pauseButton addChild:pauseButtonTexture];
     
-    self.pauseButton.position = CGPointMake((22*7)+5, self.size.height - self.pauseButton.size.height/2);
+    self.pauseButton.position = CGPointMake((22*7)+15, self.size.height - self.pauseButton.size.height/2);
     self.pauseButton.zPosition = 100;
     [self.scoreBar addChild:self.pauseButton];
     
@@ -346,19 +349,29 @@ typedef enum : NSUInteger {
         _pauseScreen.name = @"pauseScreen";
         _pauseScreen.position = CGPointMake(self.size.width/2, self.size.height*1.5);
         
-        SKSpriteNode *title = [SKSpriteNode spriteNodeWithColor:[SKColor grayColor] size:CGSizeMake(100, 50)];
-        title.position = CGPointMake(0, 50);
+        SKSpriteNode *title = [SKSpriteNode spriteNodeWithImageNamed:@"pausedtitle.png"];
+        title.position = CGPointMake(0, title.size.height*2);
         [_pauseScreen addChild:title];
         
-        SKSpriteNode *resumeButton = [SKSpriteNode spriteNodeWithColor:[SKColor grayColor] size:CGSizeMake(100, 50)];
-        resumeButton.position = CGPointMake(0, -50);
+        SKSpriteNode *resumeButton = [SKSpriteNode spriteNodeWithImageNamed:@"playbutton.png"];
+        resumeButton.position = CGPointMake(self.size.width/4, -resumeButton.size.height);
         resumeButton.name = @"resumeButton";
         [_pauseScreen addChild:resumeButton];
         
-        SKSpriteNode *muteButton = [SKSpriteNode spriteNodeWithColor:[SKColor redColor] size:CGSizeMake(100, 50)];
-        muteButton.position = CGPointMake(0, -150);
-        muteButton.name = @"muteButton";
-        [_pauseScreen addChild:muteButton];
+        SKTexture *soundTexture;
+        
+        if (_gameMute) {
+            soundTexture = [SKTexture textureWithImageNamed:@"mutebutton.png"];
+        } else {
+            soundTexture = [SKTexture textureWithImageNamed:@"soundbutton.png"];
+        }
+        
+        _muteButton = [SKSpriteNode spriteNodeWithTexture:soundTexture];
+        _muteButton.position = CGPointMake(-self.size.width/4, -_muteButton.size.height);
+        _muteButton.name = @"muteButton";
+        [_pauseScreen addChild:_muteButton];
+        
+        [_pauseBackground runAction:[SKAction fadeAlphaTo:0.75 duration:0.2]];
         
         [_pauseScreen runAction:[SKAction moveToY:self.size.height/2 duration:0.2] completion:^{
             _transition = NO;
@@ -373,10 +386,14 @@ typedef enum : NSUInteger {
         SKAction *move = [SKAction moveToY:self.size.height*1.5 duration:0.5];
         SKAction *remove = [SKAction removeFromParent];
         
+        [_pauseBackground runAction:[SKAction fadeAlphaTo:0.0 duration:0.2]];
+        
         [_pauseScreen runAction:[SKAction sequence:@[move,remove]] completion:^{
             _transition = NO;
         }];
     }
+    
+
 }
 
 - (void)gameOverScreen
@@ -520,10 +537,10 @@ typedef enum : NSUInteger {
             [self.rocket removeFromParent];
         }
 
-        /*if((_buildingDestroyed == 8 || asteroid.name == launchPadName || building.name == launchPadName) && !_gameOver){
+        if((_buildingDestroyed == 8 || asteroid.name == launchPadName || building.name == launchPadName) && !_gameOver){
             [self gameOverScreen];
             _gameOver = YES;
-        }*/
+        }
     }
 }
 
@@ -542,6 +559,13 @@ typedef enum : NSUInteger {
     _flashBackground.zPosition = 10;
     
     [self addChild:_flashBackground];
+    
+    _pauseBackground = [SKSpriteNode spriteNodeWithColor:[SKColor blackColor] size:self.size];
+    _pauseBackground.position = CGPointMake(self.size.width/2, self.size.height/2);
+    _pauseBackground.alpha = 0.0;
+    _pauseBackground.zPosition = 90;
+    
+    [self addChild:_pauseBackground];
 }
 
 - (void)addLaunchPad
@@ -1246,6 +1270,8 @@ typedef enum : NSUInteger {
         [self showPauseScreen:NO];
     }
     
+    [self.source playBuffer:self.clickSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+    
 }
 
 #pragma mark - Helper Methods
@@ -1378,6 +1404,7 @@ typedef enum : NSUInteger {
 {
     //[self.source playBuffer:self.fireRocketSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
     self.source = [OALSimpleAudio sharedInstance];
+    self.source.muted = _gameMute;
     self.mainTrack = [OALAudioTrack track];
     [self.mainTrack preloadFile:MainTrackFileName];
     
@@ -1391,7 +1418,7 @@ typedef enum : NSUInteger {
     //self.nuclearSFX = [OALAudioTrack track];
     //[self.nuclearSFX preloadFile:@"nuclear.caf"];
     self.nuclearSFX = [[OpenALManager sharedInstance] bufferFromFile:@"nuclear.caf"];
-    
+    self.clickSFX = [[OpenALManager sharedInstance] bufferFromFile:@"click.caf"];
     
     self.fireRocketSFX = [[OpenALManager sharedInstance] bufferFromFile:@"rocket1.caf"];
     //self.fireRocketSFX = [OALAudioTrack track];
@@ -1450,6 +1477,15 @@ typedef enum : NSUInteger {
     }
     
     [self saveMute];
+    [self.source playBuffer:self.clickSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+    
+    SKTexture *soundTexture;
+    if (_gameMute) {
+        soundTexture = [SKTexture textureWithImageNamed:@"mutebutton.png"];
+    } else {
+        soundTexture = [SKTexture textureWithImageNamed:@"soundbutton.png"];
+    }
+    [_muteButton runAction:[SKAction setTexture:soundTexture]];
 }
 
 - (void)stopBackgroundMusic
