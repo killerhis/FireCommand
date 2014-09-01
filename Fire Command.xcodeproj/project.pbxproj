@@ -51,6 +51,11 @@
 		4564EB5219AA763B001CCC58 /* number9@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4564EB5119AA763B001CCC58 /* number9@2x.png */; };
 		4564EC1719ABAC23001CCC58 /* Disorient Pixels.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4564EC1619ABAC23001CCC58 /* Disorient Pixels.ttf */; };
 		458DFFC319A501E50043EF9C /* SparkParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 458DFFC119A501E50043EF9C /* SparkParticles.sks */; };
+		4592713719AF70390073422C /* rocket_fire.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 4592713619AF70390073422C /* rocket_fire.atlas */; };
+		4592713B19AF8EDF0073422C /* burned_buildings_1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4592713A19AF8EDF0073422C /* burned_buildings_1@2x.png */; };
+		4592713D19AF92AB0073422C /* building_fire.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 4592713C19AF92AB0073422C /* building_fire.atlas */; };
+		459D604219AFBE77001423DB /* rocket_explosion.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 459D604119AFBE77001423DB /* rocket_explosion.atlas */; };
+		459D604619AFE821001423DB /* numbers.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 459D604519AFE821001423DB /* numbers.atlas */; };
 		45BC1F9D19AE82E900053257 /* clicl.caf in Resources */ = {isa = PBXBuildFile; fileRef = 45BC1F9819AE82E900053257 /* clicl.caf */; };
 		45BC1F9E19AE82E900053257 /* Explosion_asteroid.caf in Resources */ = {isa = PBXBuildFile; fileRef = 45BC1F9919AE82E900053257 /* Explosion_asteroid.caf */; };
 		45BC1F9F19AE82E900053257 /* Explosion_rocket.caf in Resources */ = {isa = PBXBuildFile; fileRef = 45BC1F9A19AE82E900053257 /* Explosion_rocket.caf */; };
@@ -135,6 +140,11 @@
 		4564EB5119AA763B001CCC58 /* number9@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "number9@2x.png"; sourceTree = "<group>"; };
 		4564EC1619ABAC23001CCC58 /* Disorient Pixels.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Disorient Pixels.ttf"; sourceTree = "<group>"; };
 		458DFFC119A501E50043EF9C /* SparkParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SparkParticles.sks; sourceTree = "<group>"; };
+		4592713619AF70390073422C /* rocket_fire.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = rocket_fire.atlas; sourceTree = "<group>"; };
+		4592713A19AF8EDF0073422C /* burned_buildings_1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "burned_buildings_1@2x.png"; sourceTree = "<group>"; };
+		4592713C19AF92AB0073422C /* building_fire.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = building_fire.atlas; sourceTree = "<group>"; };
+		459D604119AFBE77001423DB /* rocket_explosion.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = rocket_explosion.atlas; sourceTree = "<group>"; };
+		459D604519AFE821001423DB /* numbers.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = numbers.atlas; sourceTree = "<group>"; };
 		45BC1F9819AE82E900053257 /* clicl.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = clicl.caf; sourceTree = "<group>"; };
 		45BC1F9919AE82E900053257 /* Explosion_asteroid.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Explosion_asteroid.caf; sourceTree = "<group>"; };
 		45BC1F9A19AE82E900053257 /* Explosion_rocket.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Explosion_rocket.caf; sourceTree = "<group>"; };
@@ -217,6 +227,7 @@
 		4564EB1619AA1761001CCC58 /* retina */ = {
 			isa = PBXGroup;
 			children = (
+				4592713A19AF8EDF0073422C /* burned_buildings_1@2x.png */,
 				4564EB5119AA763B001CCC58 /* number9@2x.png */,
 				4564EB4F19AA7634001CCC58 /* number8@2x.png */,
 				4564EB3F19AA7111001CCC58 /* number0@2x.png */,
@@ -374,10 +385,14 @@
 		45F1F4F519A3F06000EEB990 /* Game Elements */ = {
 			isa = PBXGroup;
 			children = (
+				459D604519AFE821001423DB /* numbers.atlas */,
+				459D604119AFBE77001423DB /* rocket_explosion.atlas */,
 				4564EC1619ABAC23001CCC58 /* Disorient Pixels.ttf */,
 				4564EB1619AA1761001CCC58 /* retina */,
 				4500E72519A79AF4007B3440 /* nuclear_explosion.atlas */,
 				45F1F4F719A3F07100EEB990 /* explosion.png */,
+				4592713C19AF92AB0073422C /* building_fire.atlas */,
+				4592713619AF70390073422C /* rocket_fire.atlas */,
 				45F1F4FD19A3F07100EEB990 /* singleBtn.png */,
 			);
 			name = "Game Elements";
@@ -482,6 +497,7 @@
 				4564EB4919AA7111001CCC58 /* number2@2x.png in Resources */,
 				45F1F4C219A3E98400EEB990 /* InfoPlist.strings in Resources */,
 				4564EB1D19AA1EA7001CCC58 /* buildings_3@2x.png in Resources */,
+				4592713D19AF92AB0073422C /* building_fire.atlas in Resources */,
 				4564EB3E19AA4F41001CCC58 /* pausebutton@2x.png in Resources */,
 				4564EC1719ABAC23001CCC58 /* Disorient Pixels.ttf in Resources */,
 				4564EB4B19AA7111001CCC58 /* number4@2x.png in Resources */,
@@ -497,6 +513,7 @@
 				4564EB3619AA4455001CCC58 /* asteroid_2c@2x.png in Resources */,
 				4564EB5019AA7634001CCC58 /* number8@2x.png in Resources */,
 				45F1F50619A3F07100EEB990 /* singleBtn.png in Resources */,
+				459D604219AFBE77001423DB /* rocket_explosion.atlas in Resources */,
 				4564EB2119AA2164001CCC58 /* buildings_1@2x.png in Resources */,
 				4564EB3419AA4455001CCC58 /* asteroid_2a@2x.png in Resources */,
 				45BC1F9D19AE82E900053257 /* clicl.caf in Resources */,
@@ -507,9 +524,11 @@
 				4564EB3919AA4455001CCC58 /* asteroid_3c@2x.png in Resources */,
 				4564EB3719AA4455001CCC58 /* asteroid_3a@2x.png in Resources */,
 				45F1F50019A3F07100EEB990 /* explosion.png in Resources */,
+				459D604619AFE821001423DB /* numbers.atlas in Resources */,
 				4564EB3819AA4455001CCC58 /* asteroid_3b@2x.png in Resources */,
 				4500E72619A79AF4007B3440 /* nuclear_explosion.atlas in Resources */,
 				4564EB4819AA7111001CCC58 /* number1@2x.png in Resources */,
+				4592713B19AF8EDF0073422C /* burned_buildings_1@2x.png in Resources */,
 				4564EB4A19AA7111001CCC58 /* number3@2x.png in Resources */,
 				45BC1FA019AE82E900053257 /* nuclear.caf in Resources */,
 				458DFFC319A501E50043EF9C /* SparkParticles.sks in Resources */,
@@ -517,6 +536,7 @@
 				4564EB3519AA4455001CCC58 /* asteroid_2b@2x.png in Resources */,
 				4564EB4D19AA7111001CCC58 /* number6@2x.png in Resources */,
 				4564EB2819AA3911001CCC58 /* asteroid_1a@2x.png in Resources */,
+				4592713719AF70390073422C /* rocket_fire.atlas in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

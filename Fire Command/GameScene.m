@@ -29,17 +29,24 @@ typedef enum : NSUInteger {
 
 @property (strong, nonatomic) SKSpriteNode *rocket;
 @property (strong, nonatomic) SKSpriteNode *scoreBar;
+@property (strong, nonatomic) SKSpriteNode *buildingFire;
 
-@property(nonatomic, readwrite, retain) ALBuffer* gameOverBuffer;
-@property(nonatomic, readwrite, retain) ALBuffer* mainBuffer;
-@property(nonatomic, readwrite, retain) ALSource* source;
+@property (strong, nonatomic) SKEmitterNode *rocketParticles1;
+@property (strong, nonatomic) SKEmitterNode *rocketParticles2;
+
+//@property(nonatomic, readwrite, retain) ALBuffer* gameOverBuffer;
+//@property(nonatomic, readwrite, retain) ALBuffer* mainBuffer;
+@property(nonatomic, readwrite, retain) OALSimpleAudio* source;
+
+@property(nonatomic, readwrite, retain) ALBuffer* nuclearSFX;
+
 
 @property(nonatomic, readwrite, retain) OALAudioTrack* mainTrack;
 @property(nonatomic, readwrite, retain) OALAudioTrack* gameOverTrack;
-@property(nonatomic, readwrite, retain) OALAudioTrack* asteroidExplosionSFX;
-@property(nonatomic, readwrite, retain) OALAudioTrack* rocketExplosionSFX;
-@property(nonatomic, readwrite, retain) OALAudioTrack* nuclearSFX;
-@property(nonatomic, readwrite, retain) OALAudioTrack* fireRocketSFX;
+
+@property(nonatomic, readwrite, retain) ALBuffer* asteroidExplosionSFX;
+@property(nonatomic, readwrite, retain) ALBuffer* rocketExplosionSFX;
+@property(nonatomic, readwrite, retain) ALBuffer* fireRocketSFX;
 @end
 
 @implementation GameScene {
@@ -86,6 +93,12 @@ typedef enum : NSUInteger {
     
     ALDevice* device;
     ALContext* context;
+    
+    NSArray *_textureFrames;
+    NSArray *_textureRocketExplosionFrames;
+    NSArray *_textureNuclearExplosionFrames;
+    
+    int _value;
 }
 
 -(id)initWithSize:(CGSize)size {    
@@ -115,14 +128,18 @@ typedef enum : NSUInteger {
         score = 0;
         explosionZPosition = 0;
         nextAsteroidTime = 0;
-        levelMultiplier = 5;
+        levelMultiplier = 1;
         lastRocketTimeStamp = 0;
         deviceScale = [self setDeviceScale];
         _gamePaused = NO;
         
         // load elements
-        [self generateNumbersArray];
         
+        [self generateNumbersArray];
+        [self initBuildingFire];
+        [self initrocketExplosion];
+        [self initGroundExplosion];
+        [self initParticles];
         
         // add Screen Elements
         [self addHud];
@@ -134,9 +151,13 @@ typedef enum : NSUInteger {
         [self addBuildings:2];
         
         [self addBottomEdge];
+        
+        
          // setup physics
         self.physicsWorld.gravity = CGVectorMake(0, 0);
         self.physicsWorld.contactDelegate = self;
+        
+        [self addRocketFire];
     }
     
     return self;
@@ -160,7 +181,7 @@ typedef enum : NSUInteger {
 - (void)addHud
 {
     
-    labelScore = [SKLabelNode labelNodeWithFontNamed:@"Disorient Pixels"];
+    /*labelScore = [SKLabelNode labelNodeWithFontNamed:@"Disorient Pixels"];
     NSLog(@"1");
     labelScore.text = [NSString stringWithFormat:@"0"];
     NSLog(@"2");
@@ -171,26 +192,32 @@ typedef enum : NSUInteger {
     labelScore.zPosition = 3;
     
     
-    [self addChild:labelScore];
+    [self addChild:labelScore];*/
 }
 
 - (void)updateScore:(int)addScore
 {
         score = score + addScore;
-        [labelScore setText:[NSString stringWithFormat:@"%d", score]];
-        //[self updateScoreHud:score];
+        //[labelScore setText:[NSString stringWithFormat:@"%d", score]];
+        [self updateScoreHud:score];
 }
 
 - (void)updateScoreHud:(int)value
 {
-    [self.scoreBar runAction:[SKAction removeFromParent]];
+   /* _value = value;
     
-for (int i = 0; i <= 6; i++) {
+    SKAction *remove = [SKAction runBlock:^{
+        [self.scoreBar removeFromParent];
+        self.scoreBar = [[SKSpriteNode alloc] init];
+    }];
+    
+    SKAction *updateScore = [SKAction runBlock:^{
+    for (int i = 0; i <= 6; i++) {
         
-        int number = value / pow(10,(6-i));
-        value = value - (number*pow(10,(6-i)));
+        int number = _value / pow(10,(6-i));
+        _value = _value - (number*pow(10,(6-i)));
         
-        SKSpriteNode *scoreTile = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(8, 13)];
+        SKSpriteNode *scoreTile = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(16, 26)];
         
         SKTexture *scoreTileText = _numbers[number];
         scoreTileText.filteringMode = SKTextureFilteringNearest;
@@ -199,11 +226,15 @@ for (int i = 0; i <= 6; i++) {
         scoreTileTexture.zPosition = 100;;
         [scoreTile addChild:scoreTileTexture];
         
-        scoreTile.position = CGPointMake(self.size.width/2 + (11*i), self.size.height - scoreTile.size.height/2);
+        scoreTile.position = CGPointMake(self.size.width/2 + (22*i), self.size.height - scoreTile.size.height/2);
         
         [self.scoreBar addChild:scoreTile];
     }
     [self addChild:self.scoreBar];
+    }];
+    
+    [self runAction:[SKAction sequence:@[remove,updateScore]]];*/
+    
 }
 
 - (void)addPauseButton
@@ -351,8 +382,8 @@ for (int i = 0; i <= 6; i++) {
         SKNode *asteroid = (contact.bodyA.categoryBitMask & ExplosionCategory) ? contact.bodyB.node : contact.bodyA.node;
         [asteroid runAction:[SKAction removeFromParent]];
         
-        [self addParticleExplosion:asteroid.position];
-    
+        [self addAsteroidParticles:asteroid.name onLocation:asteroid.position];
+        
         // update score
         [self updateScore:10];
         [labelScore setText:[NSString stringWithFormat:@"%d", score]];
@@ -377,9 +408,19 @@ for (int i = 0; i <= 6; i++) {
         
         NSString *launchPadName = @"launchPad";
         NSString *asteroidName = @"asteroid";
+        NSString *buildingName = @"building";
+        
+        if (asteroid.name == buildingName) {
+            [self addBurningBuilding:asteroid.position];
+        } else if (building.name == buildingName) {
+            [self addBurningBuilding:building.position];
+        }
+        
         _buildingDestroyed++;
         
-        if (building.name == asteroidName) {
+        
+        
+        if ([building.name rangeOfString:asteroidName].location != NSNotFound) {
             [self addGroundExplosion:building.position];
         } else {
             [self addGroundExplosion:asteroid.position];
@@ -389,10 +430,10 @@ for (int i = 0; i <= 6; i++) {
             [self.rocket removeFromParent];
         }
 
-        if((_buildingDestroyed == 8 || asteroid.name == launchPadName || building.name == launchPadName) && !_gameOver){
+        /*if((_buildingDestroyed == 8 || asteroid.name == launchPadName || building.name == launchPadName) && !_gameOver){
             [self gameOverScreen];
             _gameOver = YES;
-        }
+        }*/
     }
 }
 
@@ -407,7 +448,7 @@ for (int i = 0; i <= 6; i++) {
     launchPadTexture.position = CGPointMake(0, launchPadTexture.size.height/2-1);
     [launchPad addChild:launchPadTexture];
     
-    launchPad.zPosition = 1;
+    launchPad.zPosition = 10;
     launchPad.name = @"launchPad";
     
     launchPad.position = CGPointMake(self.size.width/2, launchPad.size.height/2);
@@ -468,18 +509,51 @@ for (int i = 0; i <= 6; i++) {
         _explosion.physicsBody.categoryBitMask = ExplosionCategory;
         _explosion.physicsBody.contactTestBitMask = AsteroidCategory;
         _explosion.physicsBody.collisionBitMask = 0;
-        SKAction *explosionAction = [SKAction scaleTo:0.7 duration:.4];
+        SKAction *explosionAction = [SKAction scaleTo:1 duration:.6];
         [_explosion runAction:[SKAction sequence:@[explosionAction,remove]]];
         [self addChild:_explosion];
-        [self.rocketExplosionSFX play];
+        [self addChild:[self addRocketExplosion:location]];
+        [self addRocketParticles:location];
+        //[self.rocketExplosionSFX play];
+        [self.source playBuffer:self.rocketExplosionSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
     }];
+    
+    [self.rocket addChild:[self addRocketFire]];
+    
     
     [self.rocket runAction:[SKAction sequence:@[move,callExplosion,remove]]];
     [self addRocket];
     
-    [self.fireRocketSFX play];
+    [self.source playBuffer:self.fireRocketSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+    //[self.fireRocketSFX play];
     
 }
+
+- (SKSpriteNode *)addRocketFire
+{
+    NSMutableArray *frames2 = [NSMutableArray array];
+    SKTextureAtlas *rocketFireAtlas = [SKTextureAtlas atlasNamed:@"rocket_fire"];
+    
+    int framesCount = rocketFireAtlas.textureNames.count+22;
+    for (int i=22; i < framesCount; i++) {
+        NSString *textureName = [NSString stringWithFormat:@"rocket_fire_%d", i];
+        SKTexture *texture = [rocketFireAtlas textureNamed:textureName];
+        [frames2 addObject:texture];
+    }
+    
+    NSArray *textureFrames = frames2;
+    SKTexture *textureSize = textureFrames[0];
+    
+    SKSpriteNode *rocketFire = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:textureSize.size];
+    rocketFire.position = CGPointMake(0, -30);
+    rocketFire.zRotation = M_PI;
+    rocketFire.zPosition = -10;
+    
+    [rocketFire runAction:[SKAction repeatActionForever:[SKAction animateWithTextures:textureFrames timePerFrame:0.02f resize:NO restore:YES]]];
+    
+    return rocketFire;
+}
+
 
 - (void)addBuildings:(int)spaceOrder
 {
@@ -513,6 +587,8 @@ for (int i = 0; i <= 6; i++) {
             building.position = CGPointMake((self.size.width + 38)/2 + (buildingWidth/2)*3, 0);
         }
         
+        building.name = @"building";
+        
         [building addChild:buildingTexture];
         building.zPosition = 1;
         
@@ -526,6 +602,76 @@ for (int i = 0; i <= 6; i++) {
         
         [self addChild:building];
     }
+}
+
+- (void)addBurningBuilding:(CGPoint)location
+{
+    SKSpriteNode *burnedBuilding = [SKSpriteNode spriteNodeWithImageNamed:@"burned_buildings_1"];
+    burnedBuilding.position = CGPointMake(location.x, location.y + burnedBuilding.size.height/2);
+    burnedBuilding.zPosition = 2;
+    [burnedBuilding addChild:[self addBuildingFire]];
+    [self addChild:burnedBuilding];
+}
+
+- (void)initBuildingFire
+{
+    NSMutableArray *frames = [NSMutableArray array];
+    SKTextureAtlas *buildingFireAtlas = [SKTextureAtlas atlasNamed:@"building_fire"];
+    
+    int framesCount = buildingFireAtlas.textureNames.count;
+    for (int i=0; i < framesCount; i++) {
+        NSString *textureName = [NSString stringWithFormat:@"buidling_fire_%d", i];
+        SKTexture *texture = [buildingFireAtlas textureNamed:textureName];
+        [frames addObject:texture];
+    }
+    
+    _textureFrames = frames;
+    [SKTexture preloadTextures:_textureFrames withCompletionHandler:^{}];
+
+}
+
+- (SKSpriteNode *)addBuildingFire
+{
+    //SKTexture *textureSize = _textureFrames[0];
+    
+    SKSpriteNode *buildingFire = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(111, 60)];
+    //buildingFire.position = CGPointMake(self.size.width/2, self.size.height/2);
+    buildingFire.zPosition = -10;
+    
+    [buildingFire runAction:[SKAction repeatActionForever:[SKAction animateWithTextures:_textureFrames timePerFrame:0.04f resize:NO restore:YES]]];
+    
+    return buildingFire;
+}
+
+- (void)initrocketExplosion
+{
+    NSMutableArray *frames = [NSMutableArray array];
+    SKTextureAtlas *rocketExplosionAtlas = [SKTextureAtlas atlasNamed:@"rocket_explosion"];
+    
+    int framesCount = rocketExplosionAtlas.textureNames.count;
+    for (int i=0; i < framesCount; i++) {
+        NSString *textureName = [NSString stringWithFormat:@"rocket_explosion_%d", i];
+        SKTexture *texture = [rocketExplosionAtlas textureNamed:textureName];
+        [frames addObject:texture];
+    }
+    
+    _textureRocketExplosionFrames = frames;
+    [SKTexture preloadTextures:_textureRocketExplosionFrames withCompletionHandler:^{}];
+    
+}
+
+- (SKSpriteNode *)addRocketExplosion:(CGPoint)location
+{
+    SKTexture *textureSize = _textureRocketExplosionFrames[0];
+    
+    SKSpriteNode *rocketExplosion = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:textureSize.size];
+    //buildingFire.position = CGPointMake(self.size.width/2, self.size.height/2);
+    rocketExplosion.zPosition = 10;
+    rocketExplosion.position = location;
+    
+    [rocketExplosion runAction:[SKAction animateWithTextures:_textureRocketExplosionFrames timePerFrame:0.05f resize:NO restore:YES]];
+    
+    return rocketExplosion;
 }
 
 - (void)addAstroid
@@ -547,8 +693,8 @@ for (int i = 0; i <= 6; i++) {
     }
     
     _asteroid.zPosition = 10;
-    _asteroid.name = [NSString stringWithFormat:@"asteroid"];
-    
+    //_asteroid.name = [NSString stringWithFormat:@"asteroid"];
+    NSLog(@"Asteroid name: %@", _asteroid.name);
     int startPoint = [self getRandomNumberBetween:0 to:self.size.width];
     _asteroid.position = CGPointMake(startPoint, self.size.height+_asteroid.size.width);
     
@@ -586,10 +732,13 @@ for (int i = 0; i <= 6; i++) {
     
     if (i ==1) {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_1a.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_1a"];
     } else if (i ==2) {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_1b.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_1b"];
     } else {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_1c.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_1c"];
     }
     
     
@@ -621,10 +770,13 @@ for (int i = 0; i <= 6; i++) {
     
     if (i ==1) {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_2a.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_2a"];
     } else if (i ==2) {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_2b.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_2b"];
     } else {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_2c.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_2c"];
     }
     
     CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
@@ -656,10 +808,13 @@ for (int i = 0; i <= 6; i++) {
     
     if (i ==1) {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_3a.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_3a"];
     } else if (i ==2) {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_3b.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_3b"];
     } else {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_3c.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_3c"];
     }
     
     CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
@@ -689,10 +844,13 @@ for (int i = 0; i <= 6; i++) {
     
     if (i ==1) {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_4a.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_4a"];
     } else if (i ==2) {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_4b.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_4b"];
     } else {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_4c.png"];
+        sprite.name = [NSString stringWithFormat:@"asteroid_4c"];
     }
     
     CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
@@ -714,27 +872,33 @@ for (int i = 0; i <= 6; i++) {
     return sprite;
 }
 
-- (void)addGroundExplosion:(CGPoint)location
+- (void)initGroundExplosion
 {
     NSMutableArray *frames = [NSMutableArray array];
     SKTextureAtlas *nuclearExplosionAtlas = [SKTextureAtlas atlasNamed:@"nuclear_explosion"];
     
-    int framesCount = nuclearExplosionAtlas.textureNames.count;
+    int framesCount = (int)nuclearExplosionAtlas.textureNames.count;
     for (int i=0; i < framesCount; i++) {
         NSString *textureName = [NSString stringWithFormat:@"nuclear_explosion_%d", i];
         SKTexture *texture = [nuclearExplosionAtlas textureNamed:textureName];
         [frames addObject:texture];
     }
     
-    NSArray *textureFrames = frames;
-    SKTexture *textureSize = textureFrames[0];
+    _textureNuclearExplosionFrames = frames;
+    
+    [SKTexture preloadTextures:_textureNuclearExplosionFrames withCompletionHandler:^{}];
+}
 
-    _nuclearExplosion = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:textureSize.size];
+- (void)addGroundExplosion:(CGPoint)location
+{
+    _nuclearExplosion = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(110, 80)];
     _nuclearExplosion.position = CGPointMake(location.x, _nuclearExplosion.size.height/2);
     _nuclearExplosion.zPosition = 10;
     
-    [self.nuclearSFX play];
-    [_nuclearExplosion runAction:[SKAction animateWithTextures:textureFrames
+    //[self.nuclearSFX play];
+    [self.source playBuffer:self.nuclearSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+    
+    [_nuclearExplosion runAction:[SKAction animateWithTextures:_textureNuclearExplosionFrames
                                        timePerFrame:0.1f
                                              resize:NO
                                             restore:YES]];
@@ -770,20 +934,156 @@ for (int i = 0; i <= 6; i++) {
 
 #pragma mark - Particles
 
-- (void)addParticleExplosion:(CGPoint)location
+- (void)initParticles
+{
+    self.rocketParticles1 = [self particles:[UIColor whiteColor] andNumberOfParticles:10];
+    self.rocketParticles2 = [self particles:[UIColor redColor] andNumberOfParticles:10];
+}
+
+- (void)addAsteroidParticles:(NSString *)name onLocation:(CGPoint)location
+{
+    if ([name isEqualToString:@"asteroid_1a"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:186.0/255.0 green:0.0/255.0 blue:255.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    if ([name isEqualToString:@"asteroid_1b"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:162.0/255.0 green:255.0/255.0 blue:0.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    if ([name isEqualToString:@"asteroid_1c"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:255.0/255.0 green:0.0/255.0 blue:138.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    if ([name isEqualToString:@"asteroid_2a"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:255.0/255.0 green:216.0/255.0 blue:0.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    if ([name isEqualToString:@"asteroid_2b"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:255.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    if ([name isEqualToString:@"asteroid_2c"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:207.0/255.0 green:207.0/255.0 blue:207.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    if ([name isEqualToString:@"asteroid_3a"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:8.0/255.0 green:229.0/255.0 blue:255.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    if ([name isEqualToString:@"asteroid_3b"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:255.0/255.0 green:130.0/255.0 blue:8.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    if ([name isEqualToString:@"asteroid_3c"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:8.0/255.0 green:255.0/255.0 blue:107.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    if ([name isEqualToString:@"asteroid_4a"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:0.0/255.0 green:255.0/255.0 blue:216.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    if ([name isEqualToString:@"asteroid_4b"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:0.0/255.0 green:90.0/255.0 blue:255.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    if ([name isEqualToString:@"asteroid_4c"]) {
+        [self addParticleExplosion:location withColor:[UIColor colorWithRed:231.0/255.0 green:212.0/255.0 blue:162.0/255.0 alpha:1.0] andNumberOfParticles:100];
+    }
+    
+    //[self.asteroidExplosionSFX play];
+    [self.source playBuffer:self.asteroidExplosionSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+}
+
+- (void)addRocketParticles:(CGPoint)location
+{
+    /*[self removeActionForKey:@"RocketParticleExplosion"];
+
+    SKAction *callExplosion = [SKAction runBlock:^{
+        SKEmitterNode *tmpRocketParticles1 = [SKEmitterNode node];
+        SKEmitterNode *tmpRocketParticles2 = [SKEmitterNode node];
+        tmpRocketParticles1 = self.rocketParticles1;
+        tmpRocketParticles2 = self.rocketParticles2;
+        
+        tmpRocketParticles1.position = CGPointMake(location.x,location.y);;
+        tmpRocketParticles2.position = CGPointMake(location.x,location.y);;
+        
+        SKAction *remove = [SKAction removeFromParent];
+        SKAction *wait = [SKAction waitForDuration:2.0];
+        
+        [tmpRocketParticles1 runAction:[SKAction sequence:@[wait, remove]]];
+        [tmpRocketParticles2 runAction:[SKAction sequence:@[wait, remove]]];
+        
+        [self addChild:tmpRocketParticles1];
+        [self addChild:tmpRocketParticles2];
+    }];
+    
+    [self runAction:callExplosion withKey:@"RocketParticleExplosion"];
+    SKEmitterNode *tmpRocketParticles1 = self.rocketParticles1;
+    SKEmitterNode *tmpRocketParticles2 = self.rocketParticles2;
+    
+    tmpRocketParticles1.position = location;
+    tmpRocketParticles2.position = location;
+    
+    SKAction *remove = [SKAction removeFromParent];
+    SKAction *wait = [SKAction waitForDuration:2.0];
+    
+    [tmpRocketParticles1 runAction:[SKAction sequence:@[wait, remove]]];
+    [tmpRocketParticles2 runAction:[SKAction sequence:@[wait, remove]]];
+    
+    [self addChild:tmpRocketParticles1];
+    [self addChild:tmpRocketParticles2];*/
+    
+    [self addParticleExplosion:location withColor:[UIColor whiteColor] andNumberOfParticles:10];
+    [self addParticleExplosion:location withColor:[UIColor redColor] andNumberOfParticles:10];
+}
+
+- (void)addParticleExplosion:(CGPoint)location withColor:(UIColor *)color andNumberOfParticles:(int)particles
 {
     
     SKEmitterNode *explosion = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SparkParticles" ofType:@"sks"]];
     explosion.particleColorSequence = nil;
     explosion.particlePosition = location;
     
-    [explosion setParticleColor:[UIColor whiteColor]];
-    [explosion setNumParticlesToEmit:5*deviceScale];
+    [explosion setParticleColor:color];
+    [explosion setNumParticlesToEmit:particles*deviceScale];
+    [explosion setParticleBirthRate:450];
+    [explosion setParticleLifetime:4];
+    [explosion setEmissionAngleRange:360];
+    [explosion setParticleSpeed:300*deviceScale];
+    [explosion setParticleSpeedRange:1200*deviceScale];
+    [explosion setXAcceleration:0];
+    [explosion setYAcceleration:0];
+    [explosion setParticleAlpha:0.8];
+    [explosion setParticleAlphaRange:0.2];
+    [explosion setParticleAlphaSpeed:-0.5];
+    
+    [explosion setParticleScale:1*deviceScale];
+    [explosion setParticleScaleRange:0.5];
+    [explosion setParticleScaleSpeed:-0.5];
+    
+    [explosion setParticleRotation:0];
+    [explosion setParticleRotationRange:0];
+    [explosion setParticleRotationSpeed:0];
+    
+    [explosion setParticleColorBlendFactor:1];
+    [explosion setParticleColorBlendFactorRange:0];
+    [explosion setParticleColorBlendFactorSpeed:0];
+    [explosion setParticleBlendMode:SKBlendModeAdd];
+    
+    [self addChild:explosion];
+}
+
+- (SKEmitterNode *)particles:(UIColor *)color andNumberOfParticles:(int)particles
+{
+    SKEmitterNode *explosion = [NSKeyedUnarchiver unarchiveObjectWithFile:[[NSBundle mainBundle] pathForResource:@"SparkParticles" ofType:@"sks"]];
+    explosion.particleColorSequence = nil;
+    explosion.particlePosition = CGPointMake(0,0);
+    
+    [explosion setParticleColor:color];
+    [explosion setNumParticlesToEmit:particles*deviceScale];
     [explosion setParticleBirthRate:450];
     [explosion setParticleLifetime:2];
     [explosion setEmissionAngleRange:360];
-    [explosion setParticleSpeed:200*deviceScale];
-    [explosion setParticleSpeedRange:1000*deviceScale];
+    [explosion setParticleSpeed:300*deviceScale];
+    [explosion setParticleSpeedRange:1200*deviceScale];
     [explosion setXAcceleration:0];
     [explosion setYAcceleration:0];
     [explosion setParticleAlpha:0.8];
@@ -803,8 +1103,7 @@ for (int i = 0; i <= 6; i++) {
     [explosion setParticleColorBlendFactorSpeed:0];
     [explosion setParticleBlendMode:SKBlendModeAdd];
     
-    [self addChild:explosion];
-    [self.asteroidExplosionSFX play];
+    return explosion;
 }
 
 #pragma mark - Action Methods
@@ -930,27 +1229,15 @@ for (int i = 0; i <= 6; i++) {
 - (void)generateNumbersArray
 {
     NSMutableArray *numbers = [NSMutableArray array];
+    SKTextureAtlas *numbersAtlas = [SKTextureAtlas atlasNamed:@"numbers"];
     
     for (int i=0; i <= 9; i++) {
-        NSString *textureName = [NSString stringWithFormat:@"number%d", i];
-        SKTexture *texture = [SKTexture textureWithImageNamed:textureName];
+        NSString *textureName = [NSString stringWithFormat:@"%d", i];
+        SKTexture *texture = [numbersAtlas textureNamed:textureName];
         [numbers addObject:texture];
     }
     
     _numbers = numbers;
-    /*SKTexture *textureSize = textureFrames[0];
-     
-     SKSpriteNode *nuclearExplosion = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:textureSize.size];
-     nuclearExplosion.position = CGPointMake(location.x, nuclearExplosion.size.height/2);
-     nuclearExplosion.zPosition = 10;
-     
-     [nuclearExplosion runAction:[SKAction animateWithTextures:textureFrames
-     timePerFrame:0.1f
-     resize:NO
-     restore:YES]];
-     
-     [self addChild:nuclearExplosion];
-     [self flashBackground];*/
 }
 
 #pragma mark - Play Audio
@@ -969,6 +1256,7 @@ for (int i = 0; i <= 6; i++) {
     // Mute all audio if the silent switch is turned on.
     //[OALAudioSession sharedInstance].honorSilentSwitch = YES;
     //[OALSimpleAudio sharedInstance].reservedSources = 1;
+   
     [OALSimpleAudio sharedInstance];
     
     //[[ALSource source] preloadEffect:@"Explosion_rocket.caf"];
@@ -980,21 +1268,26 @@ for (int i = 0; i <= 6; i++) {
 
 - (void)playMainMusic:(BOOL)mute
 {
-    self.source = [ALSource source];
+    //[self.source playBuffer:self.fireRocketSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+    self.source = [OALSimpleAudio sharedInstance];
     self.mainTrack = [OALAudioTrack track];
     [self.mainTrack preloadFile:MainTrackFileName];
     
-    self.asteroidExplosionSFX = [OALAudioTrack track];
-    [self.asteroidExplosionSFX preloadFile:@"Explosion_asteroid.caf"];
+    self.asteroidExplosionSFX = [[OpenALManager sharedInstance] bufferFromFile:@"Explosion_asteroid.caf"];
+    //[self.asteroidExplosionSFX preloadFile:@"Explosion_asteroid.caf"];
     
-    self.rocketExplosionSFX = [OALAudioTrack track];
-    [self.rocketExplosionSFX preloadFile:@"Explosion_rocket.caf"];
-                                 
-    self.nuclearSFX = [OALAudioTrack track];
-    [self.nuclearSFX preloadFile:@"nuclear.caf"];
+    //self.rocketExplosionSFX = [OALAudioTrack track];
+    //[self.rocketExplosionSFX preloadFile:@"Explosion_rocket.caf"];
+    self.rocketExplosionSFX = [[OpenALManager sharedInstance] bufferFromFile:@"Explosion_rocket.caf"];
     
-    self.fireRocketSFX = [OALAudioTrack track];
-    [self.fireRocketSFX preloadFile:@"rocket1.caf"];
+    //self.nuclearSFX = [OALAudioTrack track];
+    //[self.nuclearSFX preloadFile:@"nuclear.caf"];
+    self.nuclearSFX = [[OpenALManager sharedInstance] bufferFromFile:@"nuclear.caf"];
+    
+    
+    self.fireRocketSFX = [[OpenALManager sharedInstance] bufferFromFile:@"rocket1.caf"];
+    //self.fireRocketSFX = [OALAudioTrack track];
+    //[self.fireRocketSFX preloadFile:@"rocket1.caf"];
     
     self.mainTrack.numberOfLoops = -1;
     
@@ -1013,7 +1306,7 @@ for (int i = 0; i <= 6; i++) {
     // these rather than make and manage them yourself.
     
     
-    self.source = [ALSource source];
+    //self.source = [ALSource source];
     self.gameOverTrack = [OALAudioTrack track];
     [self.gameOverTrack preloadFile:GameOverTrackFileName];
     // Main music track will loop on itself
@@ -1029,8 +1322,8 @@ for (int i = 0; i <= 6; i++) {
 - (void)muteSound:(BOOL)state forScreen:(int)screen
 {
     if (state) {
-        [self.source unregisterAllNotifications];
-        [self.source stop];
+        //[self.source unregisterAllNotifications];
+        //[self.source stop];
         [self.gameOverTrack stop];
         [self.mainTrack stop];
         self.gameOverTrack.currentTime = 0;
@@ -1053,8 +1346,8 @@ for (int i = 0; i <= 6; i++) {
 
 - (void)stopBackgroundMusic
 {
-    [self.source unregisterAllNotifications];
-    [self.source stop];
+    //[self.source unregisterAllNotifications];
+    //[self.source stop];
     [self.gameOverTrack stop];
     [self.mainTrack stop];
     self.gameOverTrack.currentTime = 0;
@@ -1063,10 +1356,17 @@ for (int i = 0; i <= 6; i++) {
 
 - (void)muteSFX:(int)value
 {
-    self.asteroidExplosionSFX.volume = value;
-    self.rocketExplosionSFX.volume = value;
-    self.nuclearSFX.volume = value;
-    self.fireRocketSFX.volume = value;
+    //self.asteroidExplosionSFX.volume = value;
+    //self.rocketExplosionSFX.volume = value;
+    //self.nuclearSFX.volume = value;
+    if (value == 1) {
+        self.source.muted = NO;
+    } else {
+        self.source.muted = YES;
+    }
+    
+    //self.source.volume = value;
+    //self.fireRocketSFX.volume = value;
 }
 
 
