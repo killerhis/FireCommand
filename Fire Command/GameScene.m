@@ -28,8 +28,9 @@ typedef enum : NSUInteger {
 @interface GameScene ()
 
 @property (strong, nonatomic) SKSpriteNode *rocket;
-@property (strong, nonatomic) SKSpriteNode *scoreBar;
+@property (strong, nonatomic) SKNode *scoreBar;
 @property (strong, nonatomic) SKSpriteNode *buildingFire;
+@property (strong, nonatomic) SKSpriteNode *pauseButton;
 
 @property (strong, nonatomic) SKEmitterNode *rocketParticles1;
 @property (strong, nonatomic) SKEmitterNode *rocketParticles2;
@@ -84,10 +85,20 @@ typedef enum : NSUInteger {
     SKSpriteNode *_asteroid;
     SKSpriteNode *_nuclearExplosion;
     SKSpriteNode *_explosion;
+    SKSpriteNode *_flashBackground;
+    
+    SKSpriteNode *_n0;
+    SKSpriteNode *_n1;
+    SKSpriteNode *_n2;
+    SKSpriteNode *_n3;
+    SKSpriteNode *_n4;
+    SKSpriteNode *_n5;
+    SKSpriteNode *_n6;
     
     BOOL _gamePaused;
     BOOL _gameMute;
     BOOL _gameOver;
+    BOOL _transition;
     
     NSUserDefaults *_defaults;
     
@@ -135,6 +146,7 @@ typedef enum : NSUInteger {
         
         // load elements
         
+        [self backgroundElement];
         [self generateNumbersArray];
         [self initBuildingFire];
         [self initrocketExplosion];
@@ -180,6 +192,69 @@ typedef enum : NSUInteger {
 
 - (void)addHud
 {
+    self.scoreBar = [SKNode node];
+    
+    SKTexture *scoreTileText = _numbers[0];
+    scoreTileText.filteringMode = SKTextureFilteringNearest;
+    
+    _n0 = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
+    _n0.zPosition = 3;
+    _n0.position = CGPointMake( (22*0), self.size.height - scoreTileText.size.height/2 + 7);
+    [self.scoreBar addChild:_n0];
+    
+    _n1 = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
+    _n1.zPosition = 3;
+    _n1.position = CGPointMake((22*1), self.size.height - scoreTileText.size.height/2 + 7);
+    [self.scoreBar addChild:_n1];
+    
+    _n2 = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
+    _n2.zPosition = 3;
+    _n2.position = CGPointMake( (22*2), self.size.height - scoreTileText.size.height/2 + 7);
+    [self.scoreBar addChild:_n2];
+    
+    _n3 = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
+    _n3.zPosition = 3;
+    _n3.position = CGPointMake( (22*3), self.size.height - scoreTileText.size.height/2 + 7);
+    [self.scoreBar addChild:_n3];
+    
+    _n4 = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
+    _n4.zPosition = 3;
+    _n4.position = CGPointMake((22*4), self.size.height - scoreTileText.size.height/2 + 7);
+    [self.scoreBar addChild:_n4];
+    
+    _n5 = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
+    _n5.zPosition = 3;
+    _n5.position = CGPointMake( (22*5), self.size.height - scoreTileText.size.height/2+ 7);
+    [self.scoreBar addChild:_n5];
+    
+    _n6 = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
+    _n6.zPosition = 3;
+    _n6.position = CGPointMake( (22*6), self.size.height - scoreTileText.size.height/2+ 7);
+    [self.scoreBar addChild:_n6];
+    
+    // Add Pause Button
+    
+    self.pauseButton = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(29, 29)];
+    
+    SKTexture *pauseButtonText = [SKTexture textureWithImageNamed:@"pausebutton.png"];
+    pauseButtonText.filteringMode = SKTextureFilteringNearest;
+    
+    SKSpriteNode *pauseButtonTexture = [SKSpriteNode spriteNodeWithTexture:pauseButtonText];
+    pauseButtonTexture.zPosition = 100;;
+    pauseButtonTexture.name = @"pauseButton";
+    [self.pauseButton addChild:pauseButtonTexture];
+    
+    self.pauseButton.position = CGPointMake((22*7)+5, self.size.height - self.pauseButton.size.height/2);
+    self.pauseButton.zPosition = 100;
+    [self.scoreBar addChild:self.pauseButton];
+    
+    // center scorebar
+    
+    self.scoreBar.zPosition = 100;
+    //self.scoreBar.position = CGPointMake(self.size.width/2 + 8 - ((7*22)-5)/2, 0);
+    self.scoreBar.position = CGPointMake(self.size.width/2 - 90 , 0);
+    
+    [self addChild:self.scoreBar];
     
     /*labelScore = [SKLabelNode labelNodeWithFontNamed:@"Disorient Pixels"];
     NSLog(@"1");
@@ -204,42 +279,48 @@ typedef enum : NSUInteger {
 
 - (void)updateScoreHud:(int)value
 {
-   /* _value = value;
+    _value = value;
     
-    SKAction *remove = [SKAction runBlock:^{
-        [self.scoreBar removeFromParent];
-        self.scoreBar = [[SKSpriteNode alloc] init];
-    }];
+    //SKAction *placeTexture = [SKAction setTexture:<#(SKTexture *)#>]
     
-    SKAction *updateScore = [SKAction runBlock:^{
+    //SKAction *updateScore = [SKAction runBlock:^{
     for (int i = 0; i <= 6; i++) {
         
         int number = _value / pow(10,(6-i));
         _value = _value - (number*pow(10,(6-i)));
         
-        SKSpriteNode *scoreTile = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(16, 26)];
-        
         SKTexture *scoreTileText = _numbers[number];
         scoreTileText.filteringMode = SKTextureFilteringNearest;
         
-        SKSpriteNode *scoreTileTexture = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
-        scoreTileTexture.zPosition = 100;;
-        [scoreTile addChild:scoreTileTexture];
+        SKAction *replace = [SKAction setTexture:scoreTileText];
         
-        scoreTile.position = CGPointMake(self.size.width/2 + (22*i), self.size.height - scoreTile.size.height/2);
-        
-        [self.scoreBar addChild:scoreTile];
+        if (i == 0) {
+            [_n0 runAction:replace];
+        } else if (i == 1) {
+            [_n1 runAction:replace];
+        } else if (i == 2) {
+            [_n2 runAction:replace];
+        } else if (i == 3) {
+            [_n3 runAction:replace];
+        } else if (i == 4) {
+            [_n4 runAction:replace];
+        } else if (i == 5) {
+            [_n5 runAction:replace];
+        } else {
+            [_n6 runAction:replace];
+        }
     }
-    [self addChild:self.scoreBar];
-    }];
+    //[self addChild:self.scoreBar];
+    //}];
     
-    [self runAction:[SKAction sequence:@[remove,updateScore]]];*/
+    //[self.scoreBar runAction:updateScore];
+    //[self runAction:[SKAction sequence:@[remove,updateScore]]];*/
     
 }
 
 - (void)addPauseButton
 {
-    SKSpriteNode *pauseButton = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(26, 26)];
+    /*SKSpriteNode *pauseButton = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(26, 26)];
     
     SKTexture *pauseButtonText = [SKTexture textureWithImageNamed:@"pausebutton.png"];
     pauseButtonText.filteringMode = SKTextureFilteringNearest;
@@ -251,11 +332,13 @@ typedef enum : NSUInteger {
     
     pauseButton.position = CGPointMake(self.size.width/2, self.size.height - pauseButton.size.height/2);
     pauseButton.zPosition = 100;
-    [self addChild:pauseButton];
+    [self.scoreBar addChild:pauseButton];*/
 }
 
 - (void)showPauseScreen:(BOOL)show
 {
+    _transition = YES;
+    
     if (show) {
         _gamePaused = YES;
         _pauseScreen = [[SKNode alloc] init];
@@ -278,6 +361,7 @@ typedef enum : NSUInteger {
         [_pauseScreen addChild:muteButton];
         
         [_pauseScreen runAction:[SKAction moveToY:self.size.height/2 duration:0.2] completion:^{
+            _transition = NO;
             self.view.paused = YES;
         }];
         
@@ -289,7 +373,9 @@ typedef enum : NSUInteger {
         SKAction *move = [SKAction moveToY:self.size.height*1.5 duration:0.5];
         SKAction *remove = [SKAction removeFromParent];
         
-        [_pauseScreen runAction:[SKAction sequence:@[move,remove]]];
+        [_pauseScreen runAction:[SKAction sequence:@[move,remove]] completion:^{
+            _transition = NO;
+        }];
     }
 }
 
@@ -347,30 +433,34 @@ typedef enum : NSUInteger {
         
         NSLog(@"node: %@", node.name);
         
-        if (location.y < 60) return;
-        
-        if ([node.name isEqualToString:@"pauseButton"] && !_gameOver) {
-            [self pauseGame];
+        if (!_transition) {
             
-        } else if ([node.name isEqualToString:@"resumeButton"] && !_gameOver) {
-            [self pauseGame];
-        } else if ([node.name isEqualToString:@"replayButton"]) {
-            [self replayGame];
-        } else if ([node.name isEqualToString:@"muteButton"]) {
-            if (!_gameMute) {
-                [self muteSound:YES forScreen:1];
-            } else {
-                [self muteSound:NO forScreen:1];
+            if (location.y < 60) return;
+            NSLog(@"node nane:%@ & gameover:%hhd", node.name, _gameOver);
+            
+            if ([node.name isEqualToString:@"pauseButton"] && !_gameOver) {
+                [self pauseGame];
+                
+            } else if ([node.name isEqualToString:@"resumeButton"] && !_gameOver) {
+                [self pauseGame];
+            } else if ([node.name isEqualToString:@"replayButton"]) {
+                [self replayGame];
+            } else if ([node.name isEqualToString:@"muteButton"]) {
+                if (!_gameMute) {
+                    [self muteSound:YES forScreen:1];
+                } else {
+                    [self muteSound:NO forScreen:1];
+                }
+            } else if ([node.name isEqualToString:@"gameOverMuteButton"]) {
+                if (!_gameMute) {
+                    [self muteSound:YES forScreen:2];
+                } else {
+                    [self muteSound:NO forScreen:2];
+                }
+            } else if (fabsf(currentTimeStamp - lastRocketTimeStamp) > rocketReloadTime && !_gameOver && !_gamePaused) {
+                [self fireRocket:location];
+                lastRocketTimeStamp = currentTimeStamp;
             }
-        } else if ([node.name isEqualToString:@"gameOverMuteButton"]) {
-            if (!_gameMute) {
-                [self muteSound:YES forScreen:2];
-            } else {
-                [self muteSound:NO forScreen:2];
-            }
-        } else if (fabsf(currentTimeStamp - lastRocketTimeStamp) > rocketReloadTime && !_gameOver && !_gamePaused) {
-            [self fireRocket:location];
-            lastRocketTimeStamp = currentTimeStamp;
         }
     }
 }
@@ -438,6 +528,21 @@ typedef enum : NSUInteger {
 }
 
 #pragma mark - Game Elements
+
+- (void)backgroundElement
+{
+    SKSpriteNode *background = [SKSpriteNode spriteNodeWithImageNamed:@"background"];
+    background.zPosition = -100;
+    //background.alpha = 0.2;
+    background.position = CGPointMake(self.size.width/2, self.size.height/2);
+    [self addChild:background];
+    
+    _flashBackground = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:self.size];
+    _flashBackground.position = CGPointMake(self.size.width/2, self.size.height/2);
+    _flashBackground.zPosition = 10;
+    
+    [self addChild:_flashBackground];
+}
 
 - (void)addLaunchPad
 {
@@ -911,9 +1016,11 @@ typedef enum : NSUInteger {
 {
     [self removeActionForKey:@"flash"];
     [self runAction:[SKAction sequence:@[[SKAction repeatAction:[SKAction sequence:@[[SKAction runBlock:^{
-        self.backgroundColor = [SKColor colorWithRed:1.0 green:1.0 blue:220.0/255.0 alpha:1.0];
+        //self.backgroundColor = [SKColor colorWithRed:1.0 green:1.0 blue:220.0/255.0 alpha:1.0];
+        _flashBackground.color = [SKColor colorWithRed:1.0 green:1.0 blue:220.0/255.0 alpha:1.0];
     }], [SKAction waitForDuration:0.05], [SKAction runBlock:^{
-        self.backgroundColor = [SKColor blackColor];
+        //self.backgroundColor = [SKColor blackColor];
+        _flashBackground.color = [SKColor clearColor];
     }], [SKAction waitForDuration:0.05]]] count:1]]] withKey:@"flash"];
 }
 
@@ -1238,6 +1345,7 @@ typedef enum : NSUInteger {
     }
     
     _numbers = numbers;
+    [SKTexture preloadTextures:_numbers withCompletionHandler:^{}];
 }
 
 #pragma mark - Play Audio
