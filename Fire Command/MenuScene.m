@@ -42,6 +42,8 @@
     BOOL _startGame;
     BOOL showAsteroid;
     
+    float _scale;
+    
     NSUserDefaults *_defaults;
     
     SKScene *scene;
@@ -65,6 +67,7 @@
         [self initGroundExplosion];
         nextAsteroidTime = 0;
         showAsteroid = NO;
+        [self setDeviceScale];
     }
     
     return self;
@@ -189,8 +192,6 @@
         CGPoint location = [touch locationInNode:self];
         SKNode *node = [self nodeAtPoint:location];
         
-        NSLog(@"node: %@", node.name);
-        
         if ([node.name isEqualToString:@"soundbutton"]) {
             [self soundButtonPressed];
             if(!_gameMute) {
@@ -221,11 +222,11 @@
     asteroid.position = CGPointMake(self.size.width + asteroid.size.width, self.size.height + asteroid.size.height);
     
     SKAction *rotate = [SKAction repeatActionForever:[SKAction rotateByAngle:M_PI*2 duration:3]];
-    SKAction *move = [SKAction moveTo:CGPointMake(self.size.width/2 - title.size.width/4 + 10, self.size.height/2 + title.size.height - 15) duration:0.7];
+    SKAction *move = [SKAction moveTo:CGPointMake(self.size.width/2 - title.size.width/4 + 10*_scale, self.size.height/2 + title.size.height - 15*_scale) duration:0.7];
     
     [asteroid runAction:rotate];
     [asteroid runAction:move completion:^{
-        [self addGroundExplosion:CGPointMake(asteroid.position.x, asteroid.position.y - asteroid.size.height/2 + 15)];
+        [self addGroundExplosion:CGPointMake(asteroid.position.x, asteroid.position.y - asteroid.size.height/2 + 15*_scale)];
         
         SKTexture *titleTexture = [SKTexture textureWithImageNamed:@"title_clean.png"];
         [title runAction:[SKAction setTexture:titleTexture]];
@@ -259,8 +260,6 @@
     }
     
     _asteroid.zPosition = -10;
-    //_asteroid.name = [NSString stringWithFormat:@"asteroid"];
-    NSLog(@"Asteroid name: %@", _asteroid.name);
     
     int edge = [self getRandomNumberBetween:0 to:1];
     SKAction *move;
@@ -313,25 +312,6 @@
         sprite.name = [NSString stringWithFormat:@"asteroid_1c"];
     }
     
-    
-    CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
-    CGFloat offsetY = sprite.frame.size.height * sprite.anchorPoint.y;
-    
-    CGMutablePathRef path = CGPathCreateMutable();
-    
-    CGPathMoveToPoint(path, NULL, 18 - offsetX, 46 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 35 - offsetX, 46 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 48 - offsetX, 28 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 39 - offsetX, 10 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 29 - offsetX, 7 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 15 - offsetX, 10 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 19 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 12 - offsetX, 34 - offsetY);
-    
-    CGPathCloseSubpath(path);
-    
-    //sprite.physicsBody = [SKPhysicsBody bodyWithPolygonFromPath:path];
-    
     return sprite;
 }
 
@@ -350,25 +330,6 @@
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_2c.png"];
         sprite.name = [NSString stringWithFormat:@"asteroid_2c"];
     }
-    
-    CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
-    CGFloat offsetY = sprite.frame.size.height * sprite.anchorPoint.y;
-    
-    CGMutablePathRef path = CGPathCreateMutable();
-    
-    CGPathMoveToPoint(path, NULL, 24 - offsetX, 35 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 32 - offsetX, 35 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 38 - offsetX, 33 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 44 - offsetX, 24 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 38 - offsetX, 15 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 23 - offsetX, 15 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 12 - offsetX, 18 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 24 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 13 - offsetX, 29 - offsetY);
-    
-    CGPathCloseSubpath(path);
-    
-    //sprite.physicsBody = [SKPhysicsBody bodyWithPolygonFromPath:path];
     
     return sprite;
 }
@@ -389,23 +350,6 @@
         sprite.name = [NSString stringWithFormat:@"asteroid_3c"];
     }
     
-    CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
-    CGFloat offsetY = sprite.frame.size.height * sprite.anchorPoint.y;
-    
-    CGMutablePathRef path = CGPathCreateMutable();
-    
-    CGPathMoveToPoint(path, NULL, 28 - offsetX, 36 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 37 - offsetX, 30 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 37 - offsetX, 22 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 26 - offsetX, 13 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 14 - offsetX, 19 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 14 - offsetX, 30 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 20 - offsetX, 36 - offsetY);
-    
-    CGPathCloseSubpath(path);
-    
-    //sprite.physicsBody = [SKPhysicsBody bodyWithPolygonFromPath:path];
-    
     return sprite;
 }
 
@@ -425,22 +369,6 @@
         sprite.name = [NSString stringWithFormat:@"asteroid_4c"];
     }
     
-    CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
-    CGFloat offsetY = sprite.frame.size.height * sprite.anchorPoint.y;
-    
-    CGMutablePathRef path = CGPathCreateMutable();
-    
-    CGPathMoveToPoint(path, NULL, 13 - offsetX, 21 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 20 - offsetX, 18 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 23 - offsetX, 14 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 16 - offsetX, 7 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 14 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 18 - offsetY);
-    
-    CGPathCloseSubpath(path);
-    
-    //sprite.physicsBody = [SKPhysicsBody bodyWithPolygonFromPath:path];
-    
     return sprite;
 }
 
@@ -450,7 +378,7 @@
     NSMutableArray *frames = [NSMutableArray array];
     SKTextureAtlas *nuclearExplosionAtlas = [SKTextureAtlas atlasNamed:@"nuclear_explosion"];
     
-    int framesCount = (int)nuclearExplosionAtlas.textureNames.count;
+    int framesCount = (int)nuclearExplosionAtlas.textureNames.count/3;
     for (int i=0; i < framesCount; i++) {
         NSString *textureName = [NSString stringWithFormat:@"nuclear_explosion_%d", i];
         SKTexture *texture = [nuclearExplosionAtlas textureNamed:textureName];
@@ -464,12 +392,9 @@
 
 - (void)addGroundExplosion:(CGPoint)location
 {
-    SKSpriteNode *nuclearExplosion = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(110, 80)];
+    SKSpriteNode *nuclearExplosion = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(110*_scale, 80*_scale)];
     nuclearExplosion.position = CGPointMake(location.x, location.y + nuclearExplosion.size.height/2);
     nuclearExplosion.zPosition = 30;
-    
-    //[self.nuclearSFX play];
-    //[self.source playBuffer:self.nuclearSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
     
     [nuclearExplosion runAction:[SKAction animateWithTextures:_textureNuclearExplosionFrames
                                                  timePerFrame:0.1f
@@ -495,17 +420,14 @@
 
 #pragma mark - Helper Methods
 
-- (float)DeviceScale
+- (void)setDeviceScale
 {
-    float scaleTextures;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        scaleTextures = 2.0;
+        _scale = 2.0;
     } else {
-        scaleTextures = 1.0;
+        _scale = 1.0;
     }
-    
-    return scaleTextures;
 }
 
 - (void)soundButtonPressed
@@ -599,8 +521,6 @@
         [self.mainTrack preloadFile:kLoopTrackFileName];
         // Main music track will loop on itself
         self.mainTrack.numberOfLoops = -1;
-        
-        //NSLog(@"%f", self.introBuffer.duration);
         
         // BUffer SFX
         self.sourceSFX = [OALSimpleAudio sharedInstance];
