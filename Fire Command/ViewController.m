@@ -22,35 +22,6 @@
     //Game Center
     [[GameCenterManager sharedManager] setDelegate:self];
     
-    
-
-    
-        /*GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
-        
-        localPlayer.authenticateHandler = ^(UIViewController * viewController, NSError *error) {
-            if (viewController != nil) {
-                [(ViewController *)self.view.window.rootViewController presentViewController: viewController animated:YES completion:nil];
-                NSLog(@"Load login viewcontroller");
-            } else {
-                if ([GKLocalPlayer localPlayer].authenticated) {
-                    _gameCenterEnabled = YES;
-                    
-                    [[GKLocalPlayer localPlayer] loadDefaultLeaderboardIdentifierWithCompletionHandler:^(NSString *leaderboardIdentifier, NSError *error) {
-                        
-                        if (error !=nil) {
-                            NSLog(@"%@", [error localizedDescription]);
-                        } else {
-                            _leaderboardIdentifier = leaderboardIdentifier;
-                            NSLog(@"leaderboardID:'%@'", leaderboardIdentifier);
-                        }
-                    }];
-                } else {
-                    _gameCenterEnabled = NO;
-                }
-            }
-            
-        };*/
-    
     // Configure the view.
     self.skView = (SKView *)self.view;
     
@@ -60,8 +31,6 @@
     
     // Present the scene.
     [self.skView presentScene:scene];
-    
-    
 }
 
 - (BOOL)shouldAutorotate
@@ -82,7 +51,6 @@
 {
     [super didReceiveMemoryWarning];
     // Release any cached data, images, etc that aren't in use.
-    NSLog(@"MEMORY WARMING!");
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -95,7 +63,6 @@
     [self presentViewController:gameCenterLoginController animated:YES completion:^{
         NSLog(@"Done presenting gamecenter");
     }];
-    NSLog(@"Busy Presenting");
 }
 
 

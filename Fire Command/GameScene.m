@@ -8,7 +8,7 @@
 
 #import "GameScene.h"
 #import "ViewController.h"
-//#import "GAIDictionaryBuilder.h"
+#import "GAIDictionaryBuilder.h"
 #import <ObjectAL/ObjectAL.h>
 #import "GameCenterManager.h"
 
@@ -24,9 +24,9 @@ static float kExplosionRadius = 0.9;  //scale of explosion radius
 static float kExplosionTime = 0.6; //duration time of explosion
 
 //Varaible
-static float kLevelMultiplier = 1.0; //time multiplier of next asteroid
-static float kminAsteroidTime = 5; //min asteroid travel time
-static float kmaxAsteroidTime = 15; //max asteroid travel time
+static float kLevelMultiplier = 3.0; //time multiplier of next asteroid
+static float kminAsteroidTime = 3.0; //min asteroid travel time
+static float kmaxAsteroidTime = 6.0; //max asteroid travel time
 
 
 typedef enum : NSUInteger {
@@ -42,15 +42,9 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic) SKSpriteNode *buildingFire;
 @property (strong, nonatomic) SKSpriteNode *pauseButton;
 
-@property (strong, nonatomic) SKEmitterNode *rocketParticles1;
-@property (strong, nonatomic) SKEmitterNode *rocketParticles2;
-
-//@property(nonatomic, readwrite, retain) ALBuffer* gameOverBuffer;
-//@property(nonatomic, readwrite, retain) ALBuffer* mainBuffer;
 @property(nonatomic, readwrite, retain) OALSimpleAudio* source;
 
 @property(nonatomic, readwrite, retain) ALBuffer* nuclearSFX;
-
 
 @property(nonatomic, readwrite, retain) OALAudioTrack* mainTrack;
 @property(nonatomic, readwrite, retain) OALAudioTrack* gameOverTrack;
@@ -63,7 +57,6 @@ typedef enum : NSUInteger {
 @end
 
 @implementation GameScene {
-    
     
     SKLabelNode *labelflowerBullets1;
     SKLabelNode *labelflowerBullets2;
@@ -131,20 +124,19 @@ typedef enum : NSUInteger {
     int _value;
 }
 
--(id)initWithSize:(CGSize)size {    
+-(id)initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
         
         // GA
-        //id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-        //[tracker set:kGAIScreenName value:@"GameScene"];
-        //[tracker send:[[GAIDictionaryBuilder createAppView] build]];        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"GameScene"];
+        [tracker send:[[GAIDictionaryBuilder createAppView] build]];
         
         // Play Music
         [self initAudio];
         _defaults = [NSUserDefaults standardUserDefaults];
         _gameMute = [_defaults boolForKey:@"gameMute"];
-
-        //_gameMute = NO;
+        
         [self playMainMusic:_gameMute];
         
         _gameOver = NO;
@@ -166,19 +158,17 @@ typedef enum : NSUInteger {
         levelMultiplier = kLevelMultiplier; //avg time for next asteroid in sec,
         minAsteroidTime = kminAsteroidTime;
         maxAsteroidTime = kmaxAsteroidTime;
-        // load elements
         
+        // load elements
         [self backgroundElement];
         [self generateNumbersArray];
         [self initBuildingFire];
         [self initrocketExplosion];
         [self initGroundExplosion];
-        [self initParticles];
         [self initRocketFire];
         
         // add Screen Elements
         [self addHud];
-        [self addPauseButton];
         [self updateScore:0];
         [self addLaunchPad];
         
@@ -188,7 +178,7 @@ typedef enum : NSUInteger {
         [self addBottomEdge];
         
         
-         // setup physics
+        // setup physics
         self.physicsWorld.gravity = CGVectorMake(0, 0);
         self.physicsWorld.contactDelegate = self;
         
@@ -203,12 +193,11 @@ typedef enum : NSUInteger {
     
     if (currentTime > nextAsteroidTime || nextAsteroidTime - currentTime > 5) {
         nextAsteroidTime = ([self getRandomDouble] * levelMultiplier) + currentTime;
-
+        
         [self addAstroid];
     }
     
     currentTimeStamp = currentTime;
-    
 }
 
 #pragma mark - UI Elements
@@ -274,30 +263,15 @@ typedef enum : NSUInteger {
     // center scorebar
     
     self.scoreBar.zPosition = 100;
-    //self.scoreBar.position = CGPointMake(self.size.width/2 + 8 - ((7*22)-5)/2, 0);
     self.scoreBar.position = CGPointMake(self.size.width/2 - ((22*7*_scale)+15*_scale)/2, 0);
     
     [self addChild:self.scoreBar];
-    
-    /*labelScore = [SKLabelNode labelNodeWithFontNamed:@"Disorient Pixels"];
-    NSLog(@"1");
-    labelScore.text = [NSString stringWithFormat:@"0"];
-    NSLog(@"2");
-    labelScore.fontSize = 26;
-    labelScore.horizontalAlignmentMode = SKLabelHorizontalAlignmentModeLeft;
-    
-    labelScore.position = CGPointMake(self.size.width/2 + 20, self.size.height-labelScore.frame.size.height);
-    labelScore.zPosition = 3;
-    
-    
-    [self addChild:labelScore];*/
 }
 
 - (void)updateScore:(int)addScore
 {
-        score = score + addScore;
-        //[labelScore setText:[NSString stringWithFormat:@"%d", score]];
-        [self updateScoreHud:score];
+    score = score + addScore;
+    [self updateScoreHud:score];
     [self levelUpdate];
 }
 
@@ -305,9 +279,6 @@ typedef enum : NSUInteger {
 {
     _value = value;
     
-    //SKAction *placeTexture = [SKAction setTexture:;]
-    
-    //SKAction *updateScore = [SKAction runBlock:^{
     for (int i = 0; i <= 6; i++) {
         
         int number = _value / pow(10,(6-i));
@@ -334,29 +305,6 @@ typedef enum : NSUInteger {
             [_n6 runAction:replace];
         }
     }
-    //[self addChild:self.scoreBar];
-    //}];
-    
-    //[self.scoreBar runAction:updateScore];
-    //[self runAction:[SKAction sequence:@[remove,updateScore]]];*/
-    
-}
-
-- (void)addPauseButton
-{
-    /*SKSpriteNode *pauseButton = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(26, 26)];
-    
-    SKTexture *pauseButtonText = [SKTexture textureWithImageNamed:@"pausebutton.png"];
-    pauseButtonText.filteringMode = SKTextureFilteringNearest;
-    
-    SKSpriteNode *pauseButtonTexture = [SKSpriteNode spriteNodeWithTexture:pauseButtonText];
-    pauseButtonTexture.zPosition = 100;;
-    pauseButtonTexture.name = @"pauseButton";
-    [pauseButton addChild:pauseButtonTexture];
-    
-    pauseButton.position = CGPointMake(self.size.width/2, self.size.height - pauseButton.size.height/2);
-    pauseButton.zPosition = 100;
-    [self.scoreBar addChild:pauseButton];*/
 }
 
 - (void)showPauseScreen:(BOOL)show
@@ -413,23 +361,23 @@ typedef enum : NSUInteger {
             _transition = NO;
         }];
     }
-    
-
 }
 
 - (void)gameOverScreen
 {
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"GameOverScene"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+    
     [self stopBackgroundMusic];
     [self playGameOverMusic:_gameMute];
     int bestScore = [self saveScore];
-
+    
     // Hide scorebar
     [self.scoreBar runAction:[SKAction fadeAlphaTo:0.0 duration:0.2]];
     
     
     // mute SFX
-    //[self muteSFX:0];
-    
     _gameOverScreen = [[SKNode alloc] init];
     _gameOverScreen.zPosition = 100;
     _gameOverScreen.name = @"gameOverScreen";
@@ -452,17 +400,15 @@ typedef enum : NSUInteger {
     [_gameOverScreen addChild:_muteButton];
     
     SKSpriteNode *gameCenterButton = [SKSpriteNode spriteNodeWithImageNamed:@"gamecenterbutton.png"];
-    //gameCenterButton.alpha = 0.0;
     gameCenterButton.name = @"gamecenterbutton";
     gameCenterButton.position = CGPointMake(-self.size.width/4, -self.size.height/2 + 2* self.size.height/7);
     [_gameOverScreen addChild:gameCenterButton];
     
     SKSpriteNode *rateButton = [SKSpriteNode spriteNodeWithImageNamed:@"rate.png"];
-    //gameCenterButton.alpha = 0.0;
     rateButton.name = @"ratebutton";
     rateButton.position = CGPointMake(-self.size.width/4, -self.size.height/2 + self.size.height/7);
     [_gameOverScreen addChild:rateButton];
-   
+    
     SKSpriteNode *facebookButton = [SKSpriteNode spriteNodeWithImageNamed:@"facebook.png"];
     facebookButton.position = CGPointMake(0, -self.size.height/2 + self.size.height/7);
     facebookButton.name = @"facebookButton";
@@ -513,7 +459,7 @@ typedef enum : NSUInteger {
     for (UITouch *touch in touches) {
         CGPoint location = [touch locationInNode:self];
         SKNode *node = [self nodeAtPoint:location];
-
+        
         
         if (!_transition) {
             
@@ -544,7 +490,7 @@ typedef enum : NSUInteger {
                 } else if ([node.name isEqualToString:@"facebookButton"] || [node.name isEqualToString:@"twitterButton"]) {
                     [self shareScore];
                     [self.source playBuffer:self.clickSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
-
+                    
                 }
                 
             } else if ([node.name isEqualToString:@"muteButton"]) {
@@ -570,12 +516,10 @@ typedef enum : NSUInteger {
         
         [self addAsteroidParticles:asteroid.name onLocation:asteroid.position];
         
-        NSLog(@"asteroid name:%@", asteroid.name);
-        
         // update score
         [self updateScore:10];
         [labelScore setText:[NSString stringWithFormat:@"%d", score]];
-
+        
     } else {
         // Collision Between Asteroid & Building/Ground
         SKNode *building = (contact.bodyA.categoryBitMask & BuildingCategory) ? contact.bodyA.node : contact.bodyB.node;
@@ -602,7 +546,7 @@ typedef enum : NSUInteger {
             [self addBurningBuilding:building.position];
             _buildingDestroyed++;
         }
-
+        
         if ([building.name rangeOfString:asteroidName].location != NSNotFound) {
             [self addGroundExplosion:building.position];
         } else {
@@ -612,7 +556,7 @@ typedef enum : NSUInteger {
         if (building.name == launchPadName || asteroid.name == launchPadName) {
             [self.rocket removeFromParent];
         }
-
+        
         if((_buildingDestroyed >= 8 || asteroid.name == launchPadName || building.name == launchPadName) && !_gameOver){
             [self gameOverScreen];
             _gameOver = YES;
@@ -627,7 +571,6 @@ typedef enum : NSUInteger {
 {
     SKSpriteNode *background = [SKSpriteNode spriteNodeWithImageNamed:@"background"];
     background.zPosition = -100;
-    //background.alpha = 0.2;
     background.position = CGPointMake(self.size.width/2, self.size.height/2);
     [self addChild:background];
     
@@ -682,7 +625,7 @@ typedef enum : NSUInteger {
     self.rocket.position = CGPointMake(self.size.width/2,-rocketTexture.size.height/2);
     
     SKAction *move =[SKAction moveTo:CGPointMake(self.size.width/2,self.rocket.size.height/2 + 18*_scale) duration:rocketReloadTime];
-
+    
     [self.rocket runAction:move];
     [self addChild:self.rocket];
 }
@@ -719,9 +662,8 @@ typedef enum : NSUInteger {
         [self addChild:_explosion];
         [self addChild:[self addRocketExplosion:location]];
         [self addRocketParticles:location];
-        //[self.rocketExplosionSFX play];
         if (!_gameOver) {
-        [self.source playBuffer:self.rocketExplosionSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+            [self.source playBuffer:self.rocketExplosionSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
         }
     }];
     
@@ -731,16 +673,14 @@ typedef enum : NSUInteger {
     [self.rocket runAction:[SKAction sequence:@[move,callExplosion,remove]]];
     [self addRocket];
     if (!_gameOver) {
-    [self.source playBuffer:self.fireRocketSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+        [self.source playBuffer:self.fireRocketSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
     }
-    //[self.fireRocketSFX play];
-    
 }
 
 - (void)initRocketFire
 {
     NSMutableArray *frames = [NSMutableArray array];
-
+    
     for (int i=22; i <= 55; i++) {
         NSString *textureName = [NSString stringWithFormat:@"rocket_fire_%d", i];
         SKTexture *texture = [SKTexture textureWithImageNamed:textureName];
@@ -754,17 +694,6 @@ typedef enum : NSUInteger {
 
 - (SKSpriteNode *)addRocketFire
 {
-    /*NSMutableArray *frames2 = [NSMutableArray array];
-    SKTextureAtlas *rocketFireAtlas = [SKTextureAtlas atlasNamed:@"rocket_fire"];
-    
-    int framesCount = rocketFireAtlas.textureNames.count+22;
-    for (int i=22; i < framesCount; i++) {
-        NSString *textureName = [NSString stringWithFormat:@"rocket_fire_%d", i];
-        SKTexture *texture = [rocketFireAtlas textureNamed:textureName];
-        [frames2 addObject:texture];
-    }
-    
-    NSArray *textureFrames = frames2;*/
     SKTexture *textureSize = _rocketTextureFrames[0];
     
     SKSpriteNode *rocketFire = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:textureSize.size];
@@ -797,10 +726,10 @@ typedef enum : NSUInteger {
             buildingTexture.zPosition = 2;
             building.position = CGPointMake(buildingTexture.size.width/2 - 11*_scale, 0);
         } else if (i == 2) {
-            //buildingTexture.position = CGPointMake(-7*_scale, buildingTexture.size.height/2);
+            
             buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
             buildingTexture.zPosition = 3;
-            //building.position = CGPointMake((buildingWidth/2)*3, 0);
+            
             building.position = CGPointMake((self.size.width/2) - buildingTexture.size.width/2 - 16*_scale, 0);
         } else if (i == 3) {
             buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
@@ -816,7 +745,6 @@ typedef enum : NSUInteger {
         
         [building addChild:buildingTexture];
         building.zPosition = 1;
-        
         
         // Add Physics
         building.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:building.size];
@@ -841,27 +769,22 @@ typedef enum : NSUInteger {
 - (void)initBuildingFire
 {
     NSMutableArray *frames = [NSMutableArray array];
-    //SKTextureAtlas *buildingFireAtlas = [SKTextureAtlas atlasNamed:@"building_fire"];
     
-    //int framesCount = buildingFireAtlas.textureNames.count/3;
     for (int i=0; i <= 247; i++) {
         NSString *textureName = [NSString stringWithFormat:@"buidling_fire_%d", i];
-        //SKTexture *texture = [buildingFireAtlas textureNamed:textureName];
         SKTexture *texture = [SKTexture textureWithImageNamed:textureName];
         [frames addObject:texture];
     }
     
     _textureFrames = frames;
     [SKTexture preloadTextures:_textureFrames withCompletionHandler:^{}];
-
+    
 }
 
 - (SKSpriteNode *)addBuildingFire
 {
-    //SKTexture *textureSize = _textureFrames[0];
-    
     SKSpriteNode *buildingFire = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(111*_scale, 60*_scale)];
-    //buildingFire.position = CGPointMake(self.size.width/2, self.size.height/2);
+    
     buildingFire.zPosition = -10;
     
     [buildingFire runAction:[SKAction repeatActionForever:[SKAction animateWithTextures:_textureFrames timePerFrame:0.04f resize:NO restore:YES]]];
@@ -872,12 +795,9 @@ typedef enum : NSUInteger {
 - (void)initrocketExplosion
 {
     NSMutableArray *frames = [NSMutableArray array];
-    //SKTextureAtlas *rocketExplosionAtlas = [SKTextureAtlas atlasNamed:@"rocket_explosion"];
     
-    //int framesCount = rocketExplosionAtlas.textureNames.count/3;
     for (int i=0; i <= 24; i++) {
         NSString *textureName = [NSString stringWithFormat:@"rocket_explosion_%d", i];
-        //SKTexture *texture = [rocketExplosionAtlas textureNamed:textureName];
         SKTexture *texture = [SKTexture textureWithImageNamed:textureName];
         [frames addObject:texture];
     }
@@ -892,7 +812,7 @@ typedef enum : NSUInteger {
     SKTexture *textureSize = _textureRocketExplosionFrames[0];
     
     SKSpriteNode *rocketExplosion = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:textureSize.size];
-    //buildingFire.position = CGPointMake(self.size.width/2, self.size.height/2);
+    
     rocketExplosion.zPosition = 10;
     rocketExplosion.position = location;
     
@@ -903,10 +823,6 @@ typedef enum : NSUInteger {
 
 - (void)addAstroid
 {
-    //SKSpriteNode *asteroid = [SKSpriteNode spriteNodeWithColor:[SKColor greenColor] size:CGSizeMake(20, 20)];
-    //asteroid.scale = deviceScale;
-    
-    
     int i = [self getRandomNumberBetween:1 to:4];
     
     if (i ==1) {
@@ -920,12 +836,10 @@ typedef enum : NSUInteger {
     }
     
     _asteroid.zPosition = 10;
-    //_asteroid.name = [NSString stringWithFormat:@"asteroid"];
-
+    
     int startPoint = [self getRandomNumberBetween:0 to:self.size.width];
     _asteroid.position = CGPointMake(startPoint, self.size.height+_asteroid.size.width);
     
-    //asteroid.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:asteroid.size.height/2];
     _asteroid.physicsBody.dynamic = NO;
     _asteroid.physicsBody.categoryBitMask = AsteroidCategory;
     _asteroid.physicsBody.contactTestBitMask = ExplosionCategory | BuildingCategory;
@@ -946,7 +860,7 @@ typedef enum : NSUInteger {
     } else {
         rotateDirection = 1;
     }
-
+    
     SKAction *rotate = [SKAction repeatActionForever:[SKAction rotateByAngle:rotateDirection*M_PI*2 duration:rotateDuration]];
     [_asteroid runAction:rotate];
     [self addChild:_asteroid];
@@ -967,7 +881,6 @@ typedef enum : NSUInteger {
         sprite = [SKSpriteNode spriteNodeWithImageNamed:@"asteroid_1c.png"];
         sprite.name = [NSString stringWithFormat:@"asteroid_1c"];
     }
-    
     
     CGFloat offsetX = sprite.frame.size.width * sprite.anchorPoint.x;
     CGFloat offsetY = sprite.frame.size.height * sprite.anchorPoint.y;
@@ -1102,12 +1015,9 @@ typedef enum : NSUInteger {
 - (void)initGroundExplosion
 {
     NSMutableArray *frames = [NSMutableArray array];
-    //SKTextureAtlas *nuclearExplosionAtlas = [SKTextureAtlas atlasNamed:@"nuclear_explosion"];
     
-    //int framesCount = (int)nuclearExplosionAtlas.textureNames.count/3;
     for (int i=0; i <= 20; i++) {
         NSString *textureName = [NSString stringWithFormat:@"nuclear_explosion_%d", i];
-        //SKTexture *texture = [nuclearExplosionAtlas textureNamed:textureName];
         SKTexture *texture = [SKTexture textureWithImageNamed:textureName];
         [frames addObject:texture];
     }
@@ -1123,14 +1033,13 @@ typedef enum : NSUInteger {
     _nuclearExplosion.position = CGPointMake(location.x, _nuclearExplosion.size.height/2);
     _nuclearExplosion.zPosition = 10;
     
-    //[self.nuclearSFX play];
     if (!_gameOver) {
-    [self.source playBuffer:self.nuclearSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+        [self.source playBuffer:self.nuclearSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
     }
     [_nuclearExplosion runAction:[SKAction animateWithTextures:_textureNuclearExplosionFrames
-                                       timePerFrame:0.1f
-                                             resize:NO
-                                            restore:YES]];
+                                                  timePerFrame:0.1f
+                                                        resize:NO
+                                                       restore:YES]];
     
     [self addChild:_nuclearExplosion];
     [self flashBackground];
@@ -1140,10 +1049,8 @@ typedef enum : NSUInteger {
 {
     [self removeActionForKey:@"flash"];
     [self runAction:[SKAction sequence:@[[SKAction repeatAction:[SKAction sequence:@[[SKAction runBlock:^{
-        //self.backgroundColor = [SKColor colorWithRed:1.0 green:1.0 blue:220.0/255.0 alpha:1.0];
         _flashBackground.color = [SKColor colorWithRed:1.0 green:1.0 blue:220.0/255.0 alpha:1.0];
     }], [SKAction waitForDuration:0.05], [SKAction runBlock:^{
-        //self.backgroundColor = [SKColor blackColor];
         _flashBackground.color = [SKColor clearColor];
     }], [SKAction waitForDuration:0.05]]] count:1]]] withKey:@"flash"];
 }
@@ -1151,10 +1058,8 @@ typedef enum : NSUInteger {
 - (void)addBottomEdge
 {
     SKSpriteNode *bottemEdge = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(self.size.width, 2)];
-    //SKNode *bottemEdge = [SKNode node];
     bottemEdge.name = @"ground";
     bottemEdge.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:bottemEdge.size];
-    //bottemEdge.physicsBody = [SKPhysicsBody bodyWithEdgeFromPoint:CGPointMake(0, 1) toPoint:CGPointMake(self.size.width, 1)];
     bottemEdge.position = CGPointMake(self.size.width/2, 0);
     bottemEdge.physicsBody.dynamic = YES;
     bottemEdge.physicsBody.categoryBitMask = BuildingCategory;
@@ -1182,17 +1087,11 @@ typedef enum : NSUInteger {
         
         [scoreNode addChild:scoreTile];
     }
-
+    
     return scoreNode;
 }
 
 #pragma mark - Particles
-
-- (void)initParticles
-{
-    self.rocketParticles1 = [self particles:[UIColor whiteColor] andNumberOfParticles:10];
-    self.rocketParticles2 = [self particles:[UIColor redColor] andNumberOfParticles:10];
-}
 
 - (void)addAsteroidParticles:(NSString *)name onLocation:(CGPoint)location
 {
@@ -1242,51 +1141,13 @@ typedef enum : NSUInteger {
         [self addParticleExplosion:location withColor:[UIColor colorWithRed:231.0/255.0 green:212.0/255.0 blue:162.0/255.0 alpha:1.0] andNumberOfParticles:100];
     }
     
-    //[self.asteroidExplosionSFX play];
     if (!_gameOver) {
-    [self.source playBuffer:self.asteroidExplosionSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+        [self.source playBuffer:self.asteroidExplosionSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
     }
 }
 
 - (void)addRocketParticles:(CGPoint)location
 {
-    /*[self removeActionForKey:@"RocketParticleExplosion"];
-
-    SKAction *callExplosion = [SKAction runBlock:^{
-        SKEmitterNode *tmpRocketParticles1 = [SKEmitterNode node];
-        SKEmitterNode *tmpRocketParticles2 = [SKEmitterNode node];
-        tmpRocketParticles1 = self.rocketParticles1;
-        tmpRocketParticles2 = self.rocketParticles2;
-        
-        tmpRocketParticles1.position = CGPointMake(location.x,location.y);;
-        tmpRocketParticles2.position = CGPointMake(location.x,location.y);;
-        
-        SKAction *remove = [SKAction removeFromParent];
-        SKAction *wait = [SKAction waitForDuration:2.0];
-        
-        [tmpRocketParticles1 runAction:[SKAction sequence:@[wait, remove]]];
-        [tmpRocketParticles2 runAction:[SKAction sequence:@[wait, remove]]];
-        
-        [self addChild:tmpRocketParticles1];
-        [self addChild:tmpRocketParticles2];
-    }];
-    
-    [self runAction:callExplosion withKey:@"RocketParticleExplosion"];
-    SKEmitterNode *tmpRocketParticles1 = self.rocketParticles1;
-    SKEmitterNode *tmpRocketParticles2 = self.rocketParticles2;
-    
-    tmpRocketParticles1.position = location;
-    tmpRocketParticles2.position = location;
-    
-    SKAction *remove = [SKAction removeFromParent];
-    SKAction *wait = [SKAction waitForDuration:2.0];
-    
-    [tmpRocketParticles1 runAction:[SKAction sequence:@[wait, remove]]];
-    [tmpRocketParticles2 runAction:[SKAction sequence:@[wait, remove]]];
-    
-    [self addChild:tmpRocketParticles1];
-    [self addChild:tmpRocketParticles2];*/
-    
     [self addParticleExplosion:location withColor:[UIColor whiteColor] andNumberOfParticles:10];
     [self addParticleExplosion:location withColor:[UIColor redColor] andNumberOfParticles:10];
 }
@@ -1368,9 +1229,6 @@ typedef enum : NSUInteger {
 {
     [self stopBackgroundMusic];
     [self playGameOverMusic:_gameMute];
-    //SKTransition *transition = [SKTransition fadeWithDuration:0.5];
-    //GameOverScene *gameOverScene = [[GameOverScene alloc] initWithSize:self.size];
-    //[self.scene.view presentScene:gameOverScene transition:transition];
 }
 
 - (void)replayGame
@@ -1390,10 +1248,8 @@ typedef enum : NSUInteger {
 - (void)pauseGame
 {
     if (!_gamePaused) {
-        //[self pauseView:YES];
         [self showPauseScreen:YES];
     } else {
-        //[self pauseView:NO];
         [self showPauseScreen:NO];
     }
     
@@ -1407,24 +1263,17 @@ typedef enum : NSUInteger {
 {
     int level = (score/100);
     
-        levelMultiplier = 3 - 0.15*level;
-        minAsteroidTime = 3 - 0.15*level;
-        maxAsteroidTime = 6 - 0.3*level;
-    
-    //1.5-0.1*level; //time multiplier of next asteroid
+    levelMultiplier = 3 - 0.15*level;
+    minAsteroidTime = 3 - 0.15*level;
+    maxAsteroidTime = 6 - 0.3*level;
     
     if (levelMultiplier < 0.4) {
         levelMultiplier = 0.4;
     }
     
-    
-    //7-0.5*level; //min asteroid travel time
-    
     if (minAsteroidTime < 1) {
         minAsteroidTime = 1;
     }
-    
-    //15-0.5*level; //max asteroid travel time
     
     if (maxAsteroidTime < 1.5) {
         maxAsteroidTime = 1.5;
@@ -1483,7 +1332,6 @@ typedef enum : NSUInteger {
 
 - (void)saveMute
 {
-    //NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [_defaults setBool:_gameMute forKey:@"gameMute"];
     [_defaults synchronize];
 }
@@ -1527,12 +1375,10 @@ typedef enum : NSUInteger {
 - (void)generateNumbersArray
 {
     NSMutableArray *numbers = [NSMutableArray array];
-    //SKTextureAtlas *numbersAtlas = [SKTextureAtlas atlasNamed:@"numbers"];
     
     for (int i=0; i <= 9; i++) {
         NSString *textureName = [NSString stringWithFormat:@"%d", i];
         SKTexture *texture = [SKTexture textureWithImageNamed:textureName];
-        //SKTexture *texture = [SKTexture textureNamed:textureName];
         [numbers addObject:texture];
     }
     
@@ -1544,51 +1390,21 @@ typedef enum : NSUInteger {
 
 - (void)initAudio
 {
-    // We'll let OALSimpleAudio deal with the device and context.
-    // Since we're not going to use it for playing effects, don't give it any sources.
-    //device = [ALDevice deviceWithDeviceSpecifier:nil];
-    //context = [ALContext contextOnDevice:device attributes:nil];
-    //[OpenALManager sharedInstance].currentContext = context;
-    
-    // Deal with interruptions for me!
-    //[OALAudioSession sharedInstance].handleInterruptions = YES;
-    
-    // Mute all audio if the silent switch is turned on.
-    //[OALAudioSession sharedInstance].honorSilentSwitch = YES;
-    //[OALSimpleAudio sharedInstance].reservedSources = 1;
-   
     [OALSimpleAudio sharedInstance];
-    
-    //[[ALSource source] preloadEffect:@"Explosion_rocket.caf"];
-    //[[ALSource source] preloadEffect:@"clicl.caf"];
-    //[[ALSource source] preloadEffect:@"nuclear.caf"];
-    //[[ALSource source] preloadEffect:@"rocket1.caf"];
-
 }
 
 - (void)playMainMusic:(BOOL)mute
 {
-    //[self.source playBuffer:self.fireRocketSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
     self.source = [OALSimpleAudio sharedInstance];
     self.source.muted = _gameMute;
     self.mainTrack = [OALAudioTrack track];
     [self.mainTrack preloadFile:MainTrackFileName];
     
     self.asteroidExplosionSFX = [[OpenALManager sharedInstance] bufferFromFile:@"Explosion_asteroid.caf"];
-    //[self.asteroidExplosionSFX preloadFile:@"Explosion_asteroid.caf"];
-    
-    //self.rocketExplosionSFX = [OALAudioTrack track];
-    //[self.rocketExplosionSFX preloadFile:@"Explosion_rocket.caf"];
     self.rocketExplosionSFX = [[OpenALManager sharedInstance] bufferFromFile:@"Explosion_rocket.caf"];
-    
-    //self.nuclearSFX = [OALAudioTrack track];
-    //[self.nuclearSFX preloadFile:@"nuclear.caf"];
     self.nuclearSFX = [[OpenALManager sharedInstance] bufferFromFile:@"nuclear.caf"];
     self.clickSFX = [[OpenALManager sharedInstance] bufferFromFile:@"click.caf"];
-    
     self.fireRocketSFX = [[OpenALManager sharedInstance] bufferFromFile:@"rocket1.caf"];
-    //self.fireRocketSFX = [OALAudioTrack track];
-    //[self.fireRocketSFX preloadFile:@"rocket1.caf"];
     
     self.mainTrack.numberOfLoops = -1;
     
@@ -1600,16 +1416,9 @@ typedef enum : NSUInteger {
 
 - (void)playGameOverMusic:(BOOL)mute
 {
-    // We'll let OALSimpleAudio deal with the device and context.
-    // Since we're not going to use it for playing effects, don't give it any sources.
-    // Create the device and context.
-    // Note that it's easier to just let OALSimpleAudio handle
-    // these rather than make and manage them yourself.
-    
-    
-    //self.source = [ALSource source];
     self.gameOverTrack = [OALAudioTrack track];
     [self.gameOverTrack preloadFile:GameOverTrackFileName];
+    
     // Main music track will loop on itself
     self.gameOverTrack.numberOfLoops = -1;
     
@@ -1623,8 +1432,6 @@ typedef enum : NSUInteger {
 - (void)muteSound:(BOOL)state forScreen:(int)screen
 {
     if (state) {
-        //[self.source unregisterAllNotifications];
-        //[self.source stop];
         [self.gameOverTrack stop];
         [self.mainTrack stop];
         self.gameOverTrack.currentTime = 0;
@@ -1657,8 +1464,6 @@ typedef enum : NSUInteger {
 
 - (void)stopBackgroundMusic
 {
-    //[self.source unregisterAllNotifications];
-    //[self.source stop];
     [self.gameOverTrack stop];
     [self.mainTrack stop];
     self.gameOverTrack.currentTime = 0;
@@ -1667,17 +1472,11 @@ typedef enum : NSUInteger {
 
 - (void)muteSFX:(int)value
 {
-    //self.asteroidExplosionSFX.volume = value;
-    //self.rocketExplosionSFX.volume = value;
-    //self.nuclearSFX.volume = value;
     if (value == 1) {
         self.source.muted = NO;
     } else {
         self.source.muted = YES;
     }
-    
-    //self.source.volume = value;
-    //self.fireRocketSFX.volume = value;
 }
 
 #pragma mark - Share
@@ -1695,10 +1494,10 @@ typedef enum : NSUInteger {
 
 - (void)createScreenShot
 {
-        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, YES, 0.5);
-        [self.view drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
-        _imageToShare = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
+    UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, YES, 0.5);
+    [self.view drawViewHierarchyInRect:self.view.bounds afterScreenUpdates:YES];
+    _imageToShare = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
 }
 
 @end

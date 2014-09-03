@@ -2607,6 +2607,7 @@
 		45F1F4BD19A3E98400EEB990 /* Fire Command */ = {
 			isa = PBXGroup;
 			children = (
+				45F1F4C619A3E98400EEB990 /* AppDelegate.h */,
 				45F1F4C719A3E98400EEB990 /* AppDelegate.m */,
 				45F1F4C919A3E98400EEB990 /* Main_iPhone.storyboard */,
 				45F1F4CC19A3E98400EEB990 /* Main_iPad.storyboard */,
@@ -2614,7 +2615,6 @@
 				45F1F4D019A3E98400EEB990 /* ViewController.m */,
 				45F1F4D219A3E98400EEB990 /* GameScene.h */,
 				45F1F4D319A3E98400EEB990 /* GameScene.m */,
-				45F1F4C619A3E98400EEB990 /* AppDelegate.h */,
 				45F1F50819A3F44A00EEB990 /* MenuScene.h */,
 				45F1F50919A3F44A00EEB990 /* MenuScene.m */,
 				45F1F4D719A3E98400EEB990 /* Images.xcassets */,

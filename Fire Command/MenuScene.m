@@ -8,7 +8,7 @@
 
 #import "MenuScene.h"
 #import "GameScene.h"
-//#import "GAIDictionaryBuilder.h"
+#import "GAIDictionaryBuilder.h"
 #import "ViewController.h"
 #import <ObjectAL/ObjectAL.h>
 #import "GameCenterManager.h"
@@ -21,11 +21,9 @@
 @interface MenuScene () //<GameCenterManagerDelegate>
 
 @property(nonatomic, readwrite, retain) ALBuffer* introBuffer;
-//@property(nonatomic, readwrite, retain) ALBuffer* mainBuffer;
 @property(nonatomic, readwrite, retain) ALSource* source;
 
 @property(nonatomic, readwrite, retain) OALAudioTrack* mainTrack;
-//@property(nonatomic, readwrite, retain) OALAudioTrack* introTrack;
 
 @property(nonatomic, readwrite, retain) OALSimpleAudio *sourceSFX;
 @property(nonatomic, readwrite, retain) ALBuffer* clickSFX;
@@ -75,13 +73,10 @@
 
 - (void)didMoveToView:(SKView *)view
 {
-    //scene = [GameScene sceneWithSize:self.view.bounds.size];
-    
-    
     // GA
-    //id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-    //[tracker set:kGAIScreenName value:@"StartMenu"];
-    //[tracker send:[[GAIDictionaryBuilder createAppView] build]];
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"StartMenu"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
     
     // Mute audio
     _defaults = [NSUserDefaults standardUserDefaults];
@@ -182,9 +177,6 @@
             [self addAstroid];
         }
     }
-    
-    //currentTimeStamp = currentTime;
-    
 }
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -243,10 +235,6 @@
 
 - (void)addAstroid
 {
-    //SKSpriteNode *asteroid = [SKSpriteNode spriteNodeWithColor:[SKColor greenColor] size:CGSizeMake(20, 20)];
-    //asteroid.scale = deviceScale;
-    
-    
     int i = [self getRandomNumberBetween:1 to:4];
     
     if (i ==1) {
@@ -376,12 +364,10 @@
 - (void)initGroundExplosion
 {
     NSMutableArray *frames = [NSMutableArray array];
-    SKTextureAtlas *nuclearExplosionAtlas = [SKTextureAtlas atlasNamed:@"nuclear_explosion"];
     
-    int framesCount = (int)nuclearExplosionAtlas.textureNames.count/3;
-    for (int i=0; i < framesCount; i++) {
+    for (int i=0; i <= 20; i++) {
         NSString *textureName = [NSString stringWithFormat:@"nuclear_explosion_%d", i];
-        SKTexture *texture = [nuclearExplosionAtlas textureNamed:textureName];
+        SKTexture *texture = [SKTexture textureWithImageNamed:textureName];
         [frames addObject:texture];
     }
     
@@ -408,14 +394,11 @@
 - (void)flashBackground
 {
     [self runAction:[SKAction sequence:@[[SKAction repeatAction:[SKAction sequence:@[[SKAction runBlock:^{
-        //self.backgroundColor = [SKColor colorWithRed:1.0 green:1.0 blue:220.0/255.0 alpha:1.0];
         _flashBackground.color = [SKColor colorWithRed:1.0 green:1.0 blue:220.0/255.0 alpha:1.0];
     }], [SKAction waitForDuration:0.05], [SKAction runBlock:^{
-        //self.backgroundColor = [SKColor blackColor];
         _flashBackground.color = [SKColor clearColor];
     }], [SKAction waitForDuration:0.05]]] count:1]]] withKey:@"flash"];
 }
-
 
 
 #pragma mark - Helper Methods
@@ -470,14 +453,10 @@
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
         scene = [GameScene sceneWithSize:self.view.bounds.size];
         scene.scaleMode = SKSceneScaleModeAspectFill;
-        //SKTransition *transition = [SKTransition revealWithDirection:SKTransitionDirectionUp duration:1];
         SKTransition *transition = [SKTransition fadeWithDuration:0.5];
         SKView *skView = (SKView *)self.view;
         [skView presentScene:scene transition:transition];
-        
     });
-    
-    
 }
 
 - (int)getRandomNumberBetween:(int)from to:(int)to
@@ -495,31 +474,13 @@
 - (void)playBackgroundMusic:(BOOL)mute
 {
     if (!mute) {
-        
-        // Create the device and context.
-        // Note that it's easier to just let OALSimpleAudio handle
-        // these rather than make and manage them yourself.
-        //device = [ALDevice deviceWithDeviceSpecifier:nil];
-        //context = [ALContext contextOnDevice:device attributes:nil];
-        //[OpenALManager sharedInstance].currentContext = context;
-        
-        // Deal with interruptions for me!
-        //[OALAudioSession sharedInstance].handleInterruptions = YES;
-        
-        // Mute all audio if the silent switch is turned on.
-        //[OALAudioSession sharedInstance].honorSilentSwitch = YES;
-        //[OALSimpleAudio sharedInstance].reservedSources = 0;
+
         [OALSimpleAudio sharedInstance];
         self.source = [ALSource source];
         self.introBuffer = [[OpenALManager sharedInstance] bufferFromFile:kIntroTrackFileName];
-        //self.mainBuffer = [[OpenALManager sharedInstance] bufferFromFile:kLoopTrackFileName];
-        
-        //self.introTrack = [OALAudioTrack track];
-        //[self.introTrack preloadFile:kIntroTrackFileName];
         
         self.mainTrack = [OALAudioTrack track];
         [self.mainTrack preloadFile:kLoopTrackFileName];
-        // Main music track will loop on itself
         self.mainTrack.numberOfLoops = -1;
         
         // BUffer SFX
@@ -535,19 +496,7 @@
 
 - (void)onOpenALHybrid
 {
-    // Uses OpenAL for the intro and an audio track for the main loop.
-    // Playback on the main track is delayed by the duration of the intro.
-    
-    // This sidesteps the software channel issue, but requires you to load
-    // the entire decoded intro track (not the main track) into memory.
-    // However, there are problems because of differences in how OpenAL and
-    // AVAudioPlayer keep time (AVAudioPlayer is somewhat delayed).
-    // You'll need to do some fudging of the playAt value to get it right.
-    // I've left it as-is so you can hear the issue.
-    
-    //[self stop];
-    //[self turnOnLamp:self.openALButton];
-    
+   
     [self.source play:self.introBuffer];
     
     // Have the main track start again after the intro buffer's duration elapses.
@@ -558,11 +507,8 @@
 
 - (void)stopBackgroundMusic
 {
-    //[self.source unregisterAllNotifications];
     [self.source stop];
-    //[self.introTrack stop];
     [self.mainTrack stop];
-    //self.introTrack.currentTime = 0;
     self.mainTrack.currentTime = 0;
     self.source.muted = _gameMute;
 }
