@@ -428,7 +428,7 @@ typedef enum : NSUInteger {
     
     
     // mute SFX
-    [self muteSFX:0];
+    //[self muteSFX:0];
     
     _gameOverScreen = [[SKNode alloc] init];
     _gameOverScreen.zPosition = 100;
@@ -481,18 +481,18 @@ typedef enum : NSUInteger {
     
     SKSpriteNode *bestScoreLabel = [self showScore:bestScore];
     int bestScoreLength = [NSString stringWithFormat:@"%d", bestScore].length;
-    bestScoreLabel.position = CGPointMake(-11*(bestScoreLength-1), -bestScoreTextLabel.size.height/2 - 22);
+    bestScoreLabel.position = CGPointMake(-11*(bestScoreLength-1)*_scale, -bestScoreTextLabel.size.height/2 - 22*_scale);
     [_gameOverScreen addChild:bestScoreLabel];
     
     // score label
     
     SKSpriteNode *scoreTextLabel = [SKSpriteNode spriteNodeWithImageNamed:@"scorelabel.png"];
-    scoreTextLabel.position = CGPointMake(0, bestScoreTextLabel.size.height/2 + 22 + scoreTextLabel.size.height);
+    scoreTextLabel.position = CGPointMake(0, bestScoreTextLabel.size.height/2 + 22*_scale + scoreTextLabel.size.height);
     [_gameOverScreen addChild:scoreTextLabel];
     
     SKSpriteNode *scoreLabel = [self showScore:score];
     int scoreLenght = [NSString stringWithFormat:@"%d", score].length;
-    scoreLabel.position = CGPointMake(-11*(scoreLenght-1), bestScoreTextLabel.size.height/2 + 22);
+    scoreLabel.position = CGPointMake(-11*(scoreLenght-1)*_scale, bestScoreTextLabel.size.height/2 + 22*_scale);
     [_gameOverScreen addChild:scoreLabel];
     
     
@@ -521,12 +521,12 @@ typedef enum : NSUInteger {
             
             if ([node.name isEqualToString:@"pauseButton"] && !_gameOver) {
                 [self pauseGame];
-                
             } else if ([node.name isEqualToString:@"resumeButton"] && !_gameOver) {
                 [self pauseGame];
             } else if (_gameOver){
                 if ([node.name isEqualToString:@"replayButton"]) {
                     [self replayGame];
+                    [self.source playBuffer:self.clickSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
                 } else if ([node.name isEqualToString:@"gamecenterbutton"]) {
                     [self showLeaderBoard];
                     [self.source playBuffer:self.clickSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
@@ -536,6 +536,8 @@ typedef enum : NSUInteger {
                     } else {
                         [self muteSound:NO forScreen:2];
                     }
+                    
+                    [self.source playBuffer:self.clickSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
                 } else if ([node.name isEqualToString:@"ratebutton"]) {
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"itms-apps://itunes.apple.com/app/id911839238"]];
                     [self.source playBuffer:self.clickSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
@@ -649,13 +651,13 @@ typedef enum : NSUInteger {
     
     SKSpriteNode *launchPadTexture = [SKSpriteNode spriteNodeWithImageNamed:@"launchpad.png"];
     launchPadTexture.zPosition = 3;
-    launchPadTexture.position = CGPointMake(0, launchPadTexture.size.height/2-1);
+    launchPadTexture.position = CGPointMake(0, launchPadTexture.size.height/2);
     [launchPad addChild:launchPadTexture];
     
     launchPad.zPosition = 10;
     launchPad.name = @"launchPad";
     
-    launchPad.position = CGPointMake(self.size.width/2, launchPad.size.height/2);
+    launchPad.position = CGPointMake(self.size.width/2, launchPad.size.height/2-1);
     
     // Add Physics
     launchPad.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:launchPad.size];
@@ -697,7 +699,7 @@ typedef enum : NSUInteger {
     
     self.rocket.zRotation = angle;
     
-    float duration = location.y *0.001;
+    float duration = (location.y *0.001)/_scale;
     SKAction *move =[SKAction moveTo:CGPointMake(location.x,location.y) duration:duration];
     SKAction *remove = [SKAction removeFromParent];
     
@@ -718,7 +720,9 @@ typedef enum : NSUInteger {
         [self addChild:[self addRocketExplosion:location]];
         [self addRocketParticles:location];
         //[self.rocketExplosionSFX play];
+        if (!_gameOver) {
         [self.source playBuffer:self.rocketExplosionSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+        }
     }];
     
     [self.rocket addChild:[self addRocketFire]];
@@ -726,8 +730,9 @@ typedef enum : NSUInteger {
     
     [self.rocket runAction:[SKAction sequence:@[move,callExplosion,remove]]];
     [self addRocket];
-    
+    if (!_gameOver) {
     [self.source playBuffer:self.fireRocketSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+    }
     //[self.fireRocketSFX play];
     
 }
@@ -763,7 +768,7 @@ typedef enum : NSUInteger {
     SKTexture *textureSize = _rocketTextureFrames[0];
     
     SKSpriteNode *rocketFire = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:textureSize.size];
-    rocketFire.position = CGPointMake(0, -30);
+    rocketFire.position = CGPointMake(0, -30*_scale);
     rocketFire.zRotation = M_PI;
     rocketFire.zPosition = -10;
     
@@ -777,9 +782,9 @@ typedef enum : NSUInteger {
 {
     for (int i = 1; i <= 4; i++) {
         
-        float buildingWidth = (self.size.width-38)/4;
+        float buildingWidth = (self.size.width-38*_scale)/4;
         
-        SKSpriteNode *building = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(buildingWidth, 1)];
+        SKSpriteNode *building = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(buildingWidth, 2)];
         
         NSString *textureName = [NSString stringWithFormat:@"buildings_%i.png", i];
         SKTexture *buildingText = [SKTexture textureWithImageNamed:textureName];
@@ -788,21 +793,23 @@ typedef enum : NSUInteger {
         SKSpriteNode *buildingTexture = [SKSpriteNode spriteNodeWithTexture:buildingText];
         
         if (i == 1) {
-            buildingTexture.position = CGPointMake(-18, buildingTexture.size.height/2);
+            buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
             buildingTexture.zPosition = 2;
-            building.position = CGPointMake((buildingWidth/2), 0);
+            building.position = CGPointMake(buildingTexture.size.width/2 - 11*_scale, 0);
         } else if (i == 2) {
-            buildingTexture.position = CGPointMake(-7, buildingTexture.size.height/2);
+            //buildingTexture.position = CGPointMake(-7*_scale, buildingTexture.size.height/2);
+            buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
             buildingTexture.zPosition = 3;
-            building.position = CGPointMake((buildingWidth/2)*3, 0);
+            //building.position = CGPointMake((buildingWidth/2)*3, 0);
+            building.position = CGPointMake((self.size.width/2) - buildingTexture.size.width/2 - 16*_scale, 0);
         } else if (i == 3) {
-            buildingTexture.position = CGPointMake(7, buildingTexture.size.height/2);
+            buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
             buildingTexture.zPosition = 3;
-            building.position = CGPointMake((self.size.width + 38)/2 + (buildingWidth/2), 0);
+            building.position = CGPointMake((self.size.width/2) + buildingTexture.size.width/2 + 16*_scale, 0);
         } else if (i == 4) {
-            buildingTexture.position = CGPointMake(18, buildingTexture.size.height/2);
+            buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
             buildingTexture.zPosition = 2;
-            building.position = CGPointMake((self.size.width + 38)/2 + (buildingWidth/2)*3, 0);
+            building.position = CGPointMake(self.size.width - buildingTexture.size.width/2 + 11*_scale, 0);
         }
         
         building.name = @"building";
@@ -853,7 +860,7 @@ typedef enum : NSUInteger {
 {
     //SKTexture *textureSize = _textureFrames[0];
     
-    SKSpriteNode *buildingFire = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(111, 60)];
+    SKSpriteNode *buildingFire = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(111*_scale, 60*_scale)];
     //buildingFire.position = CGPointMake(self.size.width/2, self.size.height/2);
     buildingFire.zPosition = -10;
     
@@ -967,14 +974,14 @@ typedef enum : NSUInteger {
     
     CGMutablePathRef path = CGPathCreateMutable();
     
-    CGPathMoveToPoint(path, NULL, 18 - offsetX, 46 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 35 - offsetX, 46 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 48 - offsetX, 28 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 39 - offsetX, 10 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 29 - offsetX, 7 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 15 - offsetX, 10 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 19 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 12 - offsetX, 34 - offsetY);
+    CGPathMoveToPoint(path, NULL, 18*_scale - offsetX, 46*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 35*_scale - offsetX, 46*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 48*_scale - offsetX, 28*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 39*_scale - offsetX, 10*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 29*_scale - offsetX, 7*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 15*_scale - offsetX, 10*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 9*_scale - offsetX, 19*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 12*_scale - offsetX, 34*_scale - offsetY);
     
     CGPathCloseSubpath(path);
     
@@ -1004,15 +1011,15 @@ typedef enum : NSUInteger {
     
     CGMutablePathRef path = CGPathCreateMutable();
     
-    CGPathMoveToPoint(path, NULL, 24 - offsetX, 35 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 32 - offsetX, 35 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 38 - offsetX, 33 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 44 - offsetX, 24 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 38 - offsetX, 15 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 23 - offsetX, 15 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 12 - offsetX, 18 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 24 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 13 - offsetX, 29 - offsetY);
+    CGPathMoveToPoint(path, NULL, 24*_scale - offsetX, 35*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 32*_scale - offsetX, 35*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 38*_scale - offsetX, 33*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 44*_scale - offsetX, 24*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 38*_scale - offsetX, 15*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 23*_scale - offsetX, 15*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 12*_scale - offsetX, 18*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 9*_scale - offsetX, 24*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 13*_scale - offsetX, 29*_scale - offsetY);
     
     CGPathCloseSubpath(path);
     
@@ -1042,13 +1049,13 @@ typedef enum : NSUInteger {
     
     CGMutablePathRef path = CGPathCreateMutable();
     
-    CGPathMoveToPoint(path, NULL, 28 - offsetX, 36 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 37 - offsetX, 30 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 37 - offsetX, 22 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 26 - offsetX, 13 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 14 - offsetX, 19 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 14 - offsetX, 30 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 20 - offsetX, 36 - offsetY);
+    CGPathMoveToPoint(path, NULL, 28*_scale - offsetX, 36*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 37*_scale - offsetX, 30*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 37*_scale - offsetX, 22*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 26*_scale - offsetX, 13*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 14*_scale - offsetX, 19*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 14*_scale - offsetX, 30*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 20*_scale - offsetX, 36*_scale - offsetY);
     
     CGPathCloseSubpath(path);
     
@@ -1078,12 +1085,12 @@ typedef enum : NSUInteger {
     
     CGMutablePathRef path = CGPathCreateMutable();
     
-    CGPathMoveToPoint(path, NULL, 13 - offsetX, 21 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 20 - offsetX, 18 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 23 - offsetX, 14 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 16 - offsetX, 7 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 14 - offsetY);
-    CGPathAddLineToPoint(path, NULL, 9 - offsetX, 18 - offsetY);
+    CGPathMoveToPoint(path, NULL, 13*_scale - offsetX, 21*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 20*_scale - offsetX, 18*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 23*_scale - offsetX, 14*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 16*_scale - offsetX, 7*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 9*_scale - offsetX, 14*_scale - offsetY);
+    CGPathAddLineToPoint(path, NULL, 9*_scale - offsetX, 18*_scale - offsetY);
     
     CGPathCloseSubpath(path);
     
@@ -1117,8 +1124,9 @@ typedef enum : NSUInteger {
     _nuclearExplosion.zPosition = 10;
     
     //[self.nuclearSFX play];
+    if (!_gameOver) {
     [self.source playBuffer:self.nuclearSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
-    
+    }
     [_nuclearExplosion runAction:[SKAction animateWithTextures:_textureNuclearExplosionFrames
                                        timePerFrame:0.1f
                                              resize:NO
@@ -1142,7 +1150,7 @@ typedef enum : NSUInteger {
 
 - (void)addBottomEdge
 {
-    SKSpriteNode *bottemEdge = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(self.size.width, 1)];
+    SKSpriteNode *bottemEdge = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(self.size.width, 2)];
     //SKNode *bottemEdge = [SKNode node];
     bottemEdge.name = @"ground";
     bottemEdge.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:bottemEdge.size];
@@ -1170,7 +1178,7 @@ typedef enum : NSUInteger {
         scoreTileText.filteringMode = SKTextureFilteringNearest;
         
         SKSpriteNode *scoreTile = [SKSpriteNode spriteNodeWithTexture:scoreTileText];
-        scoreTile.position = CGPointMake(22*i, 0);
+        scoreTile.position = CGPointMake(22*i*_scale, 0);
         
         [scoreNode addChild:scoreTile];
     }
@@ -1235,7 +1243,9 @@ typedef enum : NSUInteger {
     }
     
     //[self.asteroidExplosionSFX play];
+    if (!_gameOver) {
     [self.source playBuffer:self.asteroidExplosionSFX volume:1.0 pitch:1.0 pan:0 loop:NO];
+    }
 }
 
 - (void)addRocketParticles:(CGPoint)location
@@ -1629,6 +1639,7 @@ typedef enum : NSUInteger {
         } else {
             [self playGameOverMusic:NO];
             _gameMute = NO;
+            [self muteSFX:1];
         }
     }
     

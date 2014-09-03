@@ -1145,6 +1145,43 @@
 		45FFE25619B748E200D3C24B /* nuclear_explosion_9@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE21719B748E100D3C24B /* nuclear_explosion_9@2x.png */; };
 		45FFE25719B748E200D3C24B /* nuclear_explosion_9@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE21819B748E100D3C24B /* nuclear_explosion_9@2x~ipad.png */; };
 		45FFE25819B748E200D3C24B /* nuclear_explosion_9~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE21919B748E100D3C24B /* nuclear_explosion_9~ipad.png */; };
+		45FFE27F19B79ACE00D3C24B /* asteroid_1a@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE25A19B79ACD00D3C24B /* asteroid_1a@2x~ipad.png */; };
+		45FFE28019B79ACE00D3C24B /* asteroid_1b@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE25B19B79ACD00D3C24B /* asteroid_1b@2x~ipad.png */; };
+		45FFE28119B79ACE00D3C24B /* asteroid_1c@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE25C19B79ACD00D3C24B /* asteroid_1c@2x~ipad.png */; };
+		45FFE28219B79ACE00D3C24B /* asteroid_2a@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE25D19B79ACD00D3C24B /* asteroid_2a@2x~ipad.png */; };
+		45FFE28319B79ACE00D3C24B /* asteroid_2b@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE25E19B79ACD00D3C24B /* asteroid_2b@2x~ipad.png */; };
+		45FFE28419B79ACE00D3C24B /* asteroid_2c@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE25F19B79ACD00D3C24B /* asteroid_2c@2x~ipad.png */; };
+		45FFE28519B79ACE00D3C24B /* asteroid_3a@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26019B79ACD00D3C24B /* asteroid_3a@2x~ipad.png */; };
+		45FFE28619B79ACE00D3C24B /* asteroid_3b@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26119B79ACD00D3C24B /* asteroid_3b@2x~ipad.png */; };
+		45FFE28719B79ACE00D3C24B /* asteroid_3c@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26219B79ACD00D3C24B /* asteroid_3c@2x~ipad.png */; };
+		45FFE28819B79ACE00D3C24B /* asteroid_4a@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26319B79ACD00D3C24B /* asteroid_4a@2x~ipad.png */; };
+		45FFE28919B79ACE00D3C24B /* asteroid_4b@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26419B79ACD00D3C24B /* asteroid_4b@2x~ipad.png */; };
+		45FFE28A19B79ACE00D3C24B /* asteroid_4c@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26519B79ACD00D3C24B /* asteroid_4c@2x~ipad.png */; };
+		45FFE28B19B79ACE00D3C24B /* background@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26619B79ACE00D3C24B /* background@2x~ipad.png */; };
+		45FFE28C19B79ACE00D3C24B /* background_menu@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26719B79ACE00D3C24B /* background_menu@2x~ipad.png */; };
+		45FFE28D19B79ACE00D3C24B /* bestscore@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26819B79ACE00D3C24B /* bestscore@2x~ipad.png */; };
+		45FFE28E19B79ACE00D3C24B /* buildings_1@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26919B79ACE00D3C24B /* buildings_1@2x~ipad.png */; };
+		45FFE28F19B79ACE00D3C24B /* buildings_2@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26A19B79ACE00D3C24B /* buildings_2@2x~ipad.png */; };
+		45FFE29019B79ACE00D3C24B /* buildings_3@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26B19B79ACE00D3C24B /* buildings_3@2x~ipad.png */; };
+		45FFE29119B79ACE00D3C24B /* buildings_4@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26C19B79ACE00D3C24B /* buildings_4@2x~ipad.png */; };
+		45FFE29219B79ACE00D3C24B /* burned_buildings_1@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26D19B79ACE00D3C24B /* burned_buildings_1@2x~ipad.png */; };
+		45FFE29319B79ACE00D3C24B /* explosion@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26E19B79ACE00D3C24B /* explosion@2x~ipad.png */; };
+		45FFE29419B79ACE00D3C24B /* facebook@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE26F19B79ACE00D3C24B /* facebook@2x~ipad.png */; };
+		45FFE29519B79ACE00D3C24B /* gamecenterbutton@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27019B79ACE00D3C24B /* gamecenterbutton@2x~ipad.png */; };
+		45FFE29619B79ACE00D3C24B /* gameovertitle@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27119B79ACE00D3C24B /* gameovertitle@2x~ipad.png */; };
+		45FFE29719B79ACE00D3C24B /* launchpad@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27219B79ACE00D3C24B /* launchpad@2x~ipad.png */; };
+		45FFE29819B79ACE00D3C24B /* mutebutton@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27319B79ACE00D3C24B /* mutebutton@2x~ipad.png */; };
+		45FFE29919B79ACE00D3C24B /* pausebutton@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27419B79ACE00D3C24B /* pausebutton@2x~ipad.png */; };
+		45FFE29A19B79ACE00D3C24B /* pausedtitle@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27519B79ACE00D3C24B /* pausedtitle@2x~ipad.png */; };
+		45FFE29B19B79ACE00D3C24B /* playbutton@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27619B79ACE00D3C24B /* playbutton@2x~ipad.png */; };
+		45FFE29C19B79ACE00D3C24B /* rate@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27719B79ACE00D3C24B /* rate@2x~ipad.png */; };
+		45FFE29D19B79ACE00D3C24B /* rocket@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27819B79ACE00D3C24B /* rocket@2x~ipad.png */; };
+		45FFE29E19B79ACE00D3C24B /* scorelabel@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27919B79ACE00D3C24B /* scorelabel@2x~ipad.png */; };
+		45FFE29F19B79ACE00D3C24B /* soundbutton@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27A19B79ACE00D3C24B /* soundbutton@2x~ipad.png */; };
+		45FFE2A019B79ACE00D3C24B /* Thumbs.db in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27B19B79ACE00D3C24B /* Thumbs.db */; };
+		45FFE2A119B79ACE00D3C24B /* title@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27C19B79ACE00D3C24B /* title@2x~ipad.png */; };
+		45FFE2A219B79ACE00D3C24B /* title_clean@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27D19B79ACE00D3C24B /* title_clean@2x~ipad.png */; };
+		45FFE2A319B79ACE00D3C24B /* twitter@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 45FFE27E19B79ACE00D3C24B /* twitter@2x~ipad.png */; };
 		4D1791955F534536A186945D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E1633DE67F1241DC8C2748D9 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -2305,6 +2342,43 @@
 		45FFE21719B748E100D3C24B /* nuclear_explosion_9@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nuclear_explosion_9@2x.png"; sourceTree = "<group>"; };
 		45FFE21819B748E100D3C24B /* nuclear_explosion_9@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nuclear_explosion_9@2x~ipad.png"; sourceTree = "<group>"; };
 		45FFE21919B748E100D3C24B /* nuclear_explosion_9~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "nuclear_explosion_9~ipad.png"; sourceTree = "<group>"; };
+		45FFE25A19B79ACD00D3C24B /* asteroid_1a@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_1a@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE25B19B79ACD00D3C24B /* asteroid_1b@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_1b@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE25C19B79ACD00D3C24B /* asteroid_1c@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_1c@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE25D19B79ACD00D3C24B /* asteroid_2a@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_2a@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE25E19B79ACD00D3C24B /* asteroid_2b@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_2b@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE25F19B79ACD00D3C24B /* asteroid_2c@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_2c@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26019B79ACD00D3C24B /* asteroid_3a@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_3a@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26119B79ACD00D3C24B /* asteroid_3b@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_3b@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26219B79ACD00D3C24B /* asteroid_3c@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_3c@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26319B79ACD00D3C24B /* asteroid_4a@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_4a@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26419B79ACD00D3C24B /* asteroid_4b@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_4b@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26519B79ACD00D3C24B /* asteroid_4c@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_4c@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26619B79ACE00D3C24B /* background@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26719B79ACE00D3C24B /* background_menu@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background_menu@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26819B79ACE00D3C24B /* bestscore@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bestscore@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26919B79ACE00D3C24B /* buildings_1@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buildings_1@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26A19B79ACE00D3C24B /* buildings_2@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buildings_2@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26B19B79ACE00D3C24B /* buildings_3@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buildings_3@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26C19B79ACE00D3C24B /* buildings_4@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buildings_4@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26D19B79ACE00D3C24B /* burned_buildings_1@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "burned_buildings_1@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26E19B79ACE00D3C24B /* explosion@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "explosion@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE26F19B79ACE00D3C24B /* facebook@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27019B79ACE00D3C24B /* gamecenterbutton@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamecenterbutton@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27119B79ACE00D3C24B /* gameovertitle@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gameovertitle@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27219B79ACE00D3C24B /* launchpad@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launchpad@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27319B79ACE00D3C24B /* mutebutton@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mutebutton@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27419B79ACE00D3C24B /* pausebutton@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pausebutton@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27519B79ACE00D3C24B /* pausedtitle@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pausedtitle@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27619B79ACE00D3C24B /* playbutton@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playbutton@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27719B79ACE00D3C24B /* rate@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rate@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27819B79ACE00D3C24B /* rocket@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rocket@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27919B79ACE00D3C24B /* scorelabel@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "scorelabel@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27A19B79ACE00D3C24B /* soundbutton@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "soundbutton@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27B19B79ACE00D3C24B /* Thumbs.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = Thumbs.db; sourceTree = "<group>"; };
+		45FFE27C19B79ACE00D3C24B /* title@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "title@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27D19B79ACE00D3C24B /* title_clean@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "title_clean@2x~ipad.png"; sourceTree = "<group>"; };
+		45FFE27E19B79ACE00D3C24B /* twitter@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "twitter@2x~ipad.png"; sourceTree = "<group>"; };
 		E1633DE67F1241DC8C2748D9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -2533,7 +2607,6 @@
 		45F1F4BD19A3E98400EEB990 /* Fire Command */ = {
 			isa = PBXGroup;
 			children = (
-				45F1F4C619A3E98400EEB990 /* AppDelegate.h */,
 				45F1F4C719A3E98400EEB990 /* AppDelegate.m */,
 				45F1F4C919A3E98400EEB990 /* Main_iPhone.storyboard */,
 				45F1F4CC19A3E98400EEB990 /* Main_iPad.storyboard */,
@@ -2541,6 +2614,7 @@
 				45F1F4D019A3E98400EEB990 /* ViewController.m */,
 				45F1F4D219A3E98400EEB990 /* GameScene.h */,
 				45F1F4D319A3E98400EEB990 /* GameScene.m */,
+				45F1F4C619A3E98400EEB990 /* AppDelegate.h */,
 				45F1F50819A3F44A00EEB990 /* MenuScene.h */,
 				45F1F50919A3F44A00EEB990 /* MenuScene.m */,
 				45F1F4D719A3E98400EEB990 /* Images.xcassets */,
@@ -2594,6 +2668,7 @@
 		45F1F4F519A3F06000EEB990 /* Game Elements */ = {
 			isa = PBXGroup;
 			children = (
+				45FFE25919B79ACD00D3C24B /* ipad retina */,
 				45FFE1DA19B748E100D3C24B /* nuclear_explosion */,
 				45FFE14319B747C000D3C24B /* rocket_explosion */,
 				45FFDB7019B7469600D3C24B /* building_fire */,
@@ -3655,6 +3730,50 @@
 			path = nuclear_explosion;
 			sourceTree = "<group>";
 		};
+		45FFE25919B79ACD00D3C24B /* ipad retina */ = {
+			isa = PBXGroup;
+			children = (
+				45FFE25A19B79ACD00D3C24B /* asteroid_1a@2x~ipad.png */,
+				45FFE25B19B79ACD00D3C24B /* asteroid_1b@2x~ipad.png */,
+				45FFE25C19B79ACD00D3C24B /* asteroid_1c@2x~ipad.png */,
+				45FFE25D19B79ACD00D3C24B /* asteroid_2a@2x~ipad.png */,
+				45FFE25E19B79ACD00D3C24B /* asteroid_2b@2x~ipad.png */,
+				45FFE25F19B79ACD00D3C24B /* asteroid_2c@2x~ipad.png */,
+				45FFE26019B79ACD00D3C24B /* asteroid_3a@2x~ipad.png */,
+				45FFE26119B79ACD00D3C24B /* asteroid_3b@2x~ipad.png */,
+				45FFE26219B79ACD00D3C24B /* asteroid_3c@2x~ipad.png */,
+				45FFE26319B79ACD00D3C24B /* asteroid_4a@2x~ipad.png */,
+				45FFE26419B79ACD00D3C24B /* asteroid_4b@2x~ipad.png */,
+				45FFE26519B79ACD00D3C24B /* asteroid_4c@2x~ipad.png */,
+				45FFE26619B79ACE00D3C24B /* background@2x~ipad.png */,
+				45FFE26719B79ACE00D3C24B /* background_menu@2x~ipad.png */,
+				45FFE26819B79ACE00D3C24B /* bestscore@2x~ipad.png */,
+				45FFE26919B79ACE00D3C24B /* buildings_1@2x~ipad.png */,
+				45FFE26A19B79ACE00D3C24B /* buildings_2@2x~ipad.png */,
+				45FFE26B19B79ACE00D3C24B /* buildings_3@2x~ipad.png */,
+				45FFE26C19B79ACE00D3C24B /* buildings_4@2x~ipad.png */,
+				45FFE26D19B79ACE00D3C24B /* burned_buildings_1@2x~ipad.png */,
+				45FFE26E19B79ACE00D3C24B /* explosion@2x~ipad.png */,
+				45FFE26F19B79ACE00D3C24B /* facebook@2x~ipad.png */,
+				45FFE27019B79ACE00D3C24B /* gamecenterbutton@2x~ipad.png */,
+				45FFE27119B79ACE00D3C24B /* gameovertitle@2x~ipad.png */,
+				45FFE27219B79ACE00D3C24B /* launchpad@2x~ipad.png */,
+				45FFE27319B79ACE00D3C24B /* mutebutton@2x~ipad.png */,
+				45FFE27419B79ACE00D3C24B /* pausebutton@2x~ipad.png */,
+				45FFE27519B79ACE00D3C24B /* pausedtitle@2x~ipad.png */,
+				45FFE27619B79ACE00D3C24B /* playbutton@2x~ipad.png */,
+				45FFE27719B79ACE00D3C24B /* rate@2x~ipad.png */,
+				45FFE27819B79ACE00D3C24B /* rocket@2x~ipad.png */,
+				45FFE27919B79ACE00D3C24B /* scorelabel@2x~ipad.png */,
+				45FFE27A19B79ACE00D3C24B /* soundbutton@2x~ipad.png */,
+				45FFE27B19B79ACE00D3C24B /* Thumbs.db */,
+				45FFE27C19B79ACE00D3C24B /* title@2x~ipad.png */,
+				45FFE27D19B79ACE00D3C24B /* title_clean@2x~ipad.png */,
+				45FFE27E19B79ACE00D3C24B /* twitter@2x~ipad.png */,
+			);
+			path = "ipad retina";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3781,6 +3900,8 @@
 				4500310719B65A22009F075B /* rocket.png in Resources */,
 				45FFDEBD19B7469B00D3C24B /* buidling_fire_12@2x.png in Resources */,
 				45FFDF3B19B7469B00D3C24B /* buidling_fire_168@2x.png in Resources */,
+				45FFE28919B79ACE00D3C24B /* asteroid_4b@2x~ipad.png in Resources */,
+				45FFE29C19B79ACE00D3C24B /* rate@2x~ipad.png in Resources */,
 				45FFE1B719B747C100D3C24B /* rocket_explosion_21@2x~ipad.png in Resources */,
 				45FFDB3319B7406400D3C24B /* rocket_fire_35~ipad.png in Resources */,
 				450030F719B65A22009F075B /* bestscore~ipad.png in Resources */,
@@ -3845,6 +3966,7 @@
 				45FFDFCA19B7469B00D3C24B /* buidling_fire_20~ipad.png in Resources */,
 				45FFDB1C19B7406400D3C24B /* rocket_fire_28@2x.png in Resources */,
 				45FFE0F719B7469B00D3C24B /* buidling_fire_78@2x.png in Resources */,
+				45FFE29819B79ACE00D3C24B /* mutebutton@2x~ipad.png in Resources */,
 				45FFDEE819B7469B00D3C24B /* buidling_fire_142@2x~ipad.png in Resources */,
 				45FFE0F019B7469B00D3C24B /* buidling_fire_75~ipad.png in Resources */,
 				45FFE06E19B7469B00D3C24B /* buidling_fire_36@2x~ipad.png in Resources */,
@@ -3857,6 +3979,7 @@
 				45FFDE7519B7469B00D3C24B /* buidling_fire_108@2x.png in Resources */,
 				45FFDF9F19B7469B00D3C24B /* buidling_fire_198@2x~ipad.png in Resources */,
 				45FFE05819B7469B00D3C24B /* buidling_fire_2@2x.png in Resources */,
+				45FFE28A19B79ACE00D3C24B /* asteroid_4c@2x~ipad.png in Resources */,
 				45FFDF1719B7469B00D3C24B /* buidling_fire_157@2x.png in Resources */,
 				45FFDF0C19B7469B00D3C24B /* buidling_fire_153@2x~ipad.png in Resources */,
 				45FFE07E19B7469B00D3C24B /* buidling_fire_40~ipad.png in Resources */,
@@ -3877,12 +4000,14 @@
 				45FFE0DD19B7469B00D3C24B /* buidling_fire_6@2x~ipad.png in Resources */,
 				4564EB3B19AA4455001CCC58 /* asteroid_4b@2x.png in Resources */,
 				45FFE11119B7469B00D3C24B /* buidling_fire_85~ipad.png in Resources */,
+				45FFE27F19B79ACE00D3C24B /* asteroid_1a@2x~ipad.png in Resources */,
 				45FFDA9B19B73E8600D3C24B /* 7~ipad.png in Resources */,
 				45FFE00B19B7469B00D3C24B /* buidling_fire_22@2x~ipad.png in Resources */,
 				45FFE01119B7469B00D3C24B /* buidling_fire_231@2x~ipad.png in Resources */,
 				45BC1F9F19AE82E900053257 /* Explosion_rocket.caf in Resources */,
 				45FFDF9619B7469B00D3C24B /* buidling_fire_195@2x~ipad.png in Resources */,
 				45FFDFB219B7469B00D3C24B /* buidling_fire_202~ipad.png in Resources */,
+				45FFE28219B79ACE00D3C24B /* asteroid_2a@2x~ipad.png in Resources */,
 				45FFDF5419B7469B00D3C24B /* buidling_fire_175@2x~ipad.png in Resources */,
 				45FFE10219B7469B00D3C24B /* buidling_fire_80~ipad.png in Resources */,
 				45FFE23019B748E200D3C24B /* nuclear_explosion_16@2x~ipad.png in Resources */,
@@ -3916,10 +4041,12 @@
 				45FFDFA019B7469B00D3C24B /* buidling_fire_198~ipad.png in Resources */,
 				45FFDF4C19B7469B00D3C24B /* buidling_fire_172~ipad.png in Resources */,
 				45FFE01819B7469B00D3C24B /* buidling_fire_233~ipad.png in Resources */,
+				45FFE29E19B79ACE00D3C24B /* scorelabel@2x~ipad.png in Resources */,
 				45FFE0B519B7469B00D3C24B /* buidling_fire_58@2x.png in Resources */,
 				45FFDE6119B7469B00D3C24B /* buidling_fire_101@2x~ipad.png in Resources */,
 				4564EB2919AA3911001CCC58 /* asteroid_1b@2x.png in Resources */,
 				45FFE12819B7469B00D3C24B /* buidling_fire_92@2x~ipad.png in Resources */,
+				45FFE29A19B79ACE00D3C24B /* pausedtitle@2x~ipad.png in Resources */,
 				45FFE19919B747C100D3C24B /* rocket_explosion_12@2x~ipad.png in Resources */,
 				45FFDFAD19B7469B00D3C24B /* buidling_fire_201@2x.png in Resources */,
 				45FFE0C019B7469B00D3C24B /* buidling_fire_60~ipad.png in Resources */,
@@ -3956,6 +4083,7 @@
 				45FFE0CC19B7469B00D3C24B /* buidling_fire_64~ipad.png in Resources */,
 				45FFDE5E19B7469B00D3C24B /* buidling_fire_100@2x~ipad.png in Resources */,
 				45FFDF6B19B7469B00D3C24B /* buidling_fire_182@2x.png in Resources */,
+				45FFE29319B79ACE00D3C24B /* explosion@2x~ipad.png in Resources */,
 				4500310019B65A22009F075B /* gameovertitle~ipad.png in Resources */,
 				45FFDA9519B73E8600D3C24B /* 5~ipad.png in Resources */,
 				45FFDFAA19B7469B00D3C24B /* buidling_fire_200@2x.png in Resources */,
@@ -4045,7 +4173,10 @@
 				45FFDE7C19B7469B00D3C24B /* buidling_fire_10@2x~ipad.png in Resources */,
 				4500310119B65A22009F075B /* launchpad~ipad.png in Resources */,
 				45FFDF7019B7469B00D3C24B /* buidling_fire_183~ipad.png in Resources */,
+				45FFE29019B79ACE00D3C24B /* buildings_3@2x~ipad.png in Resources */,
 				45FFDE8E19B7469B00D3C24B /* buidling_fire_115@2x~ipad.png in Resources */,
+				45FFE29B19B79ACE00D3C24B /* playbutton@2x~ipad.png in Resources */,
+				45FFE28E19B79ACE00D3C24B /* buildings_1@2x~ipad.png in Resources */,
 				45FFDFF819B7469B00D3C24B /* buidling_fire_224@2x.png in Resources */,
 				45FFDA5F19B72BC800D3C24B /* spark.png in Resources */,
 				45FFDECB19B7469B00D3C24B /* buidling_fire_133~ipad.png in Resources */,
@@ -4062,6 +4193,7 @@
 				45FFE05319B7469B00D3C24B /* buidling_fire_28@2x~ipad.png in Resources */,
 				45FFDA9819B73E8600D3C24B /* 6~ipad.png in Resources */,
 				45FFE00D19B7469B00D3C24B /* buidling_fire_230@2x.png in Resources */,
+				45FFE2A319B79ACE00D3C24B /* twitter@2x~ipad.png in Resources */,
 				45FFE0B219B7469B00D3C24B /* buidling_fire_57@2x.png in Resources */,
 				45EE26D519B4B53400EBE571 /* background@2x.png in Resources */,
 				45FFDEC419B7469B00D3C24B /* buidling_fire_131@2x~ipad.png in Resources */,
@@ -4119,6 +4251,7 @@
 				45FFE1CB19B747C100D3C24B /* rocket_explosion_5@2x.png in Resources */,
 				45FFDFD019B7469B00D3C24B /* buidling_fire_211~ipad.png in Resources */,
 				45FFE1B519B747C100D3C24B /* rocket_explosion_20~ipad.png in Resources */,
+				45FFE28C19B79ACE00D3C24B /* background_menu@2x~ipad.png in Resources */,
 				45FFDF5A19B7469B00D3C24B /* buidling_fire_177@2x~ipad.png in Resources */,
 				45EE26E219B4FF9600EBE571 /* mutebutton@2x.png in Resources */,
 				45FFE02719B7469B00D3C24B /* buidling_fire_238~ipad.png in Resources */,
@@ -4156,6 +4289,7 @@
 				45FFDB4819B7406500D3C24B /* rocket_fire_42~ipad.png in Resources */,
 				45FFE23719B748E200D3C24B /* nuclear_explosion_18~ipad.png in Resources */,
 				45FFE1B219B747C100D3C24B /* rocket_explosion_1~ipad.png in Resources */,
+				45FFE28419B79ACE00D3C24B /* asteroid_2c@2x~ipad.png in Resources */,
 				45FFE02119B7469B00D3C24B /* buidling_fire_236~ipad.png in Resources */,
 				45FFE25119B748E200D3C24B /* nuclear_explosion_7@2x~ipad.png in Resources */,
 				45FFDF3719B7469B00D3C24B /* buidling_fire_166~ipad.png in Resources */,
@@ -4199,6 +4333,7 @@
 				45FFDEDB19B7469B00D3C24B /* buidling_fire_139@2x.png in Resources */,
 				45FFE14019B7469C00D3C24B /* buidling_fire_9@2x~ipad.png in Resources */,
 				45FFE07C19B7469B00D3C24B /* buidling_fire_40@2x.png in Resources */,
+				45FFE28319B79ACE00D3C24B /* asteroid_2b@2x~ipad.png in Resources */,
 				45FFE04E19B7469B00D3C24B /* buidling_fire_26~ipad.png in Resources */,
 				45FFDE6219B7469B00D3C24B /* buidling_fire_101~ipad.png in Resources */,
 				45FFDB3919B7406500D3C24B /* rocket_fire_37~ipad.png in Resources */,
@@ -4231,6 +4366,7 @@
 				45FFE0D819B7469B00D3C24B /* buidling_fire_68~ipad.png in Resources */,
 				45FFDE8F19B7469B00D3C24B /* buidling_fire_115~ipad.png in Resources */,
 				45FFE06819B7469B00D3C24B /* buidling_fire_34@2x~ipad.png in Resources */,
+				45FFE29719B79ACE00D3C24B /* launchpad@2x~ipad.png in Resources */,
 				45FFE21C19B748E100D3C24B /* nuclear_explosion_0~ipad.png in Resources */,
 				45EE26DB19B4E7CA00EBE571 /* introv2_2.caf in Resources */,
 				45FFE08819B7469B00D3C24B /* buidling_fire_44@2x.png in Resources */,
@@ -4247,9 +4383,12 @@
 				450030B319B613E1009F075B /* firecommand_splashscreen-iphone.png in Resources */,
 				45FFDF6519B7469B00D3C24B /* buidling_fire_180@2x.png in Resources */,
 				45BC1F9E19AE82E900053257 /* Explosion_asteroid.caf in Resources */,
+				45FFE29519B79ACE00D3C24B /* gamecenterbutton@2x~ipad.png in Resources */,
+				45FFE29219B79ACE00D3C24B /* burned_buildings_1@2x~ipad.png in Resources */,
 				45FFE21A19B748E100D3C24B /* nuclear_explosion_0@2x.png in Resources */,
 				45FFDE7419B7469B00D3C24B /* buidling_fire_107~ipad.png in Resources */,
 				45FFDB2919B7406400D3C24B /* rocket_fire_32@2x~ipad.png in Resources */,
+				45FFE28D19B79ACE00D3C24B /* bestscore@2x~ipad.png in Resources */,
 				45FFDB5E19B7406500D3C24B /* rocket_fire_50@2x.png in Resources */,
 				45FFDA8819B73E8600D3C24B /* 1@2x~ipad.png in Resources */,
 				450030B719B613E1009F075B /* firecommand_icon_40pt.png in Resources */,
@@ -4278,6 +4417,7 @@
 				45FFDB6919B7406500D3C24B /* rocket_fire_53~ipad.png in Resources */,
 				45FFE02919B7469B00D3C24B /* buidling_fire_239@2x~ipad.png in Resources */,
 				45FFDE8C19B7469B00D3C24B /* buidling_fire_114~ipad.png in Resources */,
+				45FFE2A119B79ACE00D3C24B /* title@2x~ipad.png in Resources */,
 				45FFDB3019B7406400D3C24B /* rocket_fire_34~ipad.png in Resources */,
 				45FFE01519B7469B00D3C24B /* buidling_fire_232~ipad.png in Resources */,
 				45FFDA9919B73E8600D3C24B /* 7@2x.png in Resources */,
@@ -4342,6 +4482,7 @@
 				45FFE11B19B7469B00D3C24B /* buidling_fire_89@2x.png in Resources */,
 				45FFE04819B7469B00D3C24B /* buidling_fire_24~ipad.png in Resources */,
 				45FFE04319B7469B00D3C24B /* buidling_fire_247@2x.png in Resources */,
+				45FFE29D19B79ACE00D3C24B /* rocket@2x~ipad.png in Resources */,
 				4564EB2219AA2164001CCC58 /* buildings_4@2x.png in Resources */,
 				45FFDF2519B7469B00D3C24B /* buidling_fire_160~ipad.png in Resources */,
 				45FFE1AD19B747C100D3C24B /* rocket_explosion_19@2x.png in Resources */,
@@ -4377,6 +4518,7 @@
 				45FFDE6719B7469B00D3C24B /* buidling_fire_103@2x~ipad.png in Resources */,
 				45FFDFF219B7469B00D3C24B /* buidling_fire_222@2x.png in Resources */,
 				45FFDF1E19B7469B00D3C24B /* buidling_fire_159@2x~ipad.png in Resources */,
+				45FFE28719B79ACE00D3C24B /* asteroid_3c@2x~ipad.png in Resources */,
 				45FFDF5B19B7469B00D3C24B /* buidling_fire_177~ipad.png in Resources */,
 				4564EB3C19AA4455001CCC58 /* asteroid_4c@2x.png in Resources */,
 				45FFE12219B7469B00D3C24B /* buidling_fire_90@2x~ipad.png in Resources */,
@@ -4422,6 +4564,7 @@
 				45FFE07B19B7469B00D3C24B /* buidling_fire_3~ipad.png in Resources */,
 				4500308C19B5C0AB009F075B /* rate@2x.png in Resources */,
 				45FFDB6019B7406500D3C24B /* rocket_fire_50~ipad.png in Resources */,
+				45FFE29119B79ACE00D3C24B /* buildings_4@2x~ipad.png in Resources */,
 				4500310C19B65A22009F075B /* title~ipad.png in Resources */,
 				45FFE00F19B7469B00D3C24B /* buidling_fire_230~ipad.png in Resources */,
 				45FFE09C19B7469B00D3C24B /* buidling_fire_4~ipad.png in Resources */,
@@ -4465,6 +4608,7 @@
 				45FFDF9819B7469B00D3C24B /* buidling_fire_196@2x.png in Resources */,
 				45FFDEB619B7469B00D3C24B /* buidling_fire_127~ipad.png in Resources */,
 				45FFE21E19B748E100D3C24B /* nuclear_explosion_10@2x~ipad.png in Resources */,
+				45FFE29619B79ACE00D3C24B /* gameovertitle@2x~ipad.png in Resources */,
 				45FFE10619B7469B00D3C24B /* buidling_fire_82@2x.png in Resources */,
 				45FFDEE219B7469B00D3C24B /* buidling_fire_140@2x~ipad.png in Resources */,
 				45FFDB2A19B7406400D3C24B /* rocket_fire_32~ipad.png in Resources */,
@@ -4501,6 +4645,7 @@
 				45FFDA9419B73E8600D3C24B /* 5@2x~ipad.png in Resources */,
 				45FFDE5A19B7469B00D3C24B /* buidling_fire_0@2x.png in Resources */,
 				45FFDF7919B7469B00D3C24B /* buidling_fire_186~ipad.png in Resources */,
+				45FFE2A219B79ACE00D3C24B /* title_clean@2x~ipad.png in Resources */,
 				45FFDFFB19B7469B00D3C24B /* buidling_fire_225@2x.png in Resources */,
 				45FFDB4919B7406500D3C24B /* rocket_fire_43@2x.png in Resources */,
 				45FFE1C119B747C100D3C24B /* rocket_explosion_24~ipad.png in Resources */,
@@ -4525,6 +4670,7 @@
 				45BC1F9D19AE82E900053257 /* click.caf in Resources */,
 				45FFDB5F19B7406500D3C24B /* rocket_fire_50@2x~ipad.png in Resources */,
 				45FFE23219B748E200D3C24B /* nuclear_explosion_17@2x.png in Resources */,
+				45FFE28B19B79ACE00D3C24B /* background@2x~ipad.png in Resources */,
 				45FFDF4D19B7469B00D3C24B /* buidling_fire_173@2x.png in Resources */,
 				45FFDEF819B7469B00D3C24B /* buidling_fire_147~ipad.png in Resources */,
 				45FFE1C919B747C100D3C24B /* rocket_explosion_4@2x~ipad.png in Resources */,
@@ -4538,6 +4684,7 @@
 				45FFDFD319B7469B00D3C24B /* buidling_fire_212~ipad.png in Resources */,
 				45FFDB6819B7406500D3C24B /* rocket_fire_53@2x~ipad.png in Resources */,
 				450030EB19B65A22009F075B /* asteroid_1c~ipad.png in Resources */,
+				45FFE28119B79ACE00D3C24B /* asteroid_1c@2x~ipad.png in Resources */,
 				45FFDF3D19B7469B00D3C24B /* buidling_fire_168~ipad.png in Resources */,
 				45FFDA8F19B73E8600D3C24B /* 3~ipad.png in Resources */,
 				45FFE0F219B7469B00D3C24B /* buidling_fire_76@2x~ipad.png in Resources */,
@@ -4545,12 +4692,14 @@
 				45FFE08919B7469B00D3C24B /* buidling_fire_44@2x~ipad.png in Resources */,
 				45FFDEBC19B7469B00D3C24B /* buidling_fire_129~ipad.png in Resources */,
 				451CDC0E19ACED2300F32A43 /* game-over-music.caf in Resources */,
+				45FFE2A019B79ACE00D3C24B /* Thumbs.db in Resources */,
 				45FFE04A19B7469B00D3C24B /* buidling_fire_25@2x~ipad.png in Resources */,
 				45FFDE7B19B7469B00D3C24B /* buidling_fire_10@2x.png in Resources */,
 				45FFDF2419B7469B00D3C24B /* buidling_fire_160@2x~ipad.png in Resources */,
 				45FFDB2419B7406400D3C24B /* rocket_fire_30~ipad.png in Resources */,
 				450030BC19B613E1009F075B /* firecommand_icon_76pt@2x.png in Resources */,
 				45FFDB4A19B7406500D3C24B /* rocket_fire_43@2x~ipad.png in Resources */,
+				45FFE29419B79ACE00D3C24B /* facebook@2x~ipad.png in Resources */,
 				45FFDED519B7469B00D3C24B /* buidling_fire_137@2x.png in Resources */,
 				45FFE22519B748E100D3C24B /* nuclear_explosion_12~ipad.png in Resources */,
 				45FFDEF019B7469B00D3C24B /* buidling_fire_145@2x.png in Resources */,
@@ -4586,6 +4735,7 @@
 				45FFDB3819B7406400D3C24B /* rocket_fire_37@2x~ipad.png in Resources */,
 				45FFE0DE19B7469B00D3C24B /* buidling_fire_6~ipad.png in Resources */,
 				45FFDE6819B7469B00D3C24B /* buidling_fire_103~ipad.png in Resources */,
+				45FFE28619B79ACE00D3C24B /* asteroid_3b@2x~ipad.png in Resources */,
 				45FFDFDD19B7469B00D3C24B /* buidling_fire_216@2x.png in Resources */,
 				45FFE0FF19B7469B00D3C24B /* buidling_fire_7~ipad.png in Resources */,
 				45FFE19F19B747C100D3C24B /* rocket_explosion_14@2x~ipad.png in Resources */,
@@ -4611,6 +4761,7 @@
 				45FFDFF019B7469B00D3C24B /* buidling_fire_221@2x~ipad.png in Resources */,
 				4500310619B65A22009F075B /* rate~ipad.png in Resources */,
 				45FFDFDE19B7469B00D3C24B /* buidling_fire_216@2x~ipad.png in Resources */,
+				45FFE29F19B79ACE00D3C24B /* soundbutton@2x~ipad.png in Resources */,
 				45FFDFAF19B7469B00D3C24B /* buidling_fire_201~ipad.png in Resources */,
 				45FFE04119B7469B00D3C24B /* buidling_fire_246@2x~ipad.png in Resources */,
 				45FFE13F19B7469C00D3C24B /* buidling_fire_9@2x.png in Resources */,
@@ -4710,6 +4861,7 @@
 				45FFE11719B7469B00D3C24B /* buidling_fire_87~ipad.png in Resources */,
 				45FFE07419B7469B00D3C24B /* buidling_fire_38@2x~ipad.png in Resources */,
 				45FFDF4A19B7469B00D3C24B /* buidling_fire_172@2x.png in Resources */,
+				45FFE28519B79ACE00D3C24B /* asteroid_3a@2x~ipad.png in Resources */,
 				45FFDFE919B7469B00D3C24B /* buidling_fire_21@2x.png in Resources */,
 				45FFE1D119B747C100D3C24B /* rocket_explosion_7@2x.png in Resources */,
 				45FFDF2B19B7469B00D3C24B /* buidling_fire_162~ipad.png in Resources */,
@@ -4744,6 +4896,7 @@
 				45FFDE8719B7469B00D3C24B /* buidling_fire_113@2x.png in Resources */,
 				4592713B19AF8EDF0073422C /* burned_buildings_1@2x.png in Resources */,
 				45FFE25819B748E200D3C24B /* nuclear_explosion_9~ipad.png in Resources */,
+				45FFE28819B79ACE00D3C24B /* asteroid_4a@2x~ipad.png in Resources */,
 				45FFDF3619B7469B00D3C24B /* buidling_fire_166@2x~ipad.png in Resources */,
 				45FFDE8D19B7469B00D3C24B /* buidling_fire_115@2x.png in Resources */,
 				45FFE11E19B7469B00D3C24B /* buidling_fire_8@2x.png in Resources */,
@@ -4764,6 +4917,7 @@
 				45FFDFBA19B7469B00D3C24B /* buidling_fire_205@2x~ipad.png in Resources */,
 				45FFDF4019B7469B00D3C24B /* buidling_fire_169~ipad.png in Resources */,
 				45FFDB6F19B7406500D3C24B /* rocket_fire_55~ipad.png in Resources */,
+				45FFE28F19B79ACE00D3C24B /* buildings_2@2x~ipad.png in Resources */,
 				45FFDED119B7469B00D3C24B /* buidling_fire_135~ipad.png in Resources */,
 				4564EB3519AA4455001CCC58 /* asteroid_2b@2x.png in Resources */,
 				45FFE07019B7469B00D3C24B /* buidling_fire_37@2x.png in Resources */,
@@ -4818,6 +4972,7 @@
 				45FFE10B19B7469B00D3C24B /* buidling_fire_83~ipad.png in Resources */,
 				45FFE11019B7469B00D3C24B /* buidling_fire_85@2x~ipad.png in Resources */,
 				4500310819B65A22009F075B /* scorelabel~ipad.png in Resources */,
+				45FFE28019B79ACE00D3C24B /* asteroid_1b@2x~ipad.png in Resources */,
 				45FFE1BE19B747C100D3C24B /* rocket_explosion_23~ipad.png in Resources */,
 				45FFE05619B7469B00D3C24B /* buidling_fire_29@2x~ipad.png in Resources */,
 				45FFE09619B7469B00D3C24B /* buidling_fire_48~ipad.png in Resources */,
@@ -4845,6 +5000,7 @@
 				45FFDEE419B7469B00D3C24B /* buidling_fire_141@2x.png in Resources */,
 				45FFDB2519B7406400D3C24B /* rocket_fire_31@2x.png in Resources */,
 				45FFDED619B7469B00D3C24B /* buidling_fire_137@2x~ipad.png in Resources */,
+				45FFE29919B79ACE00D3C24B /* pausebutton@2x~ipad.png in Resources */,
 				45FFDF9919B7469B00D3C24B /* buidling_fire_196@2x~ipad.png in Resources */,
 				45FFDB4519B7406500D3C24B /* rocket_fire_41~ipad.png in Resources */,
 				45FFE08C19B7469B00D3C24B /* buidling_fire_45@2x~ipad.png in Resources */,
