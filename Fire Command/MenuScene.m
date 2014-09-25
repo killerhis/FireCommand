@@ -503,6 +503,7 @@
     NSTimeInterval playAt = self.mainTrack.deviceCurrentTime + self.introBuffer.duration;
     [self.mainTrack playAtTime:playAt];
     self.mainTrack.volume = 1;
+    
 }
 
 - (void)stopBackgroundMusic

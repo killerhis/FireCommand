@@ -19,9 +19,9 @@
 
 
 // Constants
-static float rocketReloadTime = 0.25; //reload time next rocket
-static float kExplosionRadius = 0.9;  //scale of explosion radius
-static float kExplosionTime = 0.6; //duration time of explosion
+static float rocketReloadTime = 0.4; //reload time next rocket
+static float kExplosionRadius = 0.8;  //scale of explosion radius
+static float kExplosionTime = 0.4; //duration time of explosion
 
 //Varaible
 static float kLevelMultiplier = 3.0; //time multiplier of next asteroid
@@ -39,6 +39,7 @@ typedef enum : NSUInteger {
 
 @property (strong, nonatomic) SKSpriteNode *rocket;
 @property (strong, nonatomic) SKNode *scoreBar;
+@property (strong, nonatomic) SKNode *buildingNode;
 @property (strong, nonatomic) SKSpriteNode *buildingFire;
 @property (strong, nonatomic) SKSpriteNode *pauseButton;
 
@@ -71,6 +72,7 @@ typedef enum : NSUInteger {
     int missileExploded;
     int score;
     int explosionZPosition;
+    int buildingSet;
     
     int flowerBullets1;
     int flowerBullets2;
@@ -93,6 +95,7 @@ typedef enum : NSUInteger {
     SKNode *_gameOverScreen;
     
     SKSpriteNode *_asteroid;
+    SKSpriteNode *_building;
     SKSpriteNode *_nuclearExplosion;
     SKSpriteNode *_explosion;
     SKSpriteNode *_flashBackground;
@@ -153,6 +156,7 @@ typedef enum : NSUInteger {
         lastRocketTimeStamp = 0;
         [self setDeviceScale];
         _gamePaused = NO;
+        buildingSet = 0;
         
         // Game Mechanics
         levelMultiplier = kLevelMultiplier; //avg time for next asteroid in sec,
@@ -426,7 +430,7 @@ typedef enum : NSUInteger {
     [_gameOverScreen addChild:bestScoreTextLabel];
     
     SKSpriteNode *bestScoreLabel = [self showScore:bestScore];
-    int bestScoreLength = [NSString stringWithFormat:@"%d", bestScore].length;
+    int bestScoreLength = (int)[NSString stringWithFormat:@"%d", bestScore].length;
     bestScoreLabel.position = CGPointMake(-11*(bestScoreLength-1)*_scale, -bestScoreTextLabel.size.height/2 - 22*_scale);
     [_gameOverScreen addChild:bestScoreLabel];
     
@@ -437,7 +441,7 @@ typedef enum : NSUInteger {
     [_gameOverScreen addChild:scoreTextLabel];
     
     SKSpriteNode *scoreLabel = [self showScore:score];
-    int scoreLenght = [NSString stringWithFormat:@"%d", score].length;
+    int scoreLenght = (int)[NSString stringWithFormat:@"%d", score].length;
     scoreLabel.position = CGPointMake(-11*(scoreLenght-1)*_scale, bestScoreTextLabel.size.height/2 + 22*_scale);
     [_gameOverScreen addChild:scoreLabel];
     
@@ -528,7 +532,16 @@ typedef enum : NSUInteger {
         NSString *groundName = @"ground";
         
         if (building.name != groundName) {
-            [building runAction:[SKAction removeFromParent]];
+            //NSLog(@"%@", building.name);
+            //[building runAction:[SKAction removeFromParent]];
+            //[building removeFromParent];
+            //building = nil;
+            //[super removeFromParent];
+            
+            //for (SKNode *building in self.buildingNode) {
+                [building removeFromParent];
+            //}
+            [self removeFromParent];
         }
         
         if (asteroid.name != groundName) {
@@ -562,6 +575,8 @@ typedef enum : NSUInteger {
             _gameOver = YES;
             _transition = YES;
         }
+
+        
     }
 }
 
@@ -709,11 +724,13 @@ typedef enum : NSUInteger {
 
 - (void)addBuildings:(int)spaceOrder
 {
+    self.buildingNode = [[SKNode alloc] init];
+    
     for (int i = 1; i <= 4; i++) {
         
         float buildingWidth = (self.size.width-38*_scale)/4;
         
-        SKSpriteNode *building = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(buildingWidth, 2)];
+        _building = [SKSpriteNode spriteNodeWithColor:[SKColor clearColor] size:CGSizeMake(buildingWidth, 2)];
         
         NSString *textureName = [NSString stringWithFormat:@"buildings_%i.png", i];
         SKTexture *buildingText = [SKTexture textureWithImageNamed:textureName];
@@ -724,37 +741,39 @@ typedef enum : NSUInteger {
         if (i == 1) {
             buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
             buildingTexture.zPosition = 2;
-            building.position = CGPointMake(buildingTexture.size.width/2 - 11*_scale, 0);
+            _building.position = CGPointMake(buildingTexture.size.width/2 - 11*_scale, 0);
         } else if (i == 2) {
             
             buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
             buildingTexture.zPosition = 3;
             
-            building.position = CGPointMake((self.size.width/2) - buildingTexture.size.width/2 - 16*_scale, 0);
+            _building.position = CGPointMake((self.size.width/2) - buildingTexture.size.width/2 - 16*_scale, 0);
         } else if (i == 3) {
             buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
             buildingTexture.zPosition = 3;
-            building.position = CGPointMake((self.size.width/2) + buildingTexture.size.width/2 + 16*_scale, 0);
+            _building.position = CGPointMake((self.size.width/2) + buildingTexture.size.width/2 + 16*_scale, 0);
         } else if (i == 4) {
             buildingTexture.position = CGPointMake(0, buildingTexture.size.height/2);
             buildingTexture.zPosition = 2;
-            building.position = CGPointMake(self.size.width - buildingTexture.size.width/2 + 11*_scale, 0);
+            _building.position = CGPointMake(self.size.width - buildingTexture.size.width/2 + 11*_scale, 0);
         }
         
-        building.name = @"building";
+        _building.name = @"building";
         
-        [building addChild:buildingTexture];
-        building.zPosition = 1;
+        [_building addChild:buildingTexture];
+        _building.zPosition = 1;
         
         // Add Physics
-        building.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:building.size];
-        building.physicsBody.dynamic = YES;
-        building.physicsBody.categoryBitMask = BuildingCategory;
-        building.physicsBody.contactTestBitMask = AsteroidCategory;
-        building.physicsBody.collisionBitMask = 0;
+        _building.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:_building.size];
+        _building.physicsBody.dynamic = YES;
+        _building.physicsBody.categoryBitMask = BuildingCategory;
+        _building.physicsBody.contactTestBitMask = AsteroidCategory;
+        _building.physicsBody.collisionBitMask = 0;
         
-        [self addChild:building];
+        [self.buildingNode addChild:_building];
     }
+    
+    [self addChild:self.buildingNode];
 }
 
 - (void)addBurningBuilding:(CGPoint)location
@@ -1072,7 +1091,7 @@ typedef enum : NSUInteger {
 {
     SKSpriteNode *scoreNode = [SKSpriteNode node];
     
-    int scoreLenght = [NSString stringWithFormat:@"%i", value].length;
+    int scoreLenght = (int)[NSString stringWithFormat:@"%i", value].length;
     
     for (int i = 0; i < scoreLenght; i++) {
         
@@ -1309,7 +1328,7 @@ typedef enum : NSUInteger {
     NSInteger localScore = [_defaults integerForKey:@"highScore"];
     
     if (localScore > gameCenterScore) {
-        highScore = localScore;
+        highScore = (int)localScore;
     } else {
         highScore = gameCenterScore;
     }

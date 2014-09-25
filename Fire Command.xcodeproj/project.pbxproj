@@ -96,6 +96,7 @@
 		4564EB3B19AA4455001CCC58 /* asteroid_4b@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4564EB3219AA4455001CCC58 /* asteroid_4b@2x.png */; };
 		4564EB3C19AA4455001CCC58 /* asteroid_4c@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4564EB3319AA4455001CCC58 /* asteroid_4c@2x.png */; };
 		4564EC1719ABAC23001CCC58 /* Disorient Pixels.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4564EC1619ABAC23001CCC58 /* Disorient Pixels.ttf */; };
+		457C3D4D19D4876400D59408 /* firecommand_icon_60pt@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 457C3D4C19D4876400D59408 /* firecommand_icon_60pt@3x.png */; };
 		4592713B19AF8EDF0073422C /* burned_buildings_1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4592713A19AF8EDF0073422C /* burned_buildings_1@2x.png */; };
 		45BC1F9D19AE82E900053257 /* click.caf in Resources */ = {isa = PBXBuildFile; fileRef = 45BC1F9819AE82E900053257 /* click.caf */; };
 		45BC1F9E19AE82E900053257 /* Explosion_asteroid.caf in Resources */ = {isa = PBXBuildFile; fileRef = 45BC1F9919AE82E900053257 /* Explosion_asteroid.caf */; };
@@ -1286,6 +1287,7 @@
 		4564EB3219AA4455001CCC58 /* asteroid_4b@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_4b@2x.png"; sourceTree = "<group>"; };
 		4564EB3319AA4455001CCC58 /* asteroid_4c@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asteroid_4c@2x.png"; sourceTree = "<group>"; };
 		4564EC1619ABAC23001CCC58 /* Disorient Pixels.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Disorient Pixels.ttf"; sourceTree = "<group>"; };
+		457C3D4C19D4876400D59408 /* firecommand_icon_60pt@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "firecommand_icon_60pt@3x.png"; path = "../firecommand_icon_60pt@3x.png"; sourceTree = "<group>"; };
 		4592713A19AF8EDF0073422C /* burned_buildings_1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "burned_buildings_1@2x.png"; sourceTree = "<group>"; };
 		45BC1F9819AE82E900053257 /* click.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = click.caf; sourceTree = "<group>"; };
 		45BC1F9919AE82E900053257 /* Explosion_asteroid.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Explosion_asteroid.caf; sourceTree = "<group>"; };
@@ -2433,6 +2435,7 @@
 		450030A319B613E1009F075B /* icons */ = {
 			isa = PBXGroup;
 			children = (
+				457C3D4C19D4876400D59408 /* firecommand_icon_60pt@3x.png */,
 				450030A419B613E1009F075B /* firecommand_icon_29pt.png */,
 				450030A519B613E1009F075B /* firecommand_icon_29pt@2x.png */,
 				450030A819B613E1009F075B /* firecommand_icon_60pt.png */,
@@ -4459,6 +4462,7 @@
 				45FFE0DB19B7469B00D3C24B /* buidling_fire_69~ipad.png in Resources */,
 				45FFE12119B7469B00D3C24B /* buidling_fire_90@2x.png in Resources */,
 				45FFDEA319B7469B00D3C24B /* buidling_fire_121@2x~ipad.png in Resources */,
+				457C3D4D19D4876400D59408 /* firecommand_icon_60pt@3x.png in Resources */,
 				45FFE0AB19B7469B00D3C24B /* buidling_fire_54~ipad.png in Resources */,
 				45FFDFCE19B7469B00D3C24B /* buidling_fire_211@2x.png in Resources */,
 				45FFDE7D19B7469B00D3C24B /* buidling_fire_10~ipad.png in Resources */,
@@ -5143,7 +5147,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -5161,6 +5166,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "d63ff304-7d13-4b5c-9222-10f438dd0b84";
 				SDKROOT = iphoneos;
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5183,7 +5189,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -5194,6 +5201,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PROVISIONING_PROFILE = "d63ff304-7d13-4b5c-9222-10f438dd0b84";
 				SDKROOT = iphoneos;
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -5207,8 +5215,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Fire Command/Fire Command-Prefix.pch";
 				INFOPLIST_FILE = "Fire Command/Fire Command-Info.plist";
@@ -5217,7 +5225,7 @@
 					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "d63ff304-7d13-4b5c-9222-10f438dd0b84";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -5229,8 +5237,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Fire Command/Fire Command-Prefix.pch";
 				INFOPLIST_FILE = "Fire Command/Fire Command-Info.plist";
@@ -5239,7 +5247,7 @@
 					"$(PROJECT_DIR)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "d63ff304-7d13-4b5c-9222-10f438dd0b84";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -5285,6 +5293,82 @@
 			};
 			name = Release;
 		};
+		45FFE2A419B7BA6D00D3C24B /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PROVISIONING_PROFILE = "d63ff304-7d13-4b5c-9222-10f438dd0b84";
+				SDKROOT = iphoneos;
+				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Distribution;
+		};
+		45FFE2A519B7BA6D00D3C24B /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 294B38266F4B4C1B925503C2 /* Pods.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Hicham Chourak (TF9VESMTKV)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Fire Command/Fire Command-Prefix.pch";
+				INFOPLIST_FILE = "Fire Command/Fire Command-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "d63ff304-7d13-4b5c-9222-10f438dd0b84";
+				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Distribution;
+		};
+		45FFE2A619B7BA6D00D3C24B /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Fire Command.app/Fire Command";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Fire Command/Fire Command-Prefix.pch";
+				INFOPLIST_FILE = "Fire CommandTests/Fire CommandTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Distribution;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -5293,6 +5377,7 @@
 			buildConfigurations = (
 				45F1F4EC19A3E98400EEB990 /* Debug */,
 				45F1F4ED19A3E98400EEB990 /* Release */,
+				45FFE2A419B7BA6D00D3C24B /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -5302,6 +5387,7 @@
 			buildConfigurations = (
 				45F1F4EF19A3E98400EEB990 /* Debug */,
 				45F1F4F019A3E98400EEB990 /* Release */,
+				45FFE2A519B7BA6D00D3C24B /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -5311,6 +5397,7 @@
 			buildConfigurations = (
 				45F1F4F219A3E98400EEB990 /* Debug */,
 				45F1F4F319A3E98400EEB990 /* Release */,
+				45FFE2A619B7BA6D00D3C24B /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
