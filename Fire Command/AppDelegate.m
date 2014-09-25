@@ -8,6 +8,9 @@
 
 #import "AppDelegate.h"
 #import "GameCenterManager.h"
+#import <AVFoundation/AVFoundation.h>
+#import <ObjectAL/ObjectAL.h>
+#import "MenuScene.h"
 
 @implementation AppDelegate
 
@@ -40,11 +43,17 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    // mute audio in background
+    [[AVAudioSession sharedInstance] setActive:NO error:nil];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    // resume audio
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

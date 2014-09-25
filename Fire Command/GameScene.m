@@ -134,6 +134,11 @@ typedef enum : NSUInteger {
         id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
         [tracker set:kGAIScreenName value:@"GameScene"];
         [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+        tracker.allowIDFACollection = NO;
+        
+        // Load notification for background states
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
         
         // Play Music
         [self initAudio];
@@ -372,6 +377,7 @@ typedef enum : NSUInteger {
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:@"GameOverScene"];
     [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+    tracker.allowIDFACollection = NO;
     
     [self stopBackgroundMusic];
     [self playGameOverMusic:_gameMute];
@@ -1496,6 +1502,18 @@ typedef enum : NSUInteger {
     } else {
         self.source.muted = YES;
     }
+}
+
+-(void) appWillResignActive:(NSNotification*)note{
+    [self.gameOverTrack setPaused:YES];
+    [self.mainTrack setPaused:YES];
+    [self.source setPaused:YES];
+}
+
+-(void) appWillEnterForeground:(NSNotification*)note{
+    [self.gameOverTrack setPaused:NO];
+    [self.mainTrack setPaused:NO];
+    [self.source setPaused:NO];
 }
 
 #pragma mark - Share

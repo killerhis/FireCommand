@@ -5227,6 +5227,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d63ff304-7d13-4b5c-9222-10f438dd0b84";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -5249,6 +5250,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d63ff304-7d13-4b5c-9222-10f438dd0b84";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -5347,6 +5349,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "d63ff304-7d13-4b5c-9222-10f438dd0b84";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;

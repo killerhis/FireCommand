@@ -10,7 +10,6 @@
 #import "GameScene.h"
 #import "GAIDictionaryBuilder.h"
 #import "ViewController.h"
-#import <ObjectAL/ObjectAL.h>
 #import "GameCenterManager.h"
 
 #define kIntroTrackFileName @"introv2_1.caf"
@@ -22,8 +21,6 @@
 
 @property(nonatomic, readwrite, retain) ALBuffer* introBuffer;
 @property(nonatomic, readwrite, retain) ALSource* source;
-
-@property(nonatomic, readwrite, retain) OALAudioTrack* mainTrack;
 
 @property(nonatomic, readwrite, retain) OALSimpleAudio *sourceSFX;
 @property(nonatomic, readwrite, retain) ALBuffer* clickSFX;
@@ -77,6 +74,11 @@
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:@"StartMenu"];
     [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+    tracker.allowIDFACollection = NO;
+    
+    // Load notification for background states
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
     
     // Mute audio
     _defaults = [NSUserDefaults standardUserDefaults];
@@ -513,5 +515,16 @@
     self.mainTrack.currentTime = 0;
     self.source.muted = _gameMute;
 }
+
+-(void) appWillResignActive:(NSNotification*)note{
+    [self.source setPaused:YES];
+    [self.mainTrack setPaused:YES];
+}
+
+-(void) appWillEnterForeground:(NSNotification*)note{
+    [self.source setPaused:NO];
+    [self.mainTrack setPaused:NO];
+}
+
 
 @end

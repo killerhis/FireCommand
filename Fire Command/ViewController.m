@@ -60,9 +60,7 @@
 #pragma mark - GameCenterManagerDelegate
 
 - (void)gameCenterManager:(GameCenterManager *)manager authenticateUser:(UIViewController *)gameCenterLoginController {
-    [self presentViewController:gameCenterLoginController animated:YES completion:^{
-        NSLog(@"Done presenting gamecenter");
-    }];
+    [self presentViewController:gameCenterLoginController animated:YES completion:nil];
 }
 
 

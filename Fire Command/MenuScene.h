@@ -7,7 +7,10 @@
 //
 
 #import <SpriteKit/SpriteKit.h>
+#import <ObjectAL/ObjectAL.h>
 
 @interface MenuScene : SKScene
+
+@property(nonatomic, readwrite, retain) OALAudioTrack* mainTrack;
 
 @end
